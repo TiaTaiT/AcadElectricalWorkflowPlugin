@@ -1,0 +1,30 @@
+﻿<windows:RibbonTab
+    x:Class="AutocadRibbonUI.WorkFlowRibbonTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:windows="clr-namespace:Autodesk.Windows;assembly=AdWindows"
+    Title="Workflow">
+
+    <windows:RibbonPanel>
+        <windows:RibbonPanelSource Title="My panel" >
+
+            <windows:RibbonButton
+                Id="FirstButton"
+                Text="My buttons1"
+                ShowText="True"
+                Size="Standard"
+                Image="Bee.png"
+                CommandParameter="TERMCOUNT">
+            </windows:RibbonButton>
+
+            <windows:RibbonButton
+                Id="SecondButton"
+                Text="My buttons2"
+                ShowText="True"
+                Size="Standard"
+                Image="Bee.png"
+                CommandParameter="TERMINCREMENT">
+            </windows:RibbonButton>
+        </windows:RibbonPanelSource>
+    </windows:RibbonPanel>
+</windows:RibbonTab>

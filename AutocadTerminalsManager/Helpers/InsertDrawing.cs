@@ -1,0 +1,222 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using AutocadCommands.Helpers;
+using AutocadTerminalsManager.Model;
+using AutocadTerminalsManager.Services;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
+using Autodesk.AutoCAD.Geometry;
+using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+
+namespace AutocadTerminalsManager.Helpers
+{
+    public class InsertDrawing
+    {
+        const string _cableDesignation = "CABLEDESIGNATION";
+        const string _cableBrand = "CABLEBRAND";
+
+        private string _sourceFile;
+        private IEnumerable<Cable> _cables;
+        private Document _doc;
+        private Database _currentDb;
+        private Editor _editor;
+        private Database _sourceDb;
+
+        public InsertDrawing(string sourceFile, IEnumerable<Cable> cables)
+        {
+            _sourceFile = sourceFile;
+            _cables = cables;
+
+            // Get the current document and database
+            _doc = Application.DocumentManager.MdiActiveDocument;
+            _currentDb = _doc.Database;
+            _editor = Application.DocumentManager.MdiActiveDocument.Editor;
+            _sourceDb = new Database(false, true);
+        }
+
+        /// <summary>
+        /// This method is simple analog "Insert" Autocad function
+        /// </summary>
+        /// <param name="sourceFile">Absolute DWG file path</param>
+        public ObjectIdCollection GetSourceDrawingIds()
+        {
+            // Lock the current document
+            using var acLckDocCur = _doc.LockDocument();
+            try
+            {
+                _sourceDb.ReadDwgFile(_sourceFile, FileShare.Read, true, "");
+                var acObjIdColl = GetObjectsIdsFromDb(_sourceDb);
+                
+                return acObjIdColl;
+            }
+            catch (Exception ex)
+            {
+                _editor.WriteMessage("\nError during copy: " + ex.Message);
+                return null;
+            }
+
+            // Unlock the document
+        }
+
+        public void PutToTargetDb(ObjectIdCollection objIdColl)
+        {
+            // Lock the new document
+            using var lockDocument = _doc.LockDocument();
+
+            // Start a transaction in the new database
+            using var acTrans = _currentDb.TransactionManager.StartTransaction();
+
+            // Open the Block table for read
+            var blkTblNewDoc = (BlockTable)acTrans.GetObject(
+                _currentDb.BlockTableId, OpenMode.ForRead);
+
+            // Open the Block table record Model space for read
+            var acBlkTblRecNewDoc = (BlockTableRecord)acTrans.GetObject(
+                blkTblNewDoc[BlockTableRecord.ModelSpace], OpenMode.ForRead);
+
+            acTrans.TransactionManager.QueueForGraphicsFlush();
+
+            // Clone the objects to the new database
+            var acIdMap = new IdMapping();
+            _currentDb.WblockCloneObjects(objIdColl, acBlkTblRecNewDoc.ObjectId, acIdMap,
+                DuplicateRecordCloning.Ignore, false);
+            
+            if (!StartJig(acIdMap)) return;
+
+            acTrans.Commit();
+            // Unlock the document
+        }
+
+        /// <summary>
+        /// Prepare and start jigging
+        /// </summary>
+        /// <param name="acIdMap"></param>
+        /// <returns>Return false if user canceled jigging</returns>
+        private bool StartJig(IdMapping acIdMap)
+        {
+            using var tr = _currentDb.TransactionManager.StartTransaction();
+            
+            var onlyPrimaryEntities = GetPrimaryEntities(tr, acIdMap);
+
+            //Objects with right attributes
+            var attrObjects = 
+                AttributeHelper.GetObjectsWithAttribute(tr, onlyPrimaryEntities, "CABLEDESIGNATION");
+
+            //Replace attributes in fake objects
+            ReplaceAttributes(attrObjects, _cables);
+
+            foreach (var obj in attrObjects)
+            {
+                var br = (BlockReference)obj.Entity;
+                AttributeHelper.SetAttributes(tr, br.AttributeCollection, obj.Attributes);
+            }
+
+            var jig = new DragEntitiesJig(onlyPrimaryEntities, new Point3d(0, 0, 0));
+            var jigRes = _doc.Editor.Drag(jig);
+
+            if (jigRes.Status != PromptStatus.OK) return false;
+
+            jig.TransformEntities();
+
+            tr.Commit();
+            return true;
+        }
+
+        private ObjectIdCollection GetPrimaryIds(IEnumerable idMap)
+        {
+            var ids = new ObjectIdCollection();
+            foreach (IdPair idPair in idMap)
+            {
+                if (idPair.IsPrimary)
+                    ids.Add(idPair.Value);
+            }
+
+            return ids;
+        }
+
+        private IEnumerable<Entity> GetPrimaryEntities(Transaction tr, IEnumerable idMap)
+        {
+            var entities = new List<Entity>();
+            var ids = GetPrimaryIds(idMap);
+            foreach (ObjectId id in ids)
+            {
+                if (tr.GetObject(id, OpenMode.ForWrite) is not Entity entity) continue;
+                entities.Add(entity);
+            }
+
+            return entities;
+        }
+
+        private ObjectIdCollection GetObjectsIdsFromDb(Database sourceDb)
+        {
+            using var tr = sourceDb.TransactionManager.StartTransaction();
+            // получаем ссылку на пространство модели (ModelSpace)
+            // открываем таблицу блоков документа
+            var blkTbl = tr.GetObject(sourceDb.BlockTableId, OpenMode.ForRead) as BlockTable;
+
+            // открываем пространство модели (Model Space) - оно является одной из записей в таблице блоков документа
+            var ms = tr.GetObject(blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
+
+            var acObjIdColl = new ObjectIdCollection();
+
+            // "пробегаем" по всем объектам в пространстве модели
+            foreach (var id in ms)
+            {
+                if (id.IsErased) continue;
+
+                var entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                acObjIdColl.Add(id);
+            }
+            tr.Commit();
+            return acObjIdColl;
+        }
+
+        /// <summary>
+        /// The method replaces fields "CABLEDESIGNATION" and "CABLEBRAND" in fake objects.
+        /// To do this, in the source drawing, the "CABLEDESIGNATION" field of each cable must be numbered starting from 1 (1,2,3,...).
+        /// All fields with a number are replaced with a cable designation in the order in which they appear in the json-file (cables parameter). 
+        /// </summary>
+        /// <param name="attrObjects">List of fake objects with copy of all attributes and link to original entities</param>
+        /// <param name="cables">List of cables from json file</param>
+        private static void ReplaceAttributes(IEnumerable<AcadObjectWithAttributes> attrObjects,
+            IEnumerable<Cable> cables)
+        {
+            Debug.WriteLine("-----------------------------------");
+            
+            foreach (var attrObject in attrObjects)
+            {
+                var attributes = attrObject.Attributes;
+
+                
+                if(!attributes.TryGetValue(_cableDesignation, out var cableIndexStr)) 
+                    continue;
+
+                if(!int.TryParse(cableIndexStr, out var cableIndex))
+                    continue;
+
+                // The numbering of cables in the drawing starts from one and not from zero
+                cableIndex -= 1;
+
+                if ((cableIndex) > cables.Count())
+                {
+                    Application.ShowAlertDialog("Variable \"cableIndex\" out of index. Cables.Count() = " +
+                                                cables.Count() + "; cableIndex = " + cableIndex);
+                    return;
+                }
+
+                attributes[_cableDesignation] = cables.ElementAt(cableIndex).Designation;
+
+                
+                if (!attributes.ContainsKey(_cableBrand))
+                    continue;
+
+                attributes[_cableBrand] = cables.ElementAt(cableIndex).Brand;
+            }
+        }
+    }
+}
