@@ -27,11 +27,9 @@ namespace AutocadTerminalsManager
         {
         }
 
-        [CommandMethod("GetTerminals", CommandFlags.Session)]
+        [CommandMethod("GETTERMINALS", CommandFlags.Session)]
         public void GetTerminals()
         {
-            var appResult = GetTerminalsHelper.StartTerminalsManager(_installApp, _installArgs);
-            if (appResult != true) return;
             var assemblyManager = new AssemblyManager();
             var assemblyList = assemblyManager.GetAssemblies(_jsonPath);
 
@@ -41,6 +39,14 @@ namespace AutocadTerminalsManager
                 var sourceIds = insertDrawing.GetSourceDrawingIds();
                 insertDrawing.PutToTargetDb(sourceIds);
             }
+        }
+
+        [CommandMethod("GETUITERMINALS", CommandFlags.Session)]
+        public void GetUiTerminals()
+        {
+            var appResult = GetTerminalsHelper.StartTerminalsManager(_installApp, _installArgs);
+            if (appResult != true) return;
+            GetTerminals();
         }
     }
 }
