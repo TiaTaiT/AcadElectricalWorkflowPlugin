@@ -104,7 +104,7 @@ namespace AutocadCommands.Services
                             break;
 
                         case "TERM01":
-                            Int32.TryParse(att.TextString, out var numb);
+                            int.TryParse(att.TextString, out var numb);
                             terminal.TerminalNumber = numb;
                             break;
 
@@ -187,7 +187,7 @@ namespace AutocadCommands.Services
                         //att.TextString = "!!!";
                         break;
                     case "TERM01":
-                        Int32.TryParse(att.TextString, out var numb);
+                        int.TryParse(att.TextString, out var numb);
                         terminal.TerminalNumber = numb;
                         break;
                     case "LINKTERM":

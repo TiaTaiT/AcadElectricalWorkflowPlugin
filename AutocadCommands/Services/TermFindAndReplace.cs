@@ -64,7 +64,7 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            PromptSelectionResult res = _ed.GetSelection(opts, filter);
+            var res = _ed.GetSelection(opts, filter);
             if (res.Status != PromptStatus.OK)
                 return;
 

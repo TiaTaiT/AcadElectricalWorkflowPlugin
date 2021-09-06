@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.Runtime;
 using System;
 using System.IO;
+using System.Net.Mime;
 using AutocadCommands.Services;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
@@ -77,6 +78,18 @@ namespace AutocadCommands
 
             var tDescInc = new TermFindAndReplace(ed, doc, db);
             tDescInc.Run();
+        }
+
+        // Add prefix to DESC1 of terminals
+        [CommandMethod("TERMSETATTRIBUTE")]
+        public void SetBlocksAttribute()
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+            var db = doc.Database;
+            var ed = doc.Editor;
+
+            var blockAttributeReplacer = new BlocksAttributeReplacer(ed, doc, db);
+            blockAttributeReplacer.Run();
         }
     }
 }

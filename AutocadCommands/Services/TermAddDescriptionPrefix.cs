@@ -23,6 +23,7 @@ namespace AutocadCommands.Services
 
         public void Run()
         {
+            #region DialogWithUser
             var promptResult = _ed.GetString("\nEnter the prefix character sequence: ");
             if (promptResult.Status != PromptStatus.OK)
                 return;
@@ -40,41 +41,39 @@ namespace AutocadCommands.Services
             {
                 MessageForAdding = "Select block references: "
             };
-
+            #endregion
             //Make the selection   
-            PromptSelectionResult res = _ed.GetSelection(opts, filter);
+            var res = _ed.GetSelection(opts, filter);
             if (res.Status != PromptStatus.OK)
                 return;
             
             var terminals = new List<Terminal>();
 
             // Lock the document
-            using (DocumentLock acLckDoc = _doc.LockDocument())
+            using var acLckDoc = _doc.LockDocument();
+            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+
+            using (var acTrans = _db.TransactionManager.StartTransaction())
             {
-                var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
-
-                using (Transaction acTrans = _db.TransactionManager.StartTransaction())
+                foreach (ObjectId blkId in objIds)
                 {
-                    foreach (ObjectId blkId in objIds)
-                    {
-                        terminals = TerminalsHelper.GetTerminals(acTrans, objIds, false);
-                    }
-
-                    acTrans.Commit();
+                    terminals = TerminalsHelper.GetTerminals(acTrans, objIds, false);
                 }
 
-                using (Transaction acTrans = _db.TransactionManager.StartTransaction())
-                {
-                    IComparer<Terminal> comparer = new TerminalsComparer();
-                    terminals.Sort(comparer);
-                    AddPrefix(terminals, prefix);
-                    TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
-                    acTrans.Commit();
-                }
+                acTrans.Commit();
+            }
+
+            using (var acTrans = _db.TransactionManager.StartTransaction())
+            {
+                IComparer<Terminal> comparer = new TerminalsComparer();
+                terminals.Sort(comparer);
+                AddPrefix(terminals, prefix);
+                TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
+                acTrans.Commit();
             }
         }
 
-        private void AddPrefix(List<Terminal> terminals, string prefix)
+        private void AddPrefix(IEnumerable<Terminal> terminals, string prefix)
         {
             foreach (var terminal in terminals)
             {
