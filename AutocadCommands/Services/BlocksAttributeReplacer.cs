@@ -31,6 +31,8 @@ namespace AutocadCommands.Services
             var attributeName = promptResult.StringResult;
             if (attributeName == null)
                 return;
+            if (attributeName == string.Empty)
+                attributeName = "CABLEDESIGNATION";
 
             promptResult = _ed.GetString("\nEnter value: ");
             if (promptResult.Status != PromptStatus.OK)
