@@ -12,27 +12,24 @@ using System.Linq;
 using AutocadCommands.Helpers;
 using AutocadCommands.Models;
 using AutocadCommands.Utils;
+using CommonHelpers;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 using AttributeCollection = Autodesk.AutoCAD.DatabaseServices.AttributeCollection;
 
 namespace AutocadCommands.Services
 {
-    public class TermColorReplacer
+    public class TermColorReplacer : CommandPrototype
     {
-        private readonly Editor _ed;
-        private readonly Document _doc;
-        private readonly Database _db;
-        private readonly ConfigProvider _configProvider;
 
-        public TermColorReplacer(Editor ed, Document doc, Database db, ConfigProvider configProvider)
+        private readonly ConfigProvider _configProvider;
+        private PromptSelectionResult _selectedBlocks;
+
+        public TermColorReplacer(Document doc, ConfigProvider configProvider) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
             _configProvider = configProvider;
         }
 
-        public void Run()
+        public override bool Init()
         {
             #region Dialog with user
 
@@ -48,16 +45,18 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            var res = _ed.GetSelection(opts, filter);
-            if (res.Status != PromptStatus.OK)
-                return;
-
+            _selectedBlocks = _ed.GetSelection(opts, filter);
+            
+            return _selectedBlocks.Status == PromptStatus.OK;
 
             #endregion Dialog with user
+        }
 
+        public override void Run()
+        {
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
-            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
 
             using var acTrans = _db.TransactionManager.StartTransaction();
             foreach (ObjectId blockId in objIds)
@@ -132,5 +131,7 @@ namespace AutocadCommands.Services
                 oldBlockName.Substring(0, oldBlockName.LastIndexOf("_", StringComparison.Ordinal) + 1);
             return terminalPrefix + color;
         }
+
+        
     }
 }

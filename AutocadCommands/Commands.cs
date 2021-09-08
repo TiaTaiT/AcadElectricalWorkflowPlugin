@@ -17,11 +17,12 @@ namespace AutocadCommands
         public void TerminalsRenumber()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
-            var tRenumber = new TermRenumber(ed, doc, db);
-            tRenumber.Run();
+            var tRenumber = new TermRenumber(doc);
+            if (tRenumber.Init())
+            {
+                tRenumber.Run();
+            }
         }
 
         // Change the color of the terminals according to their purpose. 
@@ -29,19 +30,20 @@ namespace AutocadCommands
         public void TerminalsColorAutoReplace()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
             if (!File.Exists(_configFilePath))
             {
-                ed.WriteMessage("Config file (" + _configFilePath + ") not found.");
+                doc.Editor.WriteMessage("Config file (" + _configFilePath + ") not found.");
                 return;
             }
 
             _configProvider = new ConfigProvider(_configFilePath);
-            var tColorReplacer = new TermColorReplacer(ed, doc, db, _configProvider);
-            tColorReplacer.Run();
-
+            var tColorReplacer = new TermColorReplacer(doc, _configProvider);
+            if (tColorReplacer.Init())
+            {
+                tColorReplacer.Run();
+            }
+            
         }
 
         // Advanced DESC1 increment of terminals
@@ -49,11 +51,13 @@ namespace AutocadCommands
         public void TerminalsDescriptionIncrement()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
-            var tDescInc = new TermDescriptionIncrement(ed, doc, db);
-            tDescInc.Run();
+            var tDescInc = new TermDescriptionIncrement(doc);
+            if (tDescInc.Init())
+            {
+                tDescInc.Run();
+            }
+            
         }
 
         // Add prefix to DESC1 of terminals
@@ -61,35 +65,39 @@ namespace AutocadCommands
         public void TerminalsAddDescriptionPrefix()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
-            var tDescInc = new TermAddDescriptionPrefix(ed, doc, db);
-            tDescInc.Run();
+            var tDescInc = new TermAddDescriptionPrefix(doc);
+            if (tDescInc.Init())
+            {
+                tDescInc.Run();
+            }
+            
         }
 
-        // Add prefix to DESC1 of terminals
+        // Find and replace part of DESC1 of terminals
         [CommandMethod("TERMFINDREPLACE")]
         public void TerminalsFindAndReplace()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
-            var tDescInc = new TermFindAndReplace(ed, doc, db);
-            tDescInc.Run();
+            var tDescInc = new TermFindAndReplace(doc);
+            if (tDescInc.Init())
+            {
+                tDescInc.Run();
+            }
         }
 
-        // Add prefix to DESC1 of terminals
+        // Set attribute value in selected blocks (default: "CABLEDESIGNATION")
         [CommandMethod("TERMSETATTRIBUTE")]
         public void SetBlocksAttribute()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
-            var db = doc.Database;
-            var ed = doc.Editor;
 
-            var blockAttributeReplacer = new BlocksAttributeReplacer(ed, doc, db);
-            blockAttributeReplacer.Run();
+            var blockAttributeReplacer = new BlocksAttributeReplacer(doc);
+            if (blockAttributeReplacer.Init())
+            {
+                blockAttributeReplacer.Run();
+            }
         }
     }
 }

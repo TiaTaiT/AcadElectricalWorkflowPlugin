@@ -6,51 +6,53 @@ using AutocadCommands.Models;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using CommonHelpers;
 
 namespace AutocadCommands.Services
 {
-    public class TermFindAndReplace
+    public class TermFindAndReplace : CommandPrototype
     {
         private readonly Database _db;
         private readonly Document _doc;
         private readonly Editor _ed;
+        private string _searchString;
+        private string replaceString;
+        private string _searchMethod;
+        private PromptSelectionResult _selectedBlocks;
 
-        public TermFindAndReplace(Editor ed, Document doc, Database db)
+        public TermFindAndReplace(Document doc) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
         }
 
-        public void Run()
+        public override bool Init()
         {
             #region Dialog with user
-            
+
             var promptResult = _ed.GetString("\nEnter a sequence of characters to replace: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var searchString = promptResult.StringResult;
-            if (searchString == null)
-                return;
+            _searchString = promptResult.StringResult;
+            if (_searchString == null)
+                return false;
 
             promptResult = _ed.GetString("\nReplaced by: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var replaceString = promptResult.StringResult;
+            replaceString = promptResult.StringResult;
             if (replaceString == null)
-                return;
+                return false;
 
             promptResult = _ed.GetString("\nSearch method [First End] <Any>: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var searchMethod = promptResult.StringResult?.ToUpper();
-            if (searchMethod == null)
-                return;
-            
-            
+            _searchMethod = promptResult.StringResult?.ToUpper();
+            if (_searchMethod == null)
+                return false;
+
+
 
             var filter = new SelectionFilter(
                 new[]
@@ -64,17 +66,21 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            var res = _ed.GetSelection(opts, filter);
-            if (res.Status != PromptStatus.OK)
-                return;
+            _selectedBlocks = _ed.GetSelection(opts, filter);
+            return _selectedBlocks.Status == PromptStatus.OK;
 
             #endregion
+        }
+
+        public override void Run()
+        {
+            
 
             var terminals = new List<Terminal>();
 
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
-            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
 
             using (var acTrans = _db.TransactionManager.StartTransaction())
             {
@@ -88,7 +94,7 @@ namespace AutocadCommands.Services
 
             using (var acTrans = _db.TransactionManager.StartTransaction())
             {
-                FindAndReplace(terminals, searchString, replaceString, searchMethod);
+                FindAndReplace(terminals, _searchString, replaceString, _searchMethod);
                 TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
                 acTrans.Commit();
             }
@@ -99,30 +105,41 @@ namespace AutocadCommands.Services
             foreach (var terminal in terminals)
             {
                 var desc1 = terminal.Description1;
-                if (searchMethod.Equals("F"))
+                switch (searchMethod)
                 {
-                    if (desc1.StartsWith(searchString))
+                    case "F":
                     {
-                        desc1 = replaceString + desc1.Substring(searchString.Length);
+                        if (desc1.StartsWith(searchString))
+                        {
+                            desc1 = replaceString + desc1.Substring(searchString.Length);
+                        }
+
+                        break;
                     }
-                }
-                else if (searchMethod.Equals("E"))
-                {
-                    if (desc1.EndsWith(searchString))
+                    case "E":
                     {
-                        desc1 = desc1.Substring(0, desc1.Length - searchString.Length) + replaceString;
+                        if (desc1.EndsWith(searchString))
+                        {
+                            desc1 = desc1.Substring(0, desc1.Length - searchString.Length) + replaceString;
+                        }
+
+                        break;
                     }
-                }
-                else
-                {
-                    if (desc1.Contains(searchString))
+                    default:
                     {
-                        desc1 = desc1.Replace(searchString, replaceString);
+                        if (desc1.Contains(searchString))
+                        {
+                            desc1 = desc1.Replace(searchString, replaceString);
+                        }
+
+                        break;
                     }
                 }
 
                 terminal.Description1 = desc1;
             }
         }
+
+        
     }
 }

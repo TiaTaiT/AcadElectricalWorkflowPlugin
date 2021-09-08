@@ -5,34 +5,56 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.AutoCAD.Internal;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutocadCommands.Models;
 using AutocadCommands.Utils;
+using CommonHelpers;
+using static System.Int32;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace AutocadCommands.Services
 {
-    public class TermRenumber
+    public class TermRenumber : CommandPrototype
     {
-        private Editor _ed;
-        private Document _doc;
-        private Database _db;
+        private int startNumb;
+        private PromptSelectionResult selectionBlocks;
 
-        public TermRenumber(Editor ed, Document doc, Database db)
+        public TermRenumber(Document doc) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
         }
 
-        public void Run()
+        public override bool Init()
         {
             var promptResult = _ed.GetString("\nEnter the start number: ");
             if (promptResult.Status != PromptStatus.OK)
+                return false;
+            if (!TryParse(promptResult.StringResult, out startNumb))
+                return false;
+
+            var filter = new SelectionFilter(
+                new[]
+                {
+                    new TypedValue(0, "INSERT"), new TypedValue(2, "*T0002_*")
+                });
+
+            var opts = new PromptSelectionOptions
+            {
+                MessageForAdding = "Select block references: "
+            };
+
+            //Make the selection   
+            selectionBlocks = _ed.GetSelection(opts, filter);
+            return selectionBlocks.Status == PromptStatus.OK;
+        }
+
+        public override void Run()
+        {
+            /*
+            var promptResult = _ed.GetString("\nEnter the start number: ");
+            if (promptResult.Status != PromptStatus.OK)
                 return;
-            if (!Int32.TryParse(promptResult.StringResult, out var startNumb))
+            if (!TryParse(promptResult.StringResult, out var startNumb))
                 return;
 
             var filter = new SelectionFilter(
@@ -47,52 +69,49 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            PromptSelectionResult res = _ed.GetSelection(opts, filter);
+            var res = _ed.GetSelection(opts, filter);
             if (res.Status != PromptStatus.OK)
                 return;
-
+            */
 
 
             var terminals = new List<Terminal>();
 
             // Lock the document
-            using (DocumentLock acLckDoc = _doc.LockDocument())
-            {
-                var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            using var acLckDoc = _doc.LockDocument();
+            var objIds = new ObjectIdCollection(selectionBlocks.Value.GetObjectIds());
 
-                using (Transaction acTrans = _db.TransactionManager.StartTransaction())
+            using (var acTrans = _db.TransactionManager.StartTransaction())
+            {
+                foreach (ObjectId blkId in objIds)
                 {
-                    foreach (ObjectId blkId in objIds)
-                    {
-                        /*var newTerminal = GetTerminal(acTrans, blkId);
+                    /*var newTerminal = GetTerminal(acTrans, blkId);
                         terminals.Add(newTerminal);
                         */
-                        terminals = TerminalsHelper.GetTerminals(acTrans, objIds, false);
-                    }
-
-                    acTrans.Commit();
+                    terminals = TerminalsHelper.GetTerminals(acTrans, objIds, false);
                 }
 
-                using (Transaction acTrans = _db.TransactionManager.StartTransaction())
-                {
-                    IComparer<Terminal> comparer = new TerminalsComparer();
-                    terminals.Sort(comparer);
-                    AutoNumb(terminals, startNumb);
-                    TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
-                    acTrans.Commit();
-                }
+                acTrans.Commit();
+            }
+
+            using (var acTrans = _db.TransactionManager.StartTransaction())
+            {
+                IComparer<Terminal> comparer = new TerminalsComparer();
+                terminals.Sort(comparer);
+                AutoNumb(terminals, startNumb);
+                TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
+                acTrans.Commit();
             }
         }
 
-        private void AutoNumb(List<Terminal> terminals, int startNumb)
+        private void AutoNumb(IEnumerable<Terminal> terminals, int startNumb)
         {
-            int counter = startNumb;
+            var counter = startNumb;
             foreach (var terminal in terminals)
             {
                 terminal.TerminalNumber = counter;
                 counter++;
             }
         }
-
     }
 }

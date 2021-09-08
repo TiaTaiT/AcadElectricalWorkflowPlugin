@@ -3,44 +3,44 @@ using AutocadCommands.Helpers;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using CommonHelpers;
 using TransactionManager = Autodesk.AutoCAD.ApplicationServices.TransactionManager;
 
 namespace AutocadCommands.Services
 {
-    public class BlocksAttributeReplacer
+    public class BlocksAttributeReplacer : CommandPrototype
     {
-        private readonly Editor _ed;
-        private readonly Document _doc;
-        private readonly Database _db;
+        private string _attributeName;
+        private string _attributeValue;
+        private PromptSelectionResult _selectedBlocks;
 
-        public BlocksAttributeReplacer(Editor ed, Document doc, Database db)
+
+        public BlocksAttributeReplacer(Document doc) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
         }
 
-        public void Run()
+        public override bool Init()
         {
             #region Dialog with user
 
             var promptResult = _ed.GetString("\nEnter attribute name <CABLEDESIGNATION>: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var attributeName = promptResult.StringResult;
-            if (attributeName == null)
-                return;
-            if (attributeName == string.Empty)
-                attributeName = "CABLEDESIGNATION";
+            _attributeName = promptResult.StringResult;
+            if (_attributeName == null)
+                return false;
+
+            if (_attributeName == string.Empty)
+                _attributeName = "CABLEDESIGNATION";
 
             promptResult = _ed.GetString("\nEnter value: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var attributeValue = promptResult.StringResult;
-            if (attributeValue == null)
-                return;
+            _attributeValue = promptResult.StringResult;
+            if (_attributeValue == null)
+                return false;
 
 
 
@@ -57,21 +57,25 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            var res = _ed.GetSelection(opts, filter);
-            if (res.Status != PromptStatus.OK)
-                return;
+            _selectedBlocks = _ed.GetSelection(opts, filter);
+            return _selectedBlocks.Status == PromptStatus.OK;
 
             #endregion
+        }
+
+        public override void Run()
+        {
+            
 
             var attributesDict = new Dictionary<string, string>()
             {
-                {attributeName, attributeValue}
+                {_attributeName, _attributeValue}
             };
 
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
 
-            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
 
             using var tr = _db.TransactionManager.StartTransaction();
             // Test each entity in the container...
@@ -85,5 +89,7 @@ namespace AutocadCommands.Services
             }
             tr.Commit();
         }
+
+        
     }
 }

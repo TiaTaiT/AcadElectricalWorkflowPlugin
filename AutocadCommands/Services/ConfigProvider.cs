@@ -6,8 +6,8 @@ namespace AutocadCommands.Services
     public class ConfigProvider
     {
         private string[] configLines;
-        private char assignmentOperator = '=';
-        private char separator = ';';
+        private const char AssignmentOperator = '=';
+        private const char Separator = ';';
 
         private string DwgLibraryPath;
 
@@ -26,11 +26,11 @@ namespace AutocadCommands.Services
         public IEnumerable<string> BlackTerminals { get; set; }
         public IEnumerable<string> GreenYellowTerminals { get; set; }
 
-        private void ConfigParse(string[] cfgLines)
+        private void ConfigParse(IEnumerable<string> cfgLines)
         {
             foreach (var line in cfgLines)
             {
-                string[] operands = line.Split(assignmentOperator);
+                var operands = line.Split(AssignmentOperator);
                 if (operands.Length == 2 && operands[0].Length > 0)
                 {
                     switch (operands[0].ToUpper())
@@ -40,35 +40,35 @@ namespace AutocadCommands.Services
                             break;
 
                         case "GREEN-YELLOW":
-                            GreenYellowTerminals = operands[1].Split(separator);
+                            GreenYellowTerminals = operands[1].Split(Separator);
                             break;
 
                         case "BLACK":
-                            BlackTerminals = operands[1].Split(separator);
+                            BlackTerminals = operands[1].Split(Separator);
                             break;
 
                         case "ORANGE":
-                            OrangeTerminals = operands[1].Split(separator);
+                            OrangeTerminals = operands[1].Split(Separator);
                             break;
 
                         case "WHITE":
-                            WhiteTerminals = operands[1].Split(separator);
+                            WhiteTerminals = operands[1].Split(Separator);
                             break;
 
                         case "BLUE":
-                            BlueTerminals = operands[1].Split(separator);
+                            BlueTerminals = operands[1].Split(Separator);
                             break;
 
                         case "RED":
-                            RedTerminals = operands[1].Split(separator);
+                            RedTerminals = operands[1].Split(Separator);
                             break;
 
                         case "YELLOW":
-                            YellowTerminals = operands[1].Split(separator);
+                            YellowTerminals = operands[1].Split(Separator);
                             break;
 
                         case "GREY":
-                            GreyTerminals = operands[1].Split(separator);
+                            GreyTerminals = operands[1].Split(Separator);
                             break;
                     }
                 }

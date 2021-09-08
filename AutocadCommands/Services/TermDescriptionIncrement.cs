@@ -7,39 +7,38 @@ using AutocadCommands.Utils;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using CommonHelpers;
+using static System.Int32;
 
 namespace AutocadCommands.Services
 {
-    public class TermDescriptionIncrement
+    public class TermDescriptionIncrement : CommandPrototype
     {
-        private readonly Editor _ed;
-        private readonly Document _doc;
-        private readonly Database _db;
+        private int _startNumber;
+        private string _startSequence;
+        private PromptSelectionResult _selectedBlocks;
 
-        public TermDescriptionIncrement(Editor ed, Document doc, Database db)
+        public TermDescriptionIncrement(Document doc) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
         }
 
-        public void Run()
+        public override bool Init()
         {
             #region Dialog with user
 
             var promptResult = _ed.GetString("\nEnter the initial character sequence: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var startSequence = promptResult.StringResult;
-            if (startSequence == null)
-                return;
+            _startSequence = promptResult.StringResult;
+            if (_startSequence == null)
+                return false;
 
             promptResult = _ed.GetString("\nEnter the start number: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
-            if (!int.TryParse(promptResult.StringResult, out var startNumber))
-                return;
+                return false;
+            if (!TryParse(promptResult.StringResult, out _startNumber))
+                return false;
 
             var filter = new SelectionFilter(
                 new[]
@@ -53,17 +52,21 @@ namespace AutocadCommands.Services
             };
 
             //Make the selection   
-            var res = _ed.GetSelection(opts, filter);
-            if (res.Status != PromptStatus.OK)
-                return;
+            _selectedBlocks = _ed.GetSelection(opts, filter);
+            return _selectedBlocks.Status == PromptStatus.OK;
 
             #endregion
+        }
+
+        public override void Run()
+        {
+            
             
             var terminals = new List<Terminal>();
 
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
-            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
 
             using (var acTrans = _db.TransactionManager.StartTransaction())
             {
@@ -79,7 +82,7 @@ namespace AutocadCommands.Services
             {
                 IComparer<Terminal> comparer = new TerminalsComparer();
                 terminals.Sort(comparer);
-                AutoNumb(terminals, startSequence, startNumber);
+                AutoNumb(terminals, _startSequence, _startNumber);
                 TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
                 acTrans.Commit();
             }
@@ -144,20 +147,5 @@ namespace AutocadCommands.Services
 
             return numbStr.ToString();
         }
-        /*
-        private int GetInt(string str)
-        {
-            var digits = new string(str.Where(char.IsDigit).ToArray()); //Get all digits from str
-
-            if (int.TryParse(string.Join("", digits), out var intNum))
-            {
-                return intNum;
-            }
-            else
-            {
-                return -1;
-            }
-        }
-        */
     }
 }

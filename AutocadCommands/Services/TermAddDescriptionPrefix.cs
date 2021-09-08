@@ -5,53 +5,54 @@ using AutocadCommands.Utils;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using CommonHelpers;
 
 namespace AutocadCommands.Services
 {
-    public class TermAddDescriptionPrefix
+    public class TermAddDescriptionPrefix : CommandPrototype
     {
-        private readonly Editor _ed;
-        private readonly Document _doc;
-        private readonly Database _db;
+        private PromptSelectionResult _selectedBlocks;
+        private string _prefix;
 
-        public TermAddDescriptionPrefix(Editor ed, Document doc, Database db)
+        public TermAddDescriptionPrefix(Document doc) : base(doc)
         {
-            _ed = ed;
-            _doc = doc;
-            _db = db;
         }
 
-        public void Run()
+        public override bool Init()
         {
             #region DialogWithUser
             var promptResult = _ed.GetString("\nEnter the prefix character sequence: ");
             if (promptResult.Status != PromptStatus.OK)
-                return;
+                return false;
 
-            var prefix = promptResult.StringResult;
-            if (prefix == null)
-                return;
+            _prefix = promptResult.StringResult;
+            if (_prefix == null)
+                return false;
 
             var filter = new SelectionFilter(new[]
-                {
-                    new TypedValue(0, "INSERT"), new TypedValue(2, "*T0002_*")
-                });
+            {
+                new TypedValue(0, "INSERT"), new TypedValue(2, "*T0002_*")
+            });
 
             var opts = new PromptSelectionOptions
             {
                 MessageForAdding = "Select block references: "
             };
-            #endregion
+
             //Make the selection   
-            var res = _ed.GetSelection(opts, filter);
-            if (res.Status != PromptStatus.OK)
-                return;
-            
+            _selectedBlocks = _ed.GetSelection(opts, filter);
+            return _selectedBlocks.Status == PromptStatus.OK;
+
+            #endregion
+        }
+
+        public override void Run()
+        {
             var terminals = new List<Terminal>();
 
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
-            var objIds = new ObjectIdCollection(res.Value.GetObjectIds());
+            var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
 
             using (var acTrans = _db.TransactionManager.StartTransaction())
             {
@@ -67,7 +68,7 @@ namespace AutocadCommands.Services
             {
                 IComparer<Terminal> comparer = new TerminalsComparer();
                 terminals.Sort(comparer);
-                AddPrefix(terminals, prefix);
+                AddPrefix(terminals, _prefix);
                 TerminalsHelper.SetTerminals(acTrans, objIds, terminals);
                 acTrans.Commit();
             }
@@ -80,5 +81,6 @@ namespace AutocadCommands.Services
                 terminal.Description1 = prefix + terminal.Description1;
             }
         }
+
     }
 }
