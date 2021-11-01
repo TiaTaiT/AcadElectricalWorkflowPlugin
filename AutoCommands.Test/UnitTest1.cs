@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using AutocadTerminalsManager;
+using AutocadCommands.Services;
 
 namespace AutoCommands.Test
 {
@@ -23,6 +24,19 @@ namespace AutoCommands.Test
             Assert.IsNotNull(cableList);
         }
 
-        
+        [TestMethod]
+        public void CheckFindReplaceWithIncrement()
+        {
+            // Arrange
+            var attrValue = "AS23";
+            var searchString = "AS";
+            var searchMethod = "F";
+            var counter = 1;
+            // Act
+
+            //var result = BlocksAttributeIncrementer.FindReplaceWithIncrement(attrValue, searchString, searchMethod, counter);
+            // Assert
+            //Assert.AreEqual();
+        }
     }
 }

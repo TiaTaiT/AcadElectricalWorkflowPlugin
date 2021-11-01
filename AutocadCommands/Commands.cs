@@ -60,6 +60,20 @@ namespace AutocadCommands
             
         }
 
+        // Advanced blocks increment
+        [CommandMethod("BINCREMENT")]
+        public void BlocksAttributeIncrement()
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+
+            var tBlocksInc = new BlocksAttributeIncrementer(doc);
+            if (tBlocksInc.Init())
+            {
+                tBlocksInc.Run();
+            }
+
+        }
+
         // Add prefix to DESC1 of terminals
         [CommandMethod("TERMADDPREFIX")]
         public void TerminalsAddDescriptionPrefix()

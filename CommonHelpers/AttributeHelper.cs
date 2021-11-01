@@ -31,6 +31,23 @@ namespace AutocadCommands.Helpers
             return "";
         }
 
+        public static string GetAttributeValueFromBlock(Transaction tr, ObjectId objectId, string tagName)
+        {
+            var attrColl = GetAttributeCollection(tr, objectId);
+
+            return GetAttributeValue(tr, attrColl, tagName);
+        }
+
+        private static AttributeCollection GetAttributeCollection(Transaction tr, ObjectId objectId)
+        {
+            var br = tr.GetObject(objectId, OpenMode.ForRead) as BlockReference;
+
+            var bd = (BlockTableRecord)tr.GetObject(br.BlockTableRecord, OpenMode.ForRead);
+
+            var attrColl = br.AttributeCollection;
+            return attrColl;
+        }
+
         /// <summary>
         /// Get attributes from AttributeCollection
         /// </summary>
@@ -83,6 +100,13 @@ namespace AutocadCommands.Helpers
             }
 
             return result;
+        }
+
+        public static bool SetBlockAttributes(Transaction tr, ObjectId objectId, Dictionary<string, string> attributes)
+        {
+            var attrColl = GetAttributeCollection(tr, objectId);
+
+            return(SetAttributes(tr, attrColl, attributes));
         }
 
         /// <summary>

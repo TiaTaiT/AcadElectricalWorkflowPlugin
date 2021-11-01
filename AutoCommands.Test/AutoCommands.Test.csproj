@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.props')" />
+  <Import Project="..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -40,11 +40,63 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AcCoreMgd, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.Core.24.1.51000\lib\net47\AcCoreMgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcCui, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcCui.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcDbMgd, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.Model.24.1.51000\lib\net47\AcDbMgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="acdbmgdbrep, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.Model.24.1.51000\lib\net47\acdbmgdbrep.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcDx, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcDx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcMgd, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcMgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcMr, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcMr.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcSeamless, Version=24.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcSeamless.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcTcMgd, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcTcMgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AcWindows, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AcWindows.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AdUIMgd, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AdUIMgd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AdUiPalettes, Version=24.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AdUiPalettes.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="AdWindows, Version=3.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCAD.NET.24.1.51000\lib\net47\AdWindows.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.2.1.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
+      <HintPath>..\packages\MSTest.TestFramework.2.2.7\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\MSTest.TestFramework.2.1.2\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
+      <HintPath>..\packages\MSTest.TestFramework.2.2.7\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -65,6 +117,10 @@
       <Project>{CC14970F-73C3-4560-AF28-B713B561D6E8}</Project>
       <Name>AutocadTerminalsManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj">
+      <Project>{F9908F2A-A3F8-49AD-927D-7D85A471FE63}</Project>
+      <Name>CommonHelpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -72,8 +128,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.targets'))" />
   </Target>
-  <Import Project="..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.1.2\build\net45\MSTest.TestAdapter.targets')" />
+  <Import Project="..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\packages\MSTest.TestAdapter.2.2.7\build\net45\MSTest.TestAdapter.targets')" />
 </Project>
