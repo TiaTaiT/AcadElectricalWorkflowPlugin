@@ -11,7 +11,6 @@ using AutocadCommands.Models;
 using AutocadCommands.Utils;
 using CommonHelpers;
 using static System.Int32;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace AutocadCommands.Services
 {

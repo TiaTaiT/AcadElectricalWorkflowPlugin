@@ -13,7 +13,6 @@ using AutocadCommands.Helpers;
 using AutocadCommands.Models;
 using AutocadCommands.Utils;
 using CommonHelpers;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 using AttributeCollection = Autodesk.AutoCAD.DatabaseServices.AttributeCollection;
 
 namespace AutocadCommands.Services

@@ -1,9 +1,9 @@
 ﻿using Autodesk.AutoCAD.Runtime;
 using System;
 using System.IO;
-using System.Net.Mime;
 using AutocadCommands.Services;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
+using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.ApplicationServices.Core;
 
 namespace AutocadCommands
 {
@@ -111,6 +111,19 @@ namespace AutocadCommands
             if (blockAttributeReplacer.Init())
             {
                 blockAttributeReplacer.Run();
+            }
+        }
+
+        // Link all wires
+        [CommandMethod("LINKWIRES")]
+        public void LinkWires()
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+
+            var wiresLinker = new WiresLinker(doc);
+            if (wiresLinker.Init())
+            {
+                wiresLinker.Run();
             }
         }
     }
