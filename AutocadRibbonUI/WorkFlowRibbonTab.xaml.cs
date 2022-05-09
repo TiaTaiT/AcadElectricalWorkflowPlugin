@@ -1,5 +1,5 @@
 ﻿using Autodesk.Windows;
-
+using System;
 
 namespace AutocadRibbonUI
 {
@@ -10,6 +10,7 @@ namespace AutocadRibbonUI
     {
         public WorkFlowRibbonTab()
         {
+            Id = Guid.NewGuid().ToString();
             InitializeComponent();
         }
     }

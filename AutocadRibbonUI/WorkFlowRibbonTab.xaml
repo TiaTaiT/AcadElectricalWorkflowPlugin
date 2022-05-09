@@ -5,26 +5,98 @@
     xmlns:windows="clr-namespace:Autodesk.Windows;assembly=AdWindows"
     Title="Workflow">
 
-    <windows:RibbonPanel>
-        <windows:RibbonPanelSource Title="My panel" >
+    <windows:RibbonPanel >
+        <windows:RibbonPanelSource  Title="Terminals" >
 
-            <windows:RibbonButton
-                Id="FirstButton"
-                Text="My buttons1"
-                ShowText="True"
-                Size="Standard"
-                Image="Bee.png"
-                CommandParameter="TERMCOUNT">
-            </windows:RibbonButton>
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_1" >
+                <windows:RibbonButton
+                    Id="FirstButton"
+                    Text="Count"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMCOUNT">
+                </windows:RibbonButton>
 
-            <windows:RibbonButton
-                Id="SecondButton"
-                Text="My buttons2"
-                ShowText="True"
-                Size="Standard"
-                Image="Bee.png"
-                CommandParameter="TERMINCREMENT">
-            </windows:RibbonButton>
+                <windows:RibbonButton
+                    Id="SecondButton"
+                    Text="Color"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMCOLOR">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="ThirdButton"
+                    Text="Inc"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMINCREMENT">
+                </windows:RibbonButton>
+
+            </windows:RibbonRowPanel>
+            
+            <windows:RibbonRowBreak/>
+            
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_2">
+               
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="Add"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMADDPREFIX">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="Find"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMFINDREPLACE">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="SetAtt"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMSETATTRIBUTE">
+                </windows:RibbonButton>
+
+            </windows:RibbonRowPanel>
+
+        </windows:RibbonPanelSource>
+    </windows:RibbonPanel>
+
+    <windows:RibbonPanel >
+        <windows:RibbonPanelSource  Title="My panel2" >
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="FifthButton"
+                    Text="Link"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKWIRES">
+                </windows:RibbonButton>
+
+                
+            </windows:RibbonRowPanel>
+
         </windows:RibbonPanelSource>
     </windows:RibbonPanel>
 </windows:RibbonTab>

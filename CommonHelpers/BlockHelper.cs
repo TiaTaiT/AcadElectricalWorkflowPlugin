@@ -45,9 +45,10 @@ namespace AutocadCommands.Services
             {
                 try
                 {
+
                     // search for a dwg file named 'blockName' in AutoCAD search paths
                     var filename = HostApplicationServices.Current.FindFile(blockName + ".dwg", db, FindFileHint.Default);
-                        
+
                     // add the dwg model space as 'blockName' block definition in the current database block table
                     using var sourceDb = new Database(false, true);
                     sourceDb.ReadDwgFile(filename, FileOpenMode.OpenForReadAndAllShare, true, "");
@@ -83,7 +84,7 @@ namespace AutocadCommands.Services
                     //This is a non-constant AttributeDefinition
                     //Create a new AttributeReference
                     using AttributeReference attRef = new AttributeReference();
-                            
+
                     attRef.SetAttributeFromBlock(attDef, br.BlockTransform);
                     attRef.TextString = "Hello World";
                     //Add the AttributeReference to the BlockReference

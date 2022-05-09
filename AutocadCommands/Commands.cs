@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 
 namespace AutocadCommands
@@ -115,7 +114,7 @@ namespace AutocadCommands
         }
 
         // Link all wires
-        [CommandMethod("LINKWIRES")]
+        [CommandMethod("LINKWIRES", CommandFlags.Session | CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
         public void LinkWires()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
@@ -126,5 +125,7 @@ namespace AutocadCommands
                 wiresLinker.Run();
             }
         }
+
+        
     }
 }

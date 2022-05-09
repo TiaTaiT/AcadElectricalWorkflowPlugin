@@ -19,7 +19,7 @@ namespace AutocadRibbonUI
         {
             if (parameter is RibbonButton button1)
             {
-                var doc = Application.DocumentManager.CurrentDocument;
+                //var doc = Application.DocumentManager.CurrentDocument;
                 var cmdString = button1.CommandParameter + " ";
                 if (Application.DocumentManager != null)
                 { 
@@ -29,8 +29,6 @@ namespace AutocadRibbonUI
                         false,
                         true);
                 }
-                //MessageBox.Show(button1.CommandParameter.ToString(), "Click Me");
-
             }
             
 
