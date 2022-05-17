@@ -26,18 +26,25 @@ namespace AutocadCommands.Services
         {
             #region Dialog with user
 
-            var promptResult = _ed.GetString("\nEnter the initial character sequence: ");
+            var promptResult = _ed.GetString("\nEnter the initial character sequence <ШС>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
 
+            // If user pass input and press enter
             _startSequence = promptResult.StringResult;
-            if (_startSequence == null)
-                return false;
+            if (string.IsNullOrEmpty(_startSequence))
+                _startSequence = "ШС";
 
-            promptResult = _ed.GetString("\nEnter the start number: ");
+            promptResult = _ed.GetString("\nEnter the start number <1>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
-            if (!TryParse(promptResult.StringResult, out _startNumber))
+
+            // If user pass input and press enter
+            var _startNumberStr = promptResult.StringResult;
+            if (string.IsNullOrEmpty(_startNumberStr))
+                _startNumberStr = "1";
+
+            if (!TryParse(_startNumberStr, out _startNumber))
                 return false;
 
             var filter = new SelectionFilter(
@@ -60,8 +67,6 @@ namespace AutocadCommands.Services
 
         public override void Run()
         {
-            
-            
             var terminals = new List<Terminal>();
 
             // Lock the document

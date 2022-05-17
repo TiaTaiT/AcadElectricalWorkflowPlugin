@@ -25,10 +25,12 @@ namespace AutocadCommands.Services
 
         public override bool Init()
         {
-            var promptResult = _ed.GetString("\nEnter the start number: ");
+            var promptResult = _ed.GetString("\nEnter the start number <1>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
-            if (!TryParse(promptResult.StringResult, out startNumb))
+            if(string.IsNullOrEmpty(promptResult.StringResult))
+                startNumb = 1;
+            else if (!TryParse(promptResult.StringResult, out startNumb))
                 return false;
 
             var filter = new SelectionFilter(

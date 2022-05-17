@@ -11,6 +11,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using Autodesk.AutoCAD.Runtime;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace AutocadTerminalsManager.Helpers
@@ -26,6 +27,7 @@ namespace AutocadTerminalsManager.Helpers
         private Database _currentDb;
         private Editor _editor;
         private Database _sourceDb;
+        private bool _orthoMode;
 
         public InsertDrawing(string sourceFile, IEnumerable<Cable> cables)
         {
@@ -37,6 +39,9 @@ namespace AutocadTerminalsManager.Helpers
             _currentDb = _doc.Database;
             _editor = Application.DocumentManager.MdiActiveDocument.Editor;
             _sourceDb = new Database(false, true);
+
+            _orthoMode = _doc.Database.Orthomode;
+            
         }
 
         /// <summary>
@@ -54,7 +59,7 @@ namespace AutocadTerminalsManager.Helpers
                 
                 return acObjIdColl;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 _editor.WriteMessage("\nError during copy: " + ex.Message);
                 return null;
@@ -67,6 +72,8 @@ namespace AutocadTerminalsManager.Helpers
         {
             // Lock the new document
             using var lockDocument = _doc.LockDocument();
+
+            _doc.Database.Orthomode = false;
 
             // Start a transaction in the new database
             using var acTrans = _currentDb.TransactionManager.StartTransaction();
@@ -83,14 +90,95 @@ namespace AutocadTerminalsManager.Helpers
 
             // Clone the objects to the new database
             var acIdMap = new IdMapping();
-            _currentDb.WblockCloneObjects(objIdColl, acBlkTblRecNewDoc.ObjectId, acIdMap,
-                DuplicateRecordCloning.Ignore, false);
             
+
+            var destOwnerId = acBlkTblRecNewDoc.ObjectId;
+
+            _sourceDb.WblockCloneObjects(objIdColl, destOwnerId, acIdMap, DuplicateRecordCloning.Ignore, false);
+            
+            /*
+            using (Transaction currDbTr = _currentDb.TransactionManager.StartTransaction())
+            {
+                
+                foreach(ObjectId sourceBlockId in objIdColl)
+                {
+                    string blockName = GetBlockName(_sourceDb, sourceBlockId);
+                    ObjectId targetBlockId = ObjectId.Null;
+                    BlockTable b = (BlockTable)acTrans.GetObject(_currentDb.BlockTableId, OpenMode.ForRead);
+                    if (b.Has(blockName))
+                    {
+                        targetBlockId = b[blockName];
+                    }
+
+                    SetBlockDrawOrder(sourceBlockId, targetBlockId, acIdMap);
+                }
+
+                currDbTr.Commit();
+
+            };
+               
+            */
+
             if (!StartJig(acIdMap)) return;
 
             acTrans.Commit();
+
+            _sourceDb.Dispose();
+            _doc.Database.Orthomode = _orthoMode;
             // Unlock the document
         }
+
+        private string GetBlockName(Database sourceDb, ObjectId id)
+        {
+            var blockName = "";
+            using var tr = sourceDb.TransactionManager.StartTransaction();
+            var sourceBtr = tr.GetObject(id, OpenMode.ForRead);
+            if(sourceBtr != null && sourceBtr is BlockTableRecord)
+            {
+                blockName = ((BlockTableRecord)sourceBtr).Name;
+            }
+            return blockName;
+        }
+
+        public void SetBlockDrawOrder(ObjectId sourceBlockId, ObjectId targetBlockId, IdMapping iMap)
+        {
+            Database db = HostApplicationServices.WorkingDatabase;
+            using (Transaction t = db.TransactionManager.StartTransaction())
+            {
+                var sourceBTR = (BlockTableRecord)t.GetObject(sourceBlockId, OpenMode.ForRead);
+                var dotSource = (DrawOrderTable)t.GetObject(sourceBTR.DrawOrderTableId, OpenMode.ForRead, true);
+
+                ObjectIdCollection srcDotIds = new ObjectIdCollection();
+                srcDotIds = dotSource.GetFullDrawOrder(0);
+
+                var targetBTR = (BlockTableRecord)t.GetObject(targetBlockId, OpenMode.ForRead);
+                var dotTarget = (DrawOrderTable)t.GetObject(targetBTR.DrawOrderTableId, OpenMode.ForWrite, true);
+
+                ObjectIdCollection trgDotIds = new ObjectIdCollection();
+
+                foreach (ObjectId oId in srcDotIds)
+                {
+                    if (iMap.Contains(oId))
+                    {
+                        IdPair idPair = iMap.Lookup(oId);
+                        trgDotIds.Add(idPair.Value);
+                    }
+                }
+                dotTarget.SetRelativeDrawOrder(trgDotIds);
+                t.Commit();
+            }
+        }
+
+        private ObjectId GetTargetId(BlockTable targetBt, string blockName)
+        {
+            if (targetBt.Has(blockName))
+            {
+                return targetBt[blockName];
+            }
+            return new ObjectId();
+        }
+
+        
 
         /// <summary>
         /// Prepare and start jigging
@@ -162,19 +250,52 @@ namespace AutocadTerminalsManager.Helpers
             // открываем пространство модели (Model Space) - оно является одной из записей в таблице блоков документа
             var ms = tr.GetObject(blkTbl[BlockTableRecord.ModelSpace], OpenMode.ForWrite) as BlockTableRecord;
 
+            //get the draw order table of the block
+
+            var drawOrder = (DrawOrderTable)tr.GetObject(ms.DrawOrderTableId, OpenMode.ForWrite);
+
+            var orderingColl = drawOrder.GetFullDrawOrder(0);
+
+            //_drawOrder.SetRelativeDrawOrder(ms1);
+
             var acObjIdColl = new ObjectIdCollection();
 
             // "пробегаем" по всем объектам в пространстве модели
+            /*
             foreach (var id in ms)
             {
                 if (id.IsErased) continue;
-
-                var entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
                 acObjIdColl.Add(id);
             }
+            */
+            foreach (ObjectId id in orderingColl)
+            {
+                if (id.IsErased) continue;
+                var obj = tr.GetObject(id, OpenMode.ForWrite);
+                if(obj.GetType() == typeof(BlockReference))
+                {
+                    var blockRef = (BlockReference)obj;
+                    var btr = (BlockTableRecord)tr.GetObject(blockRef.BlockTableRecord, OpenMode.ForRead);
+                    
+                    var dot = (DrawOrderTable)tr.GetObject(btr.DrawOrderTableId, OpenMode.ForWrite);
+                    _editor.WriteMessage("\n" + btr.Name);
+                    var oColl = dot.GetFullDrawOrder(0);
+                    
+                    foreach(var o in btr)
+                    {
+                        
+                        _editor.WriteMessage("\n" + o.ToString());
+                    }
+                        
+                }
+                acObjIdColl.Add(id);
+            }
+            
             tr.Commit();
             return acObjIdColl;
         }
+
+        
 
         /// <summary>
         /// The method replaces fields "CABLEDESIGNATION" and "CABLEBRAND" in fake objects.

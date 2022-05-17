@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="AcadCommand.cs" />
     <Compile Include="AssemblyManager.cs" />
+    <Compile Include="Helpers\DrawOrderHelper.cs" />
     <Compile Include="Helpers\InsertDrawing.cs" />
     <Compile Include="Model\Assembly.cs" />
     <Compile Include="Model\AttrInfo.cs" />
