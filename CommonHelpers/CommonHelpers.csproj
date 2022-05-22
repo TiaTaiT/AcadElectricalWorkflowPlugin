@@ -95,11 +95,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockUtils.cs" />
     <Compile Include="CommandPrototype.cs" />
     <Compile Include="AttributeHelper.cs" />
     <Compile Include="AttributesHelper2.cs" />
     <Compile Include="BlockHelper.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Model\AcadObjectWithAttributes.cs" />
+    <Compile Include="Model\FakeAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

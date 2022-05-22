@@ -2,6 +2,7 @@
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
+using System.Collections;
 using Exception = System.Exception;
 
 namespace AutocadCommands.Services
@@ -14,7 +15,7 @@ namespace AutocadCommands.Services
 
             using var resBuf = new ResultBuffer
             {
-                new TypedValue((int) LispDataType.Text, "c:wd_insym2"), // Lisp fucntion to call
+                new TypedValue((int) LispDataType.Text, "(c:wd_insym2)"), // Lisp fucntion to call
                 new TypedValue((int) LispDataType.Text, blockName),// Block name
                 new TypedValue((int) LispDataType.Point3d, insPt),// Insert point
                 new TypedValue((int) LispDataType.Nil),// Scale
@@ -77,19 +78,24 @@ namespace AutocadCommands.Services
                 // AttributeDefinitions
                 foreach (var id in blockDef)
                 {
-                    DBObject obj = id.GetObject(OpenMode.ForRead);
+                    var obj = tr.GetObject(id, OpenMode.ForRead);
+                    var ar = obj as AttributeReference;
+                    if (ar == null || ar.IsConstant) continue;
+
+                    /*DBObject obj = id.GetObject(OpenMode.ForRead);
                     AttributeDefinition attDef = obj as AttributeDefinition;
                     if ((attDef == null) || (attDef.Constant)) continue;
 
                     //This is a non-constant AttributeDefinition
                     //Create a new AttributeReference
-                    using AttributeReference attRef = new AttributeReference();
+                    using AttributeReference attRef = new();
 
                     attRef.SetAttributeFromBlock(attDef, br.BlockTransform);
                     attRef.TextString = "Hello World";
                     //Add the AttributeReference to the BlockReference
                     br.AttributeCollection.AppendAttribute(attRef);
                     tr.AddNewlyCreatedDBObject(attRef, true);
+                    */
                 }
                 /*
                         space.AppendEntity(br);
@@ -99,6 +105,8 @@ namespace AutocadCommands.Services
 
             tr.Commit();
         }
+
+        
 
         private static void ReplaceBlock(Database db, Transaction tr, string oldName, string newName)
         {

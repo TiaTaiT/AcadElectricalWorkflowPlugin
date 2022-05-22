@@ -114,7 +114,7 @@ namespace AutocadCommands
         }
 
         // Link all wires
-        [CommandMethod("LINKWIRES", CommandFlags.Session | CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
+        [CommandMethod("LINKWIRES", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
         public void LinkWires()
         {
             var doc = Application.DocumentManager.MdiActiveDocument;

@@ -9,7 +9,7 @@ using static AutocadCommands.Models.IAutocadDirectionEnum;
 
 namespace AutocadCommands.Models
 {
-    internal class Wire
+    public class Wire
     {
         public Entity WireEntity { get; set; }
 

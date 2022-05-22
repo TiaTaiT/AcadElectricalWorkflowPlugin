@@ -69,6 +69,7 @@
     <Compile Include="Helpers\TerminalsHelper.cs" />
     <Compile Include="Models\IAutocadDirectionEnum.cs" />
     <Compile Include="Models\MultiWire.cs" />
+    <Compile Include="Models\OrderingPairWires.cs" />
     <Compile Include="Models\Terminal.cs" />
     <Compile Include="Models\Wire.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
