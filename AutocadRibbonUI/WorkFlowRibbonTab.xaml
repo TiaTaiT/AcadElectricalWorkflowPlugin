@@ -91,7 +91,7 @@
                     Size="Standard"
                     Image="Bee.png"
                     Orientation="Vertical"
-                    CommandParameter="LINKWIRES">
+                    CommandParameter="LINKMULTIWIRES">
                 </windows:RibbonButton>
 
                 
