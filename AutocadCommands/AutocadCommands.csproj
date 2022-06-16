@@ -67,20 +67,24 @@
   <ItemGroup>
     <Compile Include="Commands.cs" />
     <Compile Include="Helpers\TerminalsHelper.cs" />
+    <Compile Include="Models\FullWire.cs" />
     <Compile Include="Models\IAutocadDirectionEnum.cs" />
     <Compile Include="Models\MultiWire.cs" />
     <Compile Include="Models\OrderingPairWires.cs" />
     <Compile Include="Models\Terminal.cs" />
     <Compile Include="Models\Wire.cs" />
+    <Compile Include="Models\WiresBus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BlocksAttributeIncrementer.cs" />
     <Compile Include="Services\BlocksAttributeReplacer.cs" />
     <Compile Include="Services\ConfigProvider.cs" />
+    <Compile Include="Services\LinkerHelper.cs" />
     <Compile Include="Services\TermAddDescriptionPrefix.cs" />
     <Compile Include="Services\TermColorReplacer.cs" />
     <Compile Include="Services\TermDescriptionIncrement.cs" />
     <Compile Include="Services\TermFindAndReplace.cs" />
     <Compile Include="Services\TermRenumber.cs" />
+    <Compile Include="Services\MultiWiresLinker.cs" />
     <Compile Include="Services\WiresLinker.cs" />
     <Compile Include="Utils\BlocksComparer.cs" />
     <Compile Include="Utils\TerminalsComparer.cs" />

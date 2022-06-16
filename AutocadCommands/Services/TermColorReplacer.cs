@@ -1,19 +1,10 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.Internal;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using AutocadCommands.Helpers;
-using AutocadCommands.Models;
-using AutocadCommands.Utils;
 using CommonHelpers;
-using AttributeCollection = Autodesk.AutoCAD.DatabaseServices.AttributeCollection;
 
 namespace AutocadCommands.Services
 {
@@ -70,7 +61,7 @@ namespace AutocadCommands.Services
                 btr.Dispose();
 
                 // It is necessary to select the brand(color) of the terminal in accordance with the "DESC1" attribute 
-                var desc1 = AttributeHelper.GetAttributeValue(acTrans, attCol, "DESC1");
+                var desc1 = AttributeHelper.GetAttributeValue(attCol, "DESC1");
                 var colorName = GetNameByPurpose(blockName, desc1);
                 // If the color of the terminal matches its purpose, skip it. 
                 if (blockName.Equals(colorName)) continue;

@@ -12,7 +12,7 @@ namespace CommonHelpers
     public static class BlockUtils
     {
 
-        public static void InsertBlockFormFile(Database db, string blockName, Point3d point3D, IEnumerable<FakeAttribute> attributes)
+        public static void InsertBlockFormFile(Database db, string blockName, Point3d point3D, IEnumerable<FakeAttribute> attributes, string layer)
         {
             using (Transaction tr = db.TransactionManager.StartTransaction())
             {
@@ -26,15 +26,17 @@ namespace CommonHelpers
                 foreach (ObjectId id in br1)
                 {
                     var ent = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                    /*
                     if (ent.Layer == "0")
                     {
                         ent.UpgradeOpen();
-                        ent.Layer = "WIREREF";
+                        ent.Layer = layer;
                     }
+                    */
                 }
 
 
-                var br = curSpace.InsertBlockReference(blockName, point3D, attributes);
+                var br = curSpace.InsertBlockReference(blockName, point3D, attributes, layer);
                 //wire.PointConnectedToMultiWire
                 //_db.TransactionManager.QueueForGraphicsFlush();
 
@@ -77,7 +79,7 @@ namespace CommonHelpers
             }
         }
 
-        public static BlockReference InsertBlockReference(this BlockTableRecord target, string blkName, Point3d insertPoint, IEnumerable<FakeAttribute> attributes)
+        public static BlockReference InsertBlockReference(this BlockTableRecord target, string blkName, Point3d insertPoint, IEnumerable<FakeAttribute> attributes, string layer)
         {
             if (target == null)
                 throw new ArgumentNullException("target");
@@ -95,8 +97,10 @@ namespace CommonHelpers
             if (btrId != ObjectId.Null)
             {
                 br = new BlockReference(insertPoint, btrId);
+                br.Layer = layer;
                 //var btr = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
                 target.AppendEntity(br);
+
                 tr.AddNewlyCreatedDBObject(br, true);
 
                 br.AddAttributeReferences(attributes);
@@ -136,13 +140,6 @@ namespace CommonHelpers
                         attRef.Layer = attribute.Layer;
                     }
                 }
-                /*
-                if (attValues != null && attValues.ContainsKey(attDef.Tag.ToUpper()))
-                {
-                    attRef.TextString = attValues[attDef.Tag.ToUpper()];
-                    attRef.Layer = "WIREREF";
-                }
-                */
                 target.AttributeCollection.AppendAttribute(attRef);
                 tr.AddNewlyCreatedDBObject(attRef, true);
             }

@@ -35,7 +35,7 @@ namespace AutocadCommands.Services
 
                 var attCol = blockRef.AttributeCollection;
 
-                var guid = AttributeHelper.GetAttributeValue(tr, attCol, "LINKTERM");
+                var guid = AttributeHelper.GetAttributeValue(attCol, "LINKTERM");
                 var terminal = FindTerminal(terminals, guid);
 
                 var attrDict = GetAttributesDictionary(terminal);

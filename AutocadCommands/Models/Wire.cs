@@ -17,6 +17,9 @@ namespace AutocadCommands.Models
 
         public Point3d PointConnectedToMultiWire { get; set; }
 
+        // Source/Destination Wire Signal Symbol
+        public Entity SignalSymbol { get; set; }
+
         public Point3d TextCoordinate 
         { 
             get
@@ -25,23 +28,14 @@ namespace AutocadCommands.Models
                 var y = PointConnectedToMultiWire.Y;
                 var space = 1.0;
 
-                switch (Direction)
+                return Direction switch
                 {
-                    case Direction.Above:
-                        return new Point3d(x - space, y + space, 0);
-
-                    case Direction.Left:
-                        return new Point3d(x - space, y + space, 0);
-
-                    case Direction.Below:
-                        return new Point3d(x - space, y - space, 0);
-
-                    case Direction.Right:
-                        return new Point3d(x + space, y + space, 0);
-
-                    default: return new Point3d(x - space, y + space, 0);
-
-                }
+                    Direction.Above => new Point3d(x - space, y + space, 0),
+                    Direction.Left => new Point3d(x - space, y + space, 0),
+                    Direction.Below => new Point3d(x - space, y - space, 0),
+                    Direction.Right => new Point3d(x + space, y + space, 0),
+                    _ => new Point3d(x - space, y + space, 0),
+                };
             } 
              
         }

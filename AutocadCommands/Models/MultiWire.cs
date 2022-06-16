@@ -16,7 +16,7 @@ namespace AutocadCommands.Models
 
         public List<Wire> ConnectedWires { get; set; }
 
-        public IEnumerable<(Wire sourceWire, Wire destinationWire)> GetSourceDestinationWirePairs()
+        public IEnumerable<FullWire> GetSourceDestinationWirePairs()
         {
             ConnectedWires.Sort(new OrderingPairWires());
 
@@ -38,7 +38,12 @@ namespace AutocadCommands.Models
 
             for (var i = 0; i < maxCount; i++)
             {
-                yield return (sourceWires[i], destWires[i]);
+                yield return 
+                    new FullWire()
+                    {
+                        SourceWire = sourceWires[i],
+                        DestinationWire = destWires[i]
+                    };
             }
         }
 

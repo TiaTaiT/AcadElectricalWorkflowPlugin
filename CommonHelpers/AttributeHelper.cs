@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using AutocadTerminalsManager.Model;
-using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Windows.BlockStream;
 
 namespace AutocadCommands.Helpers
 {
@@ -17,17 +14,17 @@ namespace AutocadCommands.Helpers
         /// <param name="attCol">Attribute collection</param>
         /// <param name="tagName">Attribute name</param>
         /// <returns></returns>
-        public static string GetAttributeValue(Transaction tr, AttributeCollection attCol, string tagName)
+        public static string GetAttributeValue(AttributeCollection attCol, string tagName)
         {
             foreach (ObjectId attId in attCol)
             {
-                var att = (AttributeReference)tr.GetObject(attId, OpenMode.ForRead);
+                
+                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 if (att.Tag.Equals(tagName))
                 {
                     return att.TextString;
                 }
             }
-
             return "";
         }
 
@@ -35,17 +32,25 @@ namespace AutocadCommands.Helpers
         {
             var attrColl = GetAttributeCollection(tr, objectId);
 
-            return GetAttributeValue(tr, attrColl, tagName);
+            return GetAttributeValue(attrColl, tagName);
         }
 
         private static AttributeCollection GetAttributeCollection(Transaction tr, ObjectId objectId)
         {
-            var br = tr.GetObject(objectId, OpenMode.ForRead) as BlockReference;
+            try
+            {
+                var br = (BlockReference)tr.GetObject(objectId, OpenMode.ForRead, false, true);
+                //var obj = objectId.GetObject(OpenMode.ForRead, false);
+                
 
-            var bd = (BlockTableRecord)tr.GetObject(br.BlockTableRecord, OpenMode.ForRead);
+                var attrColl = /*((BlockReference)obj)*/br.AttributeCollection;
 
-            var attrColl = br.AttributeCollection;
-            return attrColl;
+                return attrColl;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         /// <summary>
@@ -102,6 +107,29 @@ namespace AutocadCommands.Helpers
             return result;
         }
 
+        public static IEnumerable<ObjectId> GetObjectsWithAttribute(Database db, Transaction tr, string attributeTag, string attributeValue)
+        {
+            //using var tr = db.TransactionManager.StartOpenCloseTransaction();
+            BlockTableRecord btRecord = (BlockTableRecord)tr.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForRead);
+            foreach (ObjectId id in btRecord)
+            {
+                Entity entity = (Entity)tr.GetObject(id, OpenMode.ForRead);
+
+                if (id.IsNull || id.IsErased || id.IsEffectivelyErased || !id.IsValid) continue;
+                if (entity is not BlockReference br) continue;
+                if (br.AttributeCollection.Count == 0) continue;
+                
+                var attrDict = GetAttributes(tr, br.AttributeCollection);
+                // we need only objects contain attributeTag
+                if (!attrDict.ContainsKey(attributeTag)) continue;
+                // then we need only objects contain attributeValue
+                attrDict.TryGetValue(attributeTag, out var tagValue);
+                if (tagValue == null || !tagValue.Equals(attributeValue)) continue;
+                
+                yield return entity.Id;
+            }
+        }
+
         public static bool SetBlockAttributes(Transaction tr, ObjectId objectId, Dictionary<string, string> attributes)
         {
             var attrColl = GetAttributeCollection(tr, objectId);
@@ -118,9 +146,7 @@ namespace AutocadCommands.Helpers
         /// <param name="entities">Collection with entities</param>
         /// <param name="attributeTag">Attribute name for search</param>
         /// <returns>Fake entities with given attribute</returns>
-        public static IEnumerable<AcadObjectWithAttributes> GetObjectsWithAttribute(Transaction tr, 
-            IEnumerable<Entity> entities,
-            string attributeTag)
+        public static IEnumerable<AcadObjectWithAttributes> GetObjectsWithAttribute(Transaction tr, IEnumerable<Entity> entities, string attributeTag)
         {
             var objCollection = new List<AcadObjectWithAttributes>();
 
