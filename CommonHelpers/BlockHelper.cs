@@ -1,8 +1,10 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
+﻿using AutocadCommands.Helpers;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
 using System.Collections;
+using System.Collections.Generic;
 using Exception = System.Exception;
 
 namespace AutocadCommands.Services
@@ -37,76 +39,58 @@ namespace AutocadCommands.Services
             return blockId;
         }
 
-        public static void InsertBlock(Database db, Point3d insPt, string blockName)
+        public static IEnumerable<ObjectId> EraseBlockIfExist(Database db, Transaction tr, Point3d point3D)
         {
-            using var tr = db.TransactionManager.StartTransaction();
-            // check if the block table already has the 'blockName'" block
-            var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-            if (!bt.Has(blockName))
+            //var result = false;
+            //using (var tr = db.TransactionManager.StartTransaction())
+            //{
+            var erasedIds = new List<ObjectId>();
+
+            var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
+            foreach (var item in btl)
             {
-                try
+                var bk = (BlockTableRecord)tr.GetObject(item, OpenMode.ForRead);
+                if (bk.IsLayout)
                 {
-
-                    // search for a dwg file named 'blockName' in AutoCAD search paths
-                    var filename = HostApplicationServices.Current.FindFile(blockName + ".dwg", db, FindFileHint.Default);
-
-                    // add the dwg model space as 'blockName' block definition in the current database block table
-                    using var sourceDb = new Database(false, true);
-                    sourceDb.ReadDwgFile(filename, FileOpenMode.OpenForReadAndAllShare, true, "");
-                    db.Insert(blockName, sourceDb, true);
-                }
-                catch
-                {
-                    //_ed.WriteMessage($"\nBlock '{blockName}' not found.");
-                    return;
+                    foreach (var obj in bk)
+                    {
+                        Entity ent = (Entity)tr.GetObject(obj, OpenMode.ForWrite);
+                        if (ent != null && ent.GetType() == typeof(BlockReference))
+                        {
+                            var br = (BlockReference)tr.GetObject(obj, OpenMode.ForRead);
+                            if (br.Position.IsEqualTo(point3D))
+                            {
+                                ent.Erase();
+                                //result = true;
+                                erasedIds.Add(ent.ObjectId);
+                            }
+                        }
+                    }
                 }
             }
-
-            // create a new block reference
-            else
-            {
-                //Also open modelspace - we'll be adding our BlockReference to it
-                var ms = bt[BlockTableRecord.ModelSpace].GetObject(OpenMode.ForWrite) as BlockTableRecord;
-
-                using var br = new BlockReference(insPt, bt[blockName]);
-                //Add the block reference to modelspace
-                ms.AppendEntity(br);
-                tr.AddNewlyCreatedDBObject(br, true);
-
-                var blockDef = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
-                //Iterate block definition to find all non-constant
-                // AttributeDefinitions
-                foreach (var id in blockDef)
-                {
-                    var obj = tr.GetObject(id, OpenMode.ForRead);
-                    var ar = obj as AttributeReference;
-                    if (ar == null || ar.IsConstant) continue;
-
-                    /*DBObject obj = id.GetObject(OpenMode.ForRead);
-                    AttributeDefinition attDef = obj as AttributeDefinition;
-                    if ((attDef == null) || (attDef.Constant)) continue;
-
-                    //This is a non-constant AttributeDefinition
-                    //Create a new AttributeReference
-                    using AttributeReference attRef = new();
-
-                    attRef.SetAttributeFromBlock(attDef, br.BlockTransform);
-                    attRef.TextString = "Hello World";
-                    //Add the AttributeReference to the BlockReference
-                    br.AttributeCollection.AppendAttribute(attRef);
-                    tr.AddNewlyCreatedDBObject(attRef, true);
-                    */
-                }
-                /*
-                        space.AppendEntity(br);
-                        tr.AddNewlyCreatedDBObject(br, true);
-                        */
-            }
-
-            tr.Commit();
+            //tr.Commit();
+            //}
+            return erasedIds;
         }
 
-        
+        public static IEnumerable<ObjectId> EraseBlocksWithAttribute(Database db, Transaction tr, string tagName, string tagValue)
+        {
+            var erasedIds = new List<ObjectId>();
+            var objectIds = AttributeHelper.GetObjectsWithAttribute(db, tr, tagName, tagValue);
+            try
+            {
+                foreach (var id in objectIds)
+                {
+                    var entity = tr.GetObject(id, OpenMode.ForWrite);
+                    entity.Erase();
+                    erasedIds.Add(entity.ObjectId);
+                }
+            }
+            catch
+            {
+            }
+            return erasedIds;
+        }
 
         private static void ReplaceBlock(Database db, Transaction tr, string oldName, string newName)
         {

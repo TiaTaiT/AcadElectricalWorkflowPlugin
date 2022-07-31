@@ -113,30 +113,6 @@ namespace AutocadCommands
             }
         }
 
-        // Link all wires
-        [CommandMethod("LINKMULTIWIRES", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
-        public void LinkMultiWires()
-        {
-            var doc = Application.DocumentManager.MdiActiveDocument;
-
-            var wiresLinker = new MultiWiresLinker(doc);
-            if (wiresLinker.Init())
-            {
-                wiresLinker.Run();
-            }
-        }
-
-        // Link all wires
-        [CommandMethod("LINKWIRES", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
-        public void LinkWires()
-        {
-            var doc = Application.DocumentManager.MdiActiveDocument;
-
-            var wiresLinker = new WiresLinker(doc);
-            if (wiresLinker.Init())
-            {
-                wiresLinker.Run();
-            }
-        }
+        
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using AutocadTerminalsManager.Model;
 using Autodesk.AutoCAD.DatabaseServices;
+using CommonHelpers;
+using CommonHelpers.Model;
 
 namespace AutocadCommands.Helpers
 {
@@ -35,7 +37,7 @@ namespace AutocadCommands.Helpers
             return GetAttributeValue(attrColl, tagName);
         }
 
-        private static AttributeCollection GetAttributeCollection(Transaction tr, ObjectId objectId)
+        public static AttributeCollection GetAttributeCollection(Transaction tr, ObjectId objectId)
         {
             try
             {
@@ -128,6 +130,43 @@ namespace AutocadCommands.Helpers
                 
                 yield return entity.Id;
             }
+        }
+
+        public static IEnumerable<ObjectId> GetObjectsStartWith(Database db, string attributeTag)
+        {
+            var blockIds = GetIdsUtils.GetIdsByType<BlockReference>(db, Layers.Symbols);
+            foreach (ObjectId id in blockIds)
+            {
+                var entity = (Entity)id.GetObject(OpenMode.ForRead, false);
+
+                if (id.IsNull || id.IsErased || id.IsEffectivelyErased || !id.IsValid) continue;
+                if (entity is not BlockReference br) continue;
+                if (br.AttributeCollection.Count == 0) continue;
+
+                var attributes = br.AttributeCollection;
+                
+                foreach(ObjectId attrId in attributes)
+                {
+                    var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
+                    if(attrRef.Tag.StartsWith(attributeTag))
+                        yield return entity.Id;
+                }
+            }
+        }
+
+        public static bool SetBlockFakeAttributes(Transaction tr, ObjectId objectId, IEnumerable<FakeAttribute> attributes)
+        {
+            var attrColl = GetAttributeCollection(tr, objectId);
+            var attrDictionary = new Dictionary<string, string>();
+            foreach(var fakeAttr in attributes)
+            {
+                if (!attrDictionary.ContainsKey(fakeAttr.Tag))
+                {
+                    attrDictionary.Add(fakeAttr.Tag, fakeAttr.Value);
+                }
+            }
+
+            return (SetAttributes(tr, attrColl, attrDictionary));
         }
 
         public static bool SetBlockAttributes(Transaction tr, ObjectId objectId, Dictionary<string, string> attributes)

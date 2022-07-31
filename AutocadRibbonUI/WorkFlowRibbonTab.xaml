@@ -86,15 +86,39 @@
             <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
                 <windows:RibbonButton
                     Id="FifthButton"
-                    Text="Link"
+                    Text="Wire"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKWIRES">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+            
+            <windows:RibbonRowBreak/>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="SixthButton"
+                    Text="Poly"
                     ShowText="True"
                     Size="Standard"
                     Image="Bee.png"
                     Orientation="Vertical"
                     CommandParameter="LINKMULTIWIRES">
                 </windows:RibbonButton>
+            </windows:RibbonRowPanel>
 
-                
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="SeventhButton"
+                    Text="Pair"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Bee.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKPAIRMULTIWIRES">
+                </windows:RibbonButton>
             </windows:RibbonRowPanel>
 
         </windows:RibbonPanelSource>

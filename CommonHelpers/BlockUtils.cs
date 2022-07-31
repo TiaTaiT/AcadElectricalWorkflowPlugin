@@ -12,38 +12,33 @@ namespace CommonHelpers
     public static class BlockUtils
     {
 
-        public static void InsertBlockFormFile(Database db, string blockName, Point3d point3D, IEnumerable<FakeAttribute> attributes, string layer)
+        public static ObjectId InsertBlockFormFile(Database db, string blockName, Point3d point3D, IEnumerable<FakeAttribute> attributes, string layer)
         {
-            using (Transaction tr = db.TransactionManager.StartTransaction())
+            using Transaction tr = db.TransactionManager.StartTransaction();
+            var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+
+            var objId = BlockUtils.GetBlockId(bt, blockName);
+
+            var curSpace = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+
+            var br1 = (BlockTableRecord)tr.GetObject(bt[blockName], OpenMode.ForRead);
+            /*foreach (ObjectId id in br1)
             {
-                var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-
-                var objId = BlockUtils.GetBlockId(bt, blockName);
-
-                var curSpace = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
-
-                var br1 = (BlockTableRecord)tr.GetObject(bt[blockName], OpenMode.ForRead);
-                foreach (ObjectId id in br1)
+                var ent = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                if (ent.Layer == "0")
                 {
-                    var ent = (Entity)tr.GetObject(id, OpenMode.ForRead);
-                    /*
-                    if (ent.Layer == "0")
-                    {
-                        ent.UpgradeOpen();
-                        ent.Layer = layer;
-                    }
-                    */
-                }
-
-
-                var br = curSpace.InsertBlockReference(blockName, point3D, attributes, layer);
-                //wire.PointConnectedToMultiWire
-                //_db.TransactionManager.QueueForGraphicsFlush();
-
-                tr.Commit();
-
-
+                    ent.UpgradeOpen();
+                    ent.Layer = layer;
+                }    
             }
+            */
+            var br = curSpace.InsertBlockReference(blockName, point3D, attributes, layer);
+            //wire.PointConnectedToMultiWire
+            //_db.TransactionManager.QueueForGraphicsFlush();
+
+            tr.Commit();
+
+            return br.Id;
         }
 
         public static ObjectId GetBlockId(this BlockTable blockTable, string blockName)
@@ -96,8 +91,10 @@ namespace CommonHelpers
 
             if (btrId != ObjectId.Null)
             {
-                br = new BlockReference(insertPoint, btrId);
-                br.Layer = layer;
+                br = new BlockReference(insertPoint, btrId)
+                {
+                    Layer = layer
+                };
                 //var btr = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
                 target.AppendEntity(br);
 
@@ -143,6 +140,15 @@ namespace CommonHelpers
                 target.AttributeCollection.AppendAttribute(attRef);
                 tr.AddNewlyCreatedDBObject(attRef, true);
             }
+        }
+
+        public static void MoveBlockReference(Database db, ObjectId objectId, Vector3d vector)
+        {
+            var tr = db.TransactionManager.StartTransaction();
+            var entity = (Entity)tr.GetObject(objectId, OpenMode.ForWrite);
+            var displVector = Matrix3d.Displacement(vector);
+            entity.TransformBy(displVector);
+            tr.Commit();
         }
     }
 }
