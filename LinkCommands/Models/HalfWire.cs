@@ -323,9 +323,12 @@ namespace LinkCommands.Models
             Tolerance.Global = new Tolerance(1e-8, 1e-2);
 
             var wireEntities = GeometryFunc.GetAllConjugatedEntities(_db, wireEntity.Id, Layers.Wires);
+
+            SetWireMultiwireCross((Curve)WireEntity);
+
             foreach (var entity in wireEntities.Cast<Curve>())
             {
-                SetWireMultiwireCross(entity);
+                
 
 
 

@@ -59,9 +59,8 @@ namespace AutocadCommands.Models
                 //Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
             }
 
-            Source.ShortDescription = electricalValidator.ShortName;//NamesConverter.GetShortAlias(Source.Description, Destination.Description);
+            Source.ShortDescription = electricalValidator.ShortName;
             Destination.ShortDescription = Source.ShortDescription;
-            //ChooseDescription(Source.Description, Destination.Description);
         }
 
         public Wire(HalfWire source, HalfWire destination)
