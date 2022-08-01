@@ -8,7 +8,7 @@ namespace LinkCommands.Services
     {
         public string ErrorMessage { get; set; } = "";
 
-        public bool IsValid { get; set; } = false;
+        public bool IsValid { get; set; } = true;
 
         public string ShortName { get; set; } = "";
 
@@ -29,7 +29,7 @@ namespace LinkCommands.Services
                     IsValid = false;
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Rs485);
-                IsValid = true;
+                
                 return;
             }
 
@@ -41,7 +41,7 @@ namespace LinkCommands.Services
                     IsValid = false;
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Shleif);
-                IsValid = true;
+                
                 return;
             }
 

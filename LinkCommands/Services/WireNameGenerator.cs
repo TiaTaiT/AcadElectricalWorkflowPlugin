@@ -22,23 +22,25 @@ namespace LinkCommands.Services
         {
             if(signalType == SignalType.Rs485)
             {
-                if (source.Contains("A") && destination.Contains("A"))
+                if (source.Contains("A") || destination.Contains("A"))
                     return "A";
-                if (source.Contains("B") && destination.Contains("B"))
+                if (source.Contains("B") || destination.Contains("B"))
                     return "B";
+                if (source.Contains("GND") || destination.Contains("GND") || source.Contains("0В") || destination.Contains("0В"))
+                    return "0В";
             }
 
             if (signalType == SignalType.Shleif)
             {
                 string alias = "";
-                if (source.Contains("ШС") && !destination.Contains("ШС"))
+                if (source.Contains("ШС") || !destination.Contains("ШС"))
                     alias = source.Substring(source.LastIndexOf("ШС"));
-                if (!source.Contains("ШС") && destination.Contains("ШС"))
+                if (!source.Contains("ШС") || destination.Contains("ШС"))
                     alias = destination.Substring(destination.LastIndexOf("ШС"));
 
-                if (source.Contains("КС") && !destination.Contains("КЦ"))
+                if (source.Contains("КЦ") || destination.Contains("КЦ"))
                     alias = source.Substring(source.LastIndexOf("КЦ"));
-                if (!source.Contains("КЦ") && destination.Contains("КЦ"))
+                if (source.Contains("КЦ") || destination.Contains("КЦ"))
                     alias = destination.Substring(destination.LastIndexOf("КЦ"));
 
                 return alias;
