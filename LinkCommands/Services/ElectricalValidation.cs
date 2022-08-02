@@ -83,9 +83,17 @@ namespace LinkCommands.Services
 
         private bool CheckValidRs485(string source, string destination)
         {
-            if(source.Contains("A") && destination.Contains("A"))
+            if (source.StartsWith("RS485(A)") && destination.StartsWith("RS485(A)"))
+                return true;
+            if (source.StartsWith("RS485(B)") && destination.StartsWith("RS485(B)"))
+                return true;
+            if (source.StartsWith("RS485(GND)") && destination.StartsWith("RS485(GND)"))
+                return true;
+            if (source.Contains("A") && destination.Contains("A"))
                 return true;
             if (source.Contains("B") && destination.Contains("B"))
+                return true;
+            if(source.Contains("RS485(GND)") && destination.Contains("C"))
                 return true;
             return false;
         }

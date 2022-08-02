@@ -328,19 +328,12 @@ namespace LinkCommands.Models
 
             foreach (var entity in wireEntities.Cast<Curve>())
             {
-                
-
-
-
                 SetWireComponentCross(entity);
             }
 
             var zeroPoint = GetZeroPoint(WireEntity);
-            
-            
+                       
             _direction = GeometryFunc.GetDirection(zeroPoint, GetEndPoint(WireEntity));
-            //var fullDescription = GetWireDescription(PointConnectedToComponent);
-            
         }
 
         private bool SetWireComponentCross(Entity wireEntity)
@@ -359,8 +352,7 @@ namespace LinkCommands.Models
                 {
                     Debug.WriteLine("Point: X = " + PointConnectedToComponent.X + "; Y = " + PointConnectedToComponent.Y + "    " + Description);
                     break;
-                }
-                    
+                }    
             }
 
             return false;
@@ -435,8 +427,6 @@ namespace LinkCommands.Models
                 return;
             }
 
-            
-
             foreach(var multiWire in multiWires)
             {
                 var polyWire = (Curve)multiWire.GetObject(OpenMode.ForRead);
@@ -447,26 +437,19 @@ namespace LinkCommands.Models
                     PointConnectedToMultiWire = crossPoint;
                     return;
                 }
-            }
-            
-            // check if start or end points is floating point
-            
+            }            
         }
 
         public void CreateSourceLink()
         {
-            
-            
             string symbolBlockName = GetSourceSymbolBlockName();
             CreateSymbol(_db, symbolBlockName);
-
         }
 
         public void CreateDestinationLink()
         {
             string symbolBlockName = GetDestinationSymbolBlockName();
             CreateSymbol(_db, symbolBlockName);
-
         }
                 
         /// <summary>
