@@ -117,26 +117,25 @@ namespace CommonHelpers
         /// <param name="selectedLineId">selected lines</param>
         /// <param name="layer">layer for search</param>
         /// <returns>All connected lines</returns>
-        public static IEnumerable<Entity> GetAllConjugatedEntities(Database db, ObjectId selectedLineId, string layer)
+        public static IEnumerable<Curve> GetAllConjugatedCurves(Database db, Curve selectedLine, string layer)
         {
-            var AllLinesFromSheet = GetIdsUtils.GetIdsByType<Line>(db, layer);
-            var selectedLine = (Entity)selectedLineId.GetObject(OpenMode.ForRead);
-
-            var connectedLines = new List<Entity>
+            var AllLinesFromSheet = GetObjectsUtils.GetObjects<Line>(db, layer);
+            
+            var connectedLines = new List<Curve>
             {
                 selectedLine
             };
-            FindAllConjugateEntities(AllLinesFromSheet, connectedLines);
+            FindAllConjugateCurves(AllLinesFromSheet, connectedLines);
             return connectedLines;
         }
 
-        private static void FindAllConjugateEntities(IEnumerable<ObjectId> AllLinesFromSheet, List<Entity> connectedLines)
+        private static void FindAllConjugateCurves(IEnumerable<Curve> AllLinesFromSheet, List<Curve> connectedLines)
         {
             // This is instead of iterating
             for (var i = 0; i < connectedLines.Count(); i++)
             {
                 var line = connectedLines[i];
-                IEnumerable<Entity> conjugateLines = GetConjugateLines(line, AllLinesFromSheet);
+                IEnumerable<Curve> conjugateLines = GetConjugateLines(line, AllLinesFromSheet);
                 if (!conjugateLines.Any())
                     continue;
                 foreach (var conjugateLine in conjugateLines)
@@ -147,14 +146,14 @@ namespace CommonHelpers
             }
         }
 
-        private static IEnumerable<Entity> GetConjugateLines(Entity currentMultiWireLine, IEnumerable<ObjectId> linesFromSheet)
+        private static IEnumerable<Curve> GetConjugateLines(Curve currentMultiWireLine, IEnumerable<Curve> linesFromSheet)
         {
             foreach (var lineFromSheet in linesFromSheet)
             {
-                var line = (Line)lineFromSheet.GetObject(OpenMode.ForRead);
+                var line = (Line)lineFromSheet;
 
-                var IsStartPointOnAnotherLine = GeometryFunc.IsPointOnLine(line, ((Line)currentMultiWireLine).StartPoint);
-                var IsEndPointOnAnotherLine = GeometryFunc.IsPointOnLine(line, ((Line)currentMultiWireLine).EndPoint);
+                var IsStartPointOnAnotherLine = IsPointOnLine(line, ((Line)currentMultiWireLine).StartPoint);
+                var IsEndPointOnAnotherLine = IsPointOnLine(line, ((Line)currentMultiWireLine).EndPoint);
 
                 if (IsStartPointOnAnotherLine || IsEndPointOnAnotherLine)
                     yield return line;

@@ -106,7 +106,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ElectricalValidation.cs" />
     <Compile Include="Services\LinkerHelper.cs" />
-    <Compile Include="Services\LinkFactory.cs" />
     <Compile Include="Services\MultiWiresLinker.cs" />
     <Compile Include="Services\NamesConverter.cs" />
     <Compile Include="Services\PairMultiWiresLinker.cs" />

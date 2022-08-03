@@ -102,7 +102,7 @@
     <Compile Include="BlockHelper.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GeometryFunc.cs" />
-    <Compile Include="GetIdsUtils.cs" />
+    <Compile Include="GetObjectsUtils.cs" />
     <Compile Include="Layers.cs" />
     <Compile Include="Model\AcadObjectWithAttributes.cs" />
     <Compile Include="Model\FakeAttribute.cs" />

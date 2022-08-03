@@ -212,7 +212,7 @@ namespace LinkCommands.Models
                 Up.SourceBlockName,
                 Up.DestinationBlockName
             };
-            var blockRefIds = GetIdsUtils.GetBlockRefsByNames(_db, strings);
+            var blockRefIds = GetObjectsUtils.GetBlockIdsByNames(_db, strings);
             using var tr = _db.TransactionManager.StartTransaction();
             
             foreach (var blkRefId in blockRefIds) 
@@ -322,7 +322,7 @@ namespace LinkCommands.Models
             _db = Application.DocumentManager.MdiActiveDocument.Database;
             Tolerance.Global = new Tolerance(1e-8, 1e-2);
 
-            var wireEntities = GeometryFunc.GetAllConjugatedEntities(_db, wireEntity.Id, Layers.Wires);
+            var wireEntities = GeometryFunc.GetAllConjugatedCurves(_db, (Curve)wireEntity, Layers.Wires);
 
             SetWireMultiwireCross((Curve)WireEntity);
 
@@ -338,7 +338,7 @@ namespace LinkCommands.Models
 
         private bool SetWireComponentCross(Entity wireEntity)
         {
-            var blockIds = GetIdsUtils.GetIdsByType<BlockReference>(_db, Layers.Symbols).ToList();
+            var blockIds = GetObjectsUtils.GetObjects<BlockReference>(_db, Layers.Symbols).ToList();
 
             if (blockIds == null || blockIds.Count() == 0)
                 return false;
@@ -347,8 +347,8 @@ namespace LinkCommands.Models
             
             foreach(var component in components)
             {
-                var componentEntity = (Entity)component.GetObject(OpenMode.ForRead, false);
-                if (TryGetPointWhereWireConnectedToComponent(componentEntity, wireEntity))
+                
+                if (TryGetPointWhereWireConnectedToComponent(component, wireEntity))
                 {
                     Debug.WriteLine("Point: X = " + PointConnectedToComponent.X + "; Y = " + PointConnectedToComponent.Y + "    " + Description);
                     break;
@@ -358,36 +358,33 @@ namespace LinkCommands.Models
             return false;
         }
 
-        private bool TryGetPointWhereWireConnectedToComponent(Entity component, Entity wireEntity)
+        private bool TryGetPointWhereWireConnectedToComponent(BlockReference component, Entity wireEntity)
         {
             var curve = (Curve)wireEntity;
             var startPoint = curve.StartPoint;
             var endPoint = curve.EndPoint;
 
-            var rxClass = RXClass.GetClass(typeof(BlockReference));
-            if(component.ObjectId.ObjectClass.IsDerivedFrom(rxClass))
+
+            var blkref = (BlockReference)component;
+            var attributes = blkref.AttributeCollection;
+            foreach (ObjectId attrId in attributes)
             {
-                var blkref = (BlockReference)component;
-                var attributes = blkref.AttributeCollection;
-                foreach (ObjectId attId in attributes)
+                var attref = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
+                if (!attref.Position.Equals(startPoint) && !attref.Position.Equals(endPoint))
+                    continue;
+
+                PointConnectedToComponent = startPoint;
+                    
+                if (attref.Position.Equals(startPoint))
                 {
-                    var attref = (AttributeReference)attId.GetObject(OpenMode.ForRead);
-
-                    if (!attref.Position.Equals(startPoint) && !attref.Position.Equals(endPoint))
-                        continue;
-
-                    PointConnectedToComponent = startPoint;
-                    
-                    if (attref.Position.Equals(startPoint))
-                    {
-                        PointConnectedToComponent = endPoint;
-                    }
-                    
-                    GetDescription(blkref, attributes, attref);
-                    
-                    return true;
+                    PointConnectedToComponent = endPoint;
                 }
+                    
+                GetDescription(blkref, attributes, attref);
+                    
+                return true;
             }
+            
             
             return false;
         }
@@ -419,8 +416,10 @@ namespace LinkCommands.Models
 
         public void SetWireMultiwireCross(Curve wireEntity)
         {
-            var multiWires = GetIdsUtils.GetIdsByType<Polyline>(_db, Layers.MultiWires).ToList();
-            multiWires.AddRange(GetIdsUtils.GetIdsByType<Line>(_db, Layers.MultiWires));
+            var multiWires = new List<Curve>();
+            multiWires.AddRange(GetObjectsUtils.GetObjects<Polyline>(_db, Layers.MultiWires));
+
+            multiWires.AddRange(GetObjectsUtils.GetObjects<Line>(_db, Layers.MultiWires));
 
             if (multiWires == null || multiWires.Count() == 0)
             {
@@ -429,7 +428,7 @@ namespace LinkCommands.Models
 
             foreach(var multiWire in multiWires)
             {
-                var polyWire = (Curve)multiWire.GetObject(OpenMode.ForRead);
+                var polyWire = (Curve)multiWire;
                 
                 var result = LinkerHelper.TryGetPointConnectedToMultiwire(polyWire, wireEntity, out var crossPoint);
                 if (result)

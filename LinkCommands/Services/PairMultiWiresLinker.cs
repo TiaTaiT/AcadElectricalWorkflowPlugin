@@ -20,11 +20,11 @@ namespace LinkCommands.Services
 {
     internal class PairMultiWiresLinker : CommandPrototype
     {
-        private List<Entity> _sourceMultiwireEntities = new();
-        private List<Entity> _destinationMultiwireEntities = new();
+        private List<Curve> _sourceMultiwireEntities = new();
+        private List<Curve> _destinationMultiwireEntities = new();
 
-        private Entity _selectedSourceLine;
-        private Entity _selectedDestinationLine;
+        private Curve _selectedSourceLine;
+        private Curve _selectedDestinationLine;
 
         private List<string> _existedSigCodes = new();
         
@@ -80,8 +80,8 @@ namespace LinkCommands.Services
 
             using (var tr = _db.TransactionManager.StartTransaction())
             {
-                _selectedSourceLine = (Entity)selectionBlock1.ObjectId.GetObject(OpenMode.ForRead);
-                _sourceMultiwireEntities = GeometryFunc.GetAllConjugatedEntities(_db, selectionBlock1.ObjectId, Layers.MultiWires).ToList();
+                _selectedSourceLine = (Curve)selectionBlock1.ObjectId.GetObject(OpenMode.ForRead);
+                _sourceMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _selectedSourceLine, Layers.MultiWires).ToList();
                 HighlightObjects(_sourceMultiwireEntities);
             }
 
@@ -98,8 +98,8 @@ namespace LinkCommands.Services
 
             using (var tr = _db.TransactionManager.StartTransaction())
             {
-                _selectedDestinationLine = (Entity)selectionBlock2.ObjectId.GetObject(OpenMode.ForRead);
-                _destinationMultiwireEntities = GeometryFunc.GetAllConjugatedEntities(_db, selectionBlock2.ObjectId, Layers.MultiWires).ToList();
+                _selectedDestinationLine = (Curve)selectionBlock2.ObjectId.GetObject(OpenMode.ForRead);
+                _destinationMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _selectedDestinationLine, Layers.MultiWires).ToList();
                 HighlightObjects(_destinationMultiwireEntities);
             }
 
@@ -212,10 +212,10 @@ namespace LinkCommands.Services
             }
         }
 
-        private (Point3d, Point3d) GetZeroEndPoints(Transaction acTrans, Entity selectedMultiwirePart)
+        private (Point3d, Point3d) GetZeroEndPoints(Transaction acTrans, Curve selectedMultiwirePart)
         {
-            var startPoint = ((Curve)selectedMultiwirePart).StartPoint;
-            var endPoint = ((Curve)selectedMultiwirePart).EndPoint;
+            var startPoint = selectedMultiwirePart.StartPoint;
+            var endPoint = selectedMultiwirePart.EndPoint;
 
             var existingLinkSymbols = new List<ObjectId>();
             existingLinkSymbols.AddRange(_sourceLinkSymbols);
@@ -246,13 +246,11 @@ namespace LinkCommands.Services
             if ((_sourceMultiwireEntities.Count() == 1 && _sourceMultiwireEntities.Contains(selectedMultiwirePart)) 
                 || (_destinationMultiwireEntities.Count() == 1 && _destinationMultiwireEntities.Contains(selectedMultiwirePart)))
             {
-                var wireIds = LinkerHelper.GetAllWireIdsFromDb(_db);
-                foreach (var id in wireIds)
+                var wires = LinkerHelper.GetAllWiresFromDb(_db);
+                foreach (var wire in wires)
                 {
-                    var curveWire = (Curve)id.GetObject(OpenMode.ForRead);
-
-                    if (curveWire.StartPoint.Equals(((Curve)selectedMultiwirePart).StartPoint) ||
-                        curveWire.EndPoint.Equals(((Curve)selectedMultiwirePart).StartPoint))
+                    if (wire.StartPoint.Equals(selectedMultiwirePart.StartPoint) ||
+                        wire.EndPoint.Equals(selectedMultiwirePart.StartPoint))
                     {
                         return (endPoint, startPoint);
                     }
@@ -299,7 +297,7 @@ namespace LinkCommands.Services
                 _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _down,
                 _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _right
             };
-            _sourceLinkSymbols.AddRange(GetIdsUtils.GetBlockRefsByNames(_db, sourceNames));
+            _sourceLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, sourceNames));
 
             var destinationNames = new List<string>
             {
@@ -308,7 +306,7 @@ namespace LinkCommands.Services
                 _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _down,
                 _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _right
             };
-            _destinationLinkSymbols.AddRange(GetIdsUtils.GetBlockRefsByNames(_db, destinationNames));
+            _destinationLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, destinationNames));
         }
 
         private void HighlightObjects(IEnumerable<Entity> entities)

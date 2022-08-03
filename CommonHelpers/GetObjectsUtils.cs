@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
-    public static class GetIdsUtils
+    public static class GetObjectsUtils
     {
-        public static IEnumerable<ObjectId> GetIdsByType<T>(Database db, string layer)
+        public static IEnumerable<T> GetObjects<T>(Database db, string layer) where T : Entity
         {
             using var tr = db.TransactionManager.StartTransaction();
             var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
@@ -22,7 +22,7 @@ namespace CommonHelpers
 
                 foreach (var obj in bk)
                 {
-                    Entity entity = (Entity)tr.GetObject(obj, OpenMode.ForWrite);
+                    var entity = (Entity)tr.GetObject(obj, OpenMode.ForRead);
 
                     if (entity == null || entity.GetType() != typeof(T))
                         continue;
@@ -31,13 +31,13 @@ namespace CommonHelpers
                     if(!entity.Layer.Equals(layer))
                         continue;
 
-                    yield return entity.Id;
+                    yield return (T)entity;
                 }
             }
             tr.Commit();
         }
 
-        public static IEnumerable<ObjectId> GetBlockRefsByNames(Database db, IEnumerable<string> names)
+        public static IEnumerable<ObjectId> GetBlockIdsByNames(Database db, IEnumerable<string> names)
         {
             using var tr = db.TransactionManager.StartTransaction();
             var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);

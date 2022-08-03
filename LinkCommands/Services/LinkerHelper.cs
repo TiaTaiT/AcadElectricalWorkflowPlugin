@@ -115,12 +115,13 @@ namespace AutocadCommands.Services
         /// </summary>
         /// <param name="db">Autocad draft database</param>
         /// <returns>collection with ids of all wires</returns>
-        public static IEnumerable<ObjectId> GetAllWireIdsFromDb(Database db)
+        public static IEnumerable<Curve> GetAllWiresFromDb(Database db)
         {
+            var allWireCurves = new List<Curve>();
             // Get all lines and lwpolylines
-            var allWireIds = GetIdsUtils.GetIdsByType<Line>(db, Layers.Wires).ToList();
-            allWireIds.AddRange(GetIdsUtils.GetIdsByType<Polyline>(db, Layers.Wires).ToList());
-            return allWireIds;
+            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Line>(db, Layers.Wires));
+            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Polyline>(db, Layers.Wires).ToList());
+            return allWireCurves;
         }
 
         

@@ -18,23 +18,23 @@ namespace AutocadCommands.Models
 {
     public class MultiWire
     {
-        private List<ObjectId> ConnectedWireIds;
+        private List<Curve> ConnectedWires;
         private List<HalfWire> _sourceHalfWires = new();
         private List<HalfWire> _destinationHalfWires = new();
         private List<Wire> _wires = new();
-        private IEnumerable<ObjectId> _allWireIds;
+        private IEnumerable<Curve> _allWires;
 
         private void CreateMultiwire()
         {
             var multiwires = new List<Curve>() { Multiwire };
-            ConnectedWireIds = GetConnectedWires(multiwires, _allWireIds).ToList();
+            ConnectedWires = GetConnectedWires(multiwires, _allWires).ToList();
             
-            if (ConnectedWireIds == null || ConnectedWireIds.Count() == 0)
+            if (ConnectedWires == null || ConnectedWires.Count() == 0)
             {
-                Debug.WriteLine("Wires count = " + ConnectedWireIds.Count() + ";   Operation halt!");
+                Debug.WriteLine("Wires count = " + ConnectedWires.Count() + ";   Operation halt!");
                 return;
             }
-            Debug.WriteLine("Wires count = " + ConnectedWireIds.Count());
+            Debug.WriteLine("Wires count = " + ConnectedWires.Count());
 
             var sortedHalfWires = GetSortHalfWire();
             if (!SeparateSourceAndDestination(sortedHalfWires))
@@ -114,14 +114,14 @@ namespace AutocadCommands.Models
         private void CreateLinkedMultiwire()
         {
             var db = Application.DocumentManager.MdiActiveDocument.Database;
-            var allWireIds = LinkerHelper.GetAllWireIdsFromDb(db);
+            var allWireIds = LinkerHelper.GetAllWiresFromDb(db);
 
-            ConnectedWireIds = new List<ObjectId>();
-            ConnectedWireIds.AddRange(GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds));
+            ConnectedWires = new List<Curve>();
+            ConnectedWires.AddRange(GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds));
             _sourceHalfWires = GetSortHalfWire();
 
-            ConnectedWireIds = new List<ObjectId>();
-            ConnectedWireIds.AddRange(GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds));
+            ConnectedWires = new List<Curve>();
+            ConnectedWires.AddRange(GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds));
             _destinationHalfWires = GetSortHalfWire();
         }
 
@@ -129,30 +129,30 @@ namespace AutocadCommands.Models
         {
             var connectedToMultiwireWires = new List<HalfWire>();
 
-            foreach (var wireId in ConnectedWireIds)
+            foreach (var wire in ConnectedWires)
             {
-                var wireEntity = (Entity)wireId.GetObject(OpenMode.ForRead);
-                connectedToMultiwireWires.Add(new HalfWire(wireEntity));
+                ;
+                connectedToMultiwireWires.Add(new HalfWire(wire));
             }
             connectedToMultiwireWires.Sort(new HalfWireComparer());
             return connectedToMultiwireWires;
         }
 
         
-        private static IEnumerable<ObjectId> GetConnectedWires(IEnumerable<Curve> multiwireSegments, IEnumerable<ObjectId> allWireIds)
+        private static IEnumerable<Curve> GetConnectedWires(IEnumerable<Curve> multiwireSegments, IEnumerable<Curve> allWires)
         {
             foreach (var multiwireSegment in multiwireSegments)
             {
-                foreach (var wireId in allWireIds)
+                foreach (var wire in allWires)
                 {
-                    var wireEntity = (Entity)wireId.GetObject(OpenMode.ForRead);
+                    
 
-                    var points = LinkerHelper.GetStartEndPoints(wireEntity);
+                    var points = LinkerHelper.GetStartEndPoints(wire);
 
                     if (GeometryFunc.IsPointOnLine(multiwireSegment, points.Item1) ||
                         GeometryFunc.IsPointOnLine(multiwireSegment, points.Item2))
                     {
-                        yield return wireId;
+                        yield return wire;
                     }
                 }
             }
@@ -164,7 +164,7 @@ namespace AutocadCommands.Models
         {
             Multiwire = polyLine;
             var db = Application.DocumentManager.MdiActiveDocument.Database;
-            _allWireIds = LinkerHelper.GetAllWireIdsFromDb(db);
+            _allWires = LinkerHelper.GetAllWiresFromDb(db);
             CreateMultiwire();
         }
 
@@ -186,7 +186,7 @@ namespace AutocadCommands.Models
             };
 
             var db = Application.DocumentManager.MdiActiveDocument.Database;
-            _allWireIds = LinkerHelper.GetAllWireIdsFromDb(db);
+            _allWires = LinkerHelper.GetAllWiresFromDb(db);
             CreateLinkedMultiwire();
 
             

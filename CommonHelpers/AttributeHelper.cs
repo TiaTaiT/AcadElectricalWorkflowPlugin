@@ -132,24 +132,24 @@ namespace AutocadCommands.Helpers
             }
         }
 
-        public static IEnumerable<ObjectId> GetObjectsStartWith(Database db, string attributeTag)
+        public static IEnumerable<BlockReference> GetObjectsStartWith(Database db, string attributeTag)
         {
-            var blockIds = GetIdsUtils.GetIdsByType<BlockReference>(db, Layers.Symbols);
-            foreach (ObjectId id in blockIds)
+            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
+            foreach (var blkRef in blockRefs)
             {
-                var entity = (Entity)id.GetObject(OpenMode.ForRead, false);
+                
 
-                if (id.IsNull || id.IsErased || id.IsEffectivelyErased || !id.IsValid) continue;
-                if (entity is not BlockReference br) continue;
-                if (br.AttributeCollection.Count == 0) continue;
+                if (blkRef.IsErased) continue;
+                
+                if (blkRef.AttributeCollection.Count == 0) continue;
 
-                var attributes = br.AttributeCollection;
+                var attributes = blkRef.AttributeCollection;
                 
                 foreach(ObjectId attrId in attributes)
                 {
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
                     if(attrRef.Tag.StartsWith(attributeTag))
-                        yield return entity.Id;
+                        yield return blkRef;
                 }
             }
         }
