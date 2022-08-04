@@ -1,5 +1,8 @@
 ﻿using Autodesk.AutoCAD.GraphicsInterface;
+using Autodesk.AutoCAD.Runtime;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace LinkCommands.Services
@@ -18,22 +21,25 @@ namespace LinkCommands.Services
         }
         public void ValidateWire(string source, string destination)
         {
-            if(source == null || destination == null)
+            if (source == null || destination == null)
                 IsValid = false;
 
-            if(IsRs485(source, destination))
+            if (IsRs485(source, destination))
             {
                 if (!CheckValidRs485(source, destination))
                 {
                     ErrorMessage = "Signal type was define as RS485, but link is not correct";
                     IsValid = false;
+                    ShortName = GetApproximateName(source, destination);
+
+                    return;
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Rs485);
-                
+
                 return;
             }
 
-            if(IsShleif(source, destination))
+            if (IsShleif(source, destination))
             {
                 if (!CheckValidShleif(source, destination))
                 {
@@ -41,7 +47,7 @@ namespace LinkCommands.Services
                     IsValid = false;
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Shleif);
-                
+
                 return;
             }
 
@@ -72,40 +78,37 @@ namespace LinkCommands.Services
         {
             if (IsNumeric(source))
             {
-                return destination; 
+                return destination;
             }
             if (IsNumeric(destination))
-            { 
-                return source; 
+            {
+                return source;
             }
             return source;
         }
 
         private bool CheckValidRs485(string source, string destination)
         {
-            if (source.StartsWith("RS485(A)") && destination.StartsWith("RS485(A)"))
+            if (_rs485a.Contains(source) && _rs485a.Contains(destination))
                 return true;
-            if (source.StartsWith("RS485(B)") && destination.StartsWith("RS485(B)"))
+
+            if (_rs485b.Contains(source) && _rs485b.Contains(destination))
                 return true;
-            if (source.StartsWith("RS485(GND)") && destination.StartsWith("RS485(GND)"))
+
+            if (_rs485gnd.Contains(source) && _rs485gnd.Contains(destination))
                 return true;
-            if (source.Contains("A") && destination.Contains("A"))
-                return true;
-            if (source.Contains("B") && destination.Contains("B"))
-                return true;
-            if(source.Contains("RS485(GND)") && destination.Contains("C"))
-                return true;
+
             return false;
         }
 
         private bool IsRs485(string source, string destination)
         {
-            return source.StartsWith("RS485") || 
-               destination.StartsWith("RS485") || 
-               source.StartsWith("A") || 
-               destination.StartsWith("A") ||
-               source.StartsWith("B") ||
-               destination.StartsWith("B");
+            return _rs485a.Contains(source) ||
+                   _rs485a.Contains(destination) ||
+                   _rs485b.Contains(source) ||
+                   _rs485b.Contains(destination) ||
+                   _rs485gnd.Contains(source) ||
+                   _rs485gnd.Contains(destination);
         }
 
         private bool IsNumeric(string s)
@@ -119,5 +122,17 @@ namespace LinkCommands.Services
             }
             return true;
         }
+
+        private List<string> _rs485a = new List<string>(
+            new string[] { "RS485A", "RS485(A)", "A", "A1", "A2", "A3", "A4" }
+        );
+
+        private List<string> _rs485b = new List<string>(
+            new string[] { "RS485B", "RS485(B)", "B", "B1", "B2", "B3", "B4" }
+        );
+
+        private List<string> _rs485gnd = new List<string>(
+            new string[] { "RS485GND", "RS485(GND)", "GND", "C", "C1", "C2", "C3", "C4" }
+        );
     }
 }

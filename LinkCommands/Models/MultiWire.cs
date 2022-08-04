@@ -145,8 +145,6 @@ namespace AutocadCommands.Models
             {
                 foreach (var wire in allWires)
                 {
-                    
-
                     var points = LinkerHelper.GetStartEndPoints(wire);
 
                     if (GeometryFunc.IsPointOnLine(multiwireSegment, points.Item1) ||
