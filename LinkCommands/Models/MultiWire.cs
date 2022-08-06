@@ -160,6 +160,7 @@ namespace AutocadCommands.Models
         #region Constructors
         public MultiWire(Polyline polyLine)
         {
+            Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Multiwire = polyLine;
             var db = Application.DocumentManager.MdiActiveDocument.Database;
             _allWires = LinkerHelper.GetAllWiresFromDb(db);
@@ -171,6 +172,7 @@ namespace AutocadCommands.Models
                          IEnumerable<Entity> destinationEntities,
                          Entity destinationLinkSymbol)
         {
+            Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Source = new HalfMultiWire
             {
                 LinkSymbol = sourceLinkSymbol,

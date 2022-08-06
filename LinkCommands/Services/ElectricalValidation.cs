@@ -22,8 +22,10 @@ namespace LinkCommands.Services
         public void ValidateWire(string source, string destination)
         {
             if (source == null || destination == null)
+            {
                 IsValid = false;
-
+                return;
+            }
             if (IsRs485(source, destination))
             {
                 if (!CheckValidRs485(source, destination))

@@ -320,7 +320,7 @@ namespace LinkCommands.Models
             WireEntity = wireEntity;
 
             _db = Application.DocumentManager.MdiActiveDocument.Database;
-            Tolerance.Global = new Tolerance(1e-8, 1e-2);
+            Tolerance.Global = new Tolerance(1e-8, 1e-1);
 
             var wireEntities = GeometryFunc.GetAllConjugatedCurves(_db, (Curve)wireEntity, Layers.Wires);
 
