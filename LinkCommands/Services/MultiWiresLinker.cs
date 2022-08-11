@@ -43,7 +43,7 @@ namespace AutocadCommands.Services
                     return true;
             }
 
-            var promptResult = _ed.GetString("\nSelect polyline multiwires [All Select] <All>: ");
+            var promptResult = _ed.GetString("\nSelect polyline multiwires [All Select] <Select>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
 
@@ -51,12 +51,12 @@ namespace AutocadCommands.Services
             if (selectMethod == null)
                 return false;
 
-            if (selectMethod == "A" || selectMethod == "А" || selectMethod == "")
+            if (selectMethod == "A" || selectMethod == "А")
             {
                 _multiWireEntities = GetMultiWireEntities(LinkerHelper.SelectAllPolylineByLayer(_ed, Layers.MultiWires)).ToList();
             }
 
-            if(selectMethod == "S" || selectMethod == "Ы")
+            if(selectMethod == "S" || selectMethod == "Ы" || selectMethod == "")
             {
                 var filter = new SelectionFilter(
                     new TypedValue[] {
