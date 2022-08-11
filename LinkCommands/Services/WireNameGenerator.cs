@@ -33,14 +33,14 @@ namespace LinkCommands.Services
             if (signalType == SignalType.Shleif)
             {
                 string alias = "";
-                if (source.Contains("ШС") || !destination.Contains("ШС"))
+                if (source.Contains("ШС") && !destination.Contains("ШС"))
                     alias = source.Substring(source.LastIndexOf("ШС"));
-                if (!source.Contains("ШС") || destination.Contains("ШС"))
+                if (!source.Contains("ШС") && destination.Contains("ШС"))
                     alias = destination.Substring(destination.LastIndexOf("ШС"));
 
-                if (source.Contains("КЦ") || destination.Contains("КЦ"))
+                if (source.Contains("КЦ") && destination.Contains("КЦ"))
                     alias = source.Substring(source.LastIndexOf("КЦ"));
-                if (source.Contains("КЦ") || destination.Contains("КЦ"))
+                if (source.Contains("КЦ") && destination.Contains("КЦ"))
                     alias = destination.Substring(destination.LastIndexOf("КЦ"));
 
                 return alias;
