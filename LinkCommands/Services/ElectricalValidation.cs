@@ -32,9 +32,9 @@ namespace LinkCommands.Services
                 {
                     ErrorMessage = "Signal type was define as RS485, but link is not correct";
                     IsValid = false;
-                    ShortName = GetApproximateName(source, destination);
+                    //ShortName = GetApproximateName(source, destination);
 
-                    return;
+                    //return;
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Rs485);
 
