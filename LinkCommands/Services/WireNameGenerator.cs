@@ -8,7 +8,7 @@ using static Autodesk.AutoCAD.DatabaseServices.RenderGlobal;
 
 namespace LinkCommands.Services
 {
-    internal static class WireNameGenerator
+    public static class WireNameGenerator
     {
         public enum SignalType
         {
@@ -32,24 +32,27 @@ namespace LinkCommands.Services
 
             if (signalType == SignalType.Shleif)
             {
-                string alias = "";
-                if (source.Contains("ШС") && !destination.Contains("ШС"))
-                    alias = source.Substring(source.LastIndexOf("ШС"));
-                if (!source.Contains("ШС") && destination.Contains("ШС"))
-                    alias = destination.Substring(destination.LastIndexOf("ШС"));
-                if (source.Contains("ШС") && destination.Contains("ШС"))
-                    alias = destination.Substring(source.LastIndexOf("ШС"));
+                var shleifStr = "ШС";
+                var kcStr = "КЦ";
+                if (source.Contains(shleifStr) && !destination.Contains(shleifStr))
+                    return shleifStr + TextAfter(source, shleifStr);
+                if (!source.Contains(shleifStr) && destination.Contains(shleifStr))
+                    return shleifStr + TextAfter(destination, shleifStr);
+                if (source.Contains(shleifStr) && destination.Contains(shleifStr))
+                    return shleifStr + TextAfter(source, shleifStr);
 
-                if (source.Contains("КЦ") && !destination.Contains("КЦ"))
-                    alias = source.Substring(source.LastIndexOf("КЦ"));
-                if (!source.Contains("КЦ") && destination.Contains("КЦ"))
-                    alias = destination.Substring(destination.LastIndexOf("КЦ"));
-                if (source.Contains("КЦ") && destination.Contains("КЦ"))
-                    alias = source.Substring(source.LastIndexOf("КЦ"));
-
-                return alias;
+                if (source.Contains(kcStr) && !destination.Contains(kcStr))
+                    return kcStr + TextAfter(source, kcStr);
+                if (!source.Contains(kcStr) && destination.Contains(kcStr))
+                    return kcStr + TextAfter(destination, kcStr);
+                if (source.Contains(kcStr) && destination.Contains(kcStr))
+                    return kcStr + TextAfter(source, kcStr);
             }
             return "";
+        }
+        public static string TextAfter(this string value, string search)
+        {
+            return value.Substring(value.IndexOf(search) + search.Length);
         }
     }
 }

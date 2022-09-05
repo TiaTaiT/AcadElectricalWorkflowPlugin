@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using LinkCommands.Models;
 using AutocadCommands.Models;
 using Autodesk.AutoCAD.DatabaseServices;
+using LinkCommands.Services;
 
 namespace AutoCommands.Test
 {
@@ -29,63 +30,21 @@ namespace AutoCommands.Test
         }
 
         [TestMethod]
-        public void CheckFindReplaceWithIncrement()
+        public void CheckGetShortWireName()
         {
-            // Arrange
-            /*
-            var unsortedWires = new List<CompareWire>()
-            {
-                new CompareWire(){ X = 252.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 247.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 267.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 257.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 237.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 232.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 185, WireId = new ObjectId() },
-            };
+            var sourceShleif = "2ШС6+";
+            var targetShleif = "ШС6+";
+            
+            var shortNameShleif = WireNameGenerator.GetShortWireName(sourceShleif,
+                targetShleif, WireNameGenerator.SignalType.Shleif);
+            StringAssert.StartsWith(shortNameShleif, "ШС6+");
 
-            var sortedWires = new List<CompareWire>()
-            {
-                new CompareWire(){ X = 257.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 267.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 252.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 232.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 237.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 247.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 185, WireId = new ObjectId() },
-            };
+            var sourceKc = "2КЦ6+";
+            var targetKc = "КЦ6+";
+            var shortNameKc = WireNameGenerator.GetShortWireName(sourceKc,
+                targetKc, WireNameGenerator.SignalType.Shleif);
 
-            var sortedWires2 = new List<CompareWire>()
-            {
-                new CompareWire(){ X = 257.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 267.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 175, WireId = new ObjectId() },
-                new CompareWire(){ X = 252.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 232.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 237.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 247.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 262.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 272.5, Y = 185, WireId = new ObjectId() },
-                new CompareWire(){ X = 277.5, Y = 185, WireId = new ObjectId() },
-            };
-            // Act
-
-            unsortedWires.Sort(new HalfWire());
-            // Assert
-            CollectionAssert.AreEqual(sortedWires, sortedWires2, new CompareWireComparer());
-            */
+            StringAssert.StartsWith(shortNameKc, "КЦ6+");
         }
     }
 }
