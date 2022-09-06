@@ -1,4 +1,5 @@
 ﻿using Autodesk.AutoCAD.GraphicsInterface;
+using CommonHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,18 @@ namespace LinkCommands.Services
             if (signalType == SignalType.Shleif)
             {
                 var shleifStr = "ШС";
-                var kcStr = "КЦ";
+
                 if (source.Contains(shleifStr) && !destination.Contains(shleifStr))
                     return shleifStr + TextAfter(source, shleifStr);
                 if (!source.Contains(shleifStr) && destination.Contains(shleifStr))
                     return shleifStr + TextAfter(destination, shleifStr);
                 if (source.Contains(shleifStr) && destination.Contains(shleifStr))
                     return shleifStr + TextAfter(source, shleifStr);
+            }
+
+            if (signalType == SignalType.KC)
+            {
+                var kcStr = "КЦ";
 
                 if (source.Contains(kcStr) && !destination.Contains(kcStr))
                     return kcStr + TextAfter(source, kcStr);
@@ -48,7 +54,39 @@ namespace LinkCommands.Services
                 if (source.Contains(kcStr) && destination.Contains(kcStr))
                     return kcStr + TextAfter(source, kcStr);
             }
-            return "";
+
+            if (signalType == SignalType.Power)
+            {
+                if (source.StartsWith("0В") && destination.StartsWith("0В"))
+                    return "0В";
+                if (source.StartsWith("GND") && destination.StartsWith("GND"))
+                    return "GND";
+                if (source.StartsWith("GND") && destination.StartsWith("0В"))
+                    return source;
+                if (source.StartsWith("0В") && destination.StartsWith("GND"))
+                    return source;
+                if (source.Equals("L") && destination.Equals("L"))
+                    return "L";
+                if (source.Equals("N") && destination.Equals("N"))
+                    return "N";
+                if (source.StartsWith("+") && source.EndsWith("В") && destination.StartsWith("+") && !destination.EndsWith("В"))
+                    return source;
+                if (source.StartsWith("+") && !source.EndsWith("В") && destination.StartsWith("+") && destination.EndsWith("В"))
+                    return destination;
+                if (source.StartsWith("+") && !destination.StartsWith("+"))
+                    return source;
+                if(!source.StartsWith("+") && destination.StartsWith("+"))
+                    return destination;
+                if (source.StartsWith("-") && !destination.StartsWith("-"))
+                    return source;
+                if (!source.StartsWith("-") && destination.StartsWith("-"))
+                    return destination;
+                if (Mathematic.IsNumeric(source) && !Mathematic.IsNumeric(destination))
+                    return destination;
+                if (!Mathematic.IsNumeric(source) && Mathematic.IsNumeric(destination))
+                    return source;
+            }
+            return "??";
         }
         public static string TextAfter(this string value, string search)
         {

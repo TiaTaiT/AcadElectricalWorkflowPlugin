@@ -42,9 +42,40 @@ namespace AutoCommands.Test
             var sourceKc = "2КЦ6+";
             var targetKc = "КЦ6+";
             var shortNameKc = WireNameGenerator.GetShortWireName(sourceKc,
-                targetKc, WireNameGenerator.SignalType.Shleif);
+                targetKc, WireNameGenerator.SignalType.KC);
 
             StringAssert.StartsWith(shortNameKc, "КЦ6+");
+
+            var sourcePowerN = "N";
+            var targetPowerN = "N";
+            var shortNamePowerN1 = WireNameGenerator.GetShortWireName(sourcePowerN,
+                targetPowerN, WireNameGenerator.SignalType.Power);
+
+            StringAssert.StartsWith(shortNamePowerN1, "N");
+
+            var shortNamePowerN2 = WireNameGenerator.GetShortWireName("N", "GND", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerN2, "??");
+
+            var shortNamePowerGND1 = WireNameGenerator.GetShortWireName("0В", "GND", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerGND1, "0В");
+
+            var shortNamePowerGND2 = WireNameGenerator.GetShortWireName("GND", "0В", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerGND2, "GND");
+
+            var shortNamePowerGND3 = WireNameGenerator.GetShortWireName("GND", "GND1", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerGND3, "GND");
+
+            var shortNamePowerPlus1 = WireNameGenerator.GetShortWireName("+24В", "(12-24)В", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus1, "+24В");
+
+            var shortNamePowerPlus2 = WireNameGenerator.GetShortWireName("+24В", "+U1", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus1, "+24В");
+
+            var shortNamePowerPlus3 = WireNameGenerator.GetShortWireName("+U1", "+24В", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus3, "+24В");
+
+            var shortNamePowerPlus4 = WireNameGenerator.GetShortWireName("0В", "4", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus4, "0В");
         }
     }
 }

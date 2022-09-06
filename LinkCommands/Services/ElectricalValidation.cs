@@ -1,9 +1,12 @@
 ﻿using Autodesk.AutoCAD.GraphicsInterface;
 using Autodesk.AutoCAD.Runtime;
+using CommonHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using static Autodesk.AutoCAD.DatabaseServices.RenderGlobal;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LinkCommands.Services
 {
@@ -53,36 +56,114 @@ namespace LinkCommands.Services
                 return;
             }
 
+            if (IsKc(source, destination))
+            {
+                if (!CheckValidKc(source, destination))
+                {
+                    ErrorMessage = "Signal type was define as shleif, but link is not correct";
+                    IsValid = false;
+                }
+                ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.KC);
+
+                return;
+            }
+
+            if (IsPower(source, destination))
+            {
+                if (!CheckValidPower(source, destination))
+                {
+                    ErrorMessage = "Signal type was define as shleif, but link is not correct";
+                    IsValid = false;
+                }
+                ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Power);
+
+                return;
+            }
+
             ShortName = GetApproximateName(source, destination);
             ErrorMessage = "Unrecognized signal type!";
             IsValid = false;
         }
 
+        private bool CheckValidKc(string source, string destination)
+        {
+            return true;
+        }
+
         private bool CheckValidShleif(string source, string destination)
         {
-            return source.Contains("ШС") ||
-               destination.Contains("ШС") ||
-               source.Contains("КЦ") ||
-               destination.Contains("КЦ") ||
-               IsNumeric(source) ||
-               IsNumeric(destination);
+            return true;
+        }
+
+        private bool CheckValidPower(string source, string destination)
+        {
+            if ((source.StartsWith("+") && (destination.StartsWith("-") || destination.StartsWith("0В") || destination.Contains("GND"))) ||
+                ((source.StartsWith("-") || source.StartsWith("0В") || source.Contains("GND")) && destination.StartsWith("+")))
+                return false;
+
+            var sourceVoltageRange = GetVoltageRange(source); // диапазон напряжений (минимум, максимум)
+            var destinationVoltageRange = GetVoltageRange(destination);
+
+            return Mathematic.AreRangesIntersect(sourceVoltageRange, destinationVoltageRange);
+        }
+
+        private (int, int) GetVoltageRange(string str)
+        {
+            if (str.StartsWith("+") || str.StartsWith("-") || str.StartsWith("~"))
+            {
+                var voltageStr = str.Substring(1);
+                var result = int.TryParse(GetFirstDigits(voltageStr), out var output);
+
+                return (output, output);
+            }
+
+            if (str.StartsWith("(") && str.Contains("-") && str.EndsWith(")В"))
+            {
+                var numbers = Mathematic.GetAllNumbers(str);
+
+                if (numbers.Count != 2)
+                    throw new System.Exception("Numbers count != 2");
+
+                return (numbers.First(), numbers.Last());
+            }
+
+            return (0, 0);
         }
 
         private bool IsShleif(string source, string destination)
         {
             return source.Contains("ШС") ||
-               destination.Contains("ШС") ||
-               source.Contains("КЦ") ||
+               destination.Contains("ШС");
+        }
+
+        private bool IsKc(string source, string destination)
+        {
+            return source.Contains("КЦ") ||
                destination.Contains("КЦ");
+        }
+        private bool IsPower(string source, string destination)
+        {
+            return source.StartsWith("+") ||
+               destination.StartsWith("+") ||
+               source.StartsWith("-") ||
+               destination.StartsWith("-") ||
+               source.StartsWith("~") ||
+               destination.StartsWith("~") ||
+               source.StartsWith("0В") ||
+               destination.StartsWith("0В") ||
+               source.StartsWith("GND") ||
+               destination.StartsWith("GND") ||
+               (source.StartsWith("(") && source.EndsWith(")В")) ||
+               (destination.StartsWith("(") && destination.EndsWith(")В"));
         }
 
         private string GetApproximateName(string source, string destination)
         {
-            if (IsNumeric(source))
+            if (Mathematic.IsNumeric(source))
             {
                 return destination;
             }
-            if (IsNumeric(destination))
+            if (Mathematic.IsNumeric(destination))
             {
                 return source;
             }
@@ -113,16 +194,12 @@ namespace LinkCommands.Services
                    _rs485gnd.Contains(destination);
         }
 
-        private bool IsNumeric(string s)
+        
+
+        private string GetFirstDigits(string inputStr)
         {
-            foreach (char c in s)
-            {
-                if (!char.IsDigit(c))
-                {
-                    return false;
-                }
-            }
-            return true;
+            var firstDigitsCharacters = inputStr.TakeWhile(c => char.IsDigit(c));
+            return new string(firstDigitsCharacters.ToArray());
         }
 
         private List<string> _rs485a = new List<string>(
