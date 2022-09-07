@@ -77,6 +77,10 @@ namespace LinkCommands.Services
                     return source;
                 if(!source.StartsWith("+") && destination.StartsWith("+"))
                     return destination;
+                if (source.StartsWith("-ПИ") && !destination.StartsWith("-ПИ"))
+                    return destination;
+                if (!source.StartsWith("-ПИ") && destination.StartsWith("-ПИ"))
+                    return source;
                 if (source.StartsWith("-") && !destination.StartsWith("-"))
                     return source;
                 if (!source.StartsWith("-") && destination.StartsWith("-"))
@@ -84,6 +88,8 @@ namespace LinkCommands.Services
                 if (Mathematic.IsNumeric(source) && !Mathematic.IsNumeric(destination))
                     return destination;
                 if (!Mathematic.IsNumeric(source) && Mathematic.IsNumeric(destination))
+                    return source;
+                if (source.Equals(destination))
                     return source;
             }
             return "??";

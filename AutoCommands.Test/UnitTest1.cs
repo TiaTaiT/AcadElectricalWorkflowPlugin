@@ -76,6 +76,15 @@ namespace AutoCommands.Test
 
             var shortNamePowerPlus4 = WireNameGenerator.GetShortWireName("0В", "4", WireNameGenerator.SignalType.Power);
             StringAssert.StartsWith(shortNamePowerPlus4, "0В");
+
+            var shortNamePowerPlus5 = WireNameGenerator.GetShortWireName("-ПИ1", "0В", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus5, "0В");
+
+            var shortNamePowerPlus6 = WireNameGenerator.GetShortWireName("0В", "-ПИ2", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerPlus6, "0В");
+
+            var shortNameTheSame = WireNameGenerator.GetShortWireName("+12В", "+12В", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNameTheSame, "+12В");
         }
     }
 }
