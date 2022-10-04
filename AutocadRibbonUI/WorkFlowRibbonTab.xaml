@@ -14,7 +14,7 @@
                     Text="Count"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMCOUNT">
                 </windows:RibbonButton>
@@ -24,7 +24,7 @@
                     Text="Color"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMCOLOR">
                 </windows:RibbonButton>
@@ -34,7 +34,7 @@
                     Text="Inc"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMINCREMENT">
                 </windows:RibbonButton>
@@ -50,7 +50,7 @@
                     Text="Add"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMADDPREFIX">
                 </windows:RibbonButton>
@@ -60,7 +60,7 @@
                     Text="Find"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMFINDREPLACE">
                 </windows:RibbonButton>
@@ -70,7 +70,7 @@
                     Text="SetAtt"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="TERMSETATTRIBUTE">
                 </windows:RibbonButton>
@@ -81,7 +81,7 @@
     </windows:RibbonPanel>
 
     <windows:RibbonPanel >
-        <windows:RibbonPanelSource  Title="My panel2" >
+        <windows:RibbonPanelSource  Title="Linker" >
 
             <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
                 <windows:RibbonButton
@@ -89,12 +89,24 @@
                     Text="Wire"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="LINKWIRES">
                 </windows:RibbonButton>
             </windows:RibbonRowPanel>
-            
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="SixthButton"
+                    Text="Delete"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\33.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKPAIRREMOVE">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
             <windows:RibbonRowBreak/>
 
             <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
@@ -103,7 +115,7 @@
                     Text="Poly"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="LINKMULTIWIRES">
                 </windows:RibbonButton>
@@ -115,7 +127,7 @@
                     Text="Pair"
                     ShowText="True"
                     Size="Standard"
-                    Image="Bee.png"
+                    Image="Assets\10.png"
                     Orientation="Vertical"
                     CommandParameter="LINKPAIRMULTIWIRES">
                 </windows:RibbonButton>

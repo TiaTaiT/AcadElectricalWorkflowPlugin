@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="ComparerWire.cs" />
     <Compile Include="CompareWireComparer.cs" />
+    <Compile Include="TestLinkSymbolNameResolver.cs" />
     <Compile Include="TestMath.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

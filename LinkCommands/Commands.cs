@@ -50,5 +50,18 @@ namespace LinkCommands
                 wiresLinker.Run();
             }
         }
+
+        // Remove all multiwires link simbols
+        [CommandMethod("LINKPAIRREMOVE", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
+        public void LinkPairRemove()
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+
+            var wiresLinker = new LinkRemover(doc);
+            if (wiresLinker.Init())
+            {
+                wiresLinker.Run();
+            }
+        }
     }
 }
