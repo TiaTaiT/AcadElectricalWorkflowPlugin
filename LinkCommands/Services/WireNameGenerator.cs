@@ -81,6 +81,10 @@ namespace LinkCommands.Services
                     return destination;
                 if (!source.StartsWith("-ПИ") && destination.StartsWith("-ПИ"))
                     return source;
+                if (source.StartsWith("-U") && !destination.StartsWith("-U"))
+                    return destination;
+                if (!source.StartsWith("-U") && destination.StartsWith("-U"))
+                    return source;
                 if (source.StartsWith("-") && !destination.StartsWith("-"))
                     return source;
                 if (!source.StartsWith("-") && destination.StartsWith("-"))

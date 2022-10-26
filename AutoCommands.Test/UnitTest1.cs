@@ -65,6 +65,9 @@ namespace AutoCommands.Test
             var shortNamePowerGND3 = WireNameGenerator.GetShortWireName("GND", "GND1", WireNameGenerator.SignalType.Power);
             StringAssert.StartsWith(shortNamePowerGND3, "GND");
 
+            var shortNamePowerGND4 = WireNameGenerator.GetShortWireName("0В", "-U1", WireNameGenerator.SignalType.Power);
+            StringAssert.StartsWith(shortNamePowerGND4, "0В");
+
             var shortNamePowerPlus1 = WireNameGenerator.GetShortWireName("+24В", "(12-24)В", WireNameGenerator.SignalType.Power);
             StringAssert.StartsWith(shortNamePowerPlus1, "+24В");
 
