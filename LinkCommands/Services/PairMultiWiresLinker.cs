@@ -32,16 +32,7 @@ namespace LinkCommands.Services
         private List<ObjectId> _destinationLinkSymbols = new();
         private List<(ObjectId, ObjectId)> _sourceDestinationLinkSymbols = new();
 
-        private char _up = '4';
-        private char _down = '2';
-        private char _right = '3';
-        private char _left = '1';
-
-        private string _symbolPrefix = "HA";
-        private string _symbolTypeWave = "4";
-        private string _symbolTypeHexagon = "3";
-        private string _sourceSymbolCode = "S";
-        private string _destinationSymbolCode = "D";
+        
         private ObjectId _sourceLinkSymbolId;
         private ObjectId _destinationLinkSymbolId;
 
@@ -142,6 +133,15 @@ namespace LinkCommands.Services
             tr.Commit();
         }
 
+        private void GetExistSourceDestinationSymbols()
+        {
+            var sourceNames = LinkSymbolNameResolver.GetSourceSymbolNames();
+            _sourceLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, sourceNames));
+
+            var destinationNames = LinkSymbolNameResolver.GetSourceSymbolNames();
+            _destinationLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, destinationNames));
+        }
+
         private void GenerateMultiwire()
         {
             var sourceSymbolEntity = (Entity)_sourceLinkSymbolId.GetObject(OpenMode.ForRead);
@@ -156,8 +156,10 @@ namespace LinkCommands.Services
             var sourceDirection = GeometryFunc.GetDirection(sourceSymbolPoint, sourceEndPoint);
             var destinationDirection = GeometryFunc.GetDirection(destinationSymbolPoint, destinationEndPoint);
 
-            var sourceSymbolName = GetSourceName(sourceDirection, _symbolTypeWave);
-            var destinationSymbolName = GetDestinationName(destinationDirection, _symbolTypeWave);
+            var sourceSymbolName = LinkSymbolNameResolver.GetSourceName(sourceDirection,
+                LinkSymbolNameResolver._symbolTypeWave);
+            var destinationSymbolName = LinkSymbolNameResolver.GetDestinationName(destinationDirection,
+                LinkSymbolNameResolver._symbolTypeWave);
 
             var description = GetFirstFreeNumber(tr).ToString();
             var newSigCode = Guid.NewGuid().ToString();
@@ -168,29 +170,7 @@ namespace LinkCommands.Services
             _destinationLinkSymbolId = BlockUtils.InsertBlockFormFile(_db, destinationSymbolName, destinationSymbolPoint, attributes, Layers.Symbols);
         }
 
-        private string GetDestinationName(IAutocadDirectionEnum.Direction destinationDirection, string symbolTypeWave)
-        {
-            return destinationDirection switch
-            {
-                IAutocadDirectionEnum.Direction.Right => _symbolPrefix + symbolTypeWave + _destinationSymbolCode + _right,
-                IAutocadDirectionEnum.Direction.Above => _symbolPrefix + symbolTypeWave + _destinationSymbolCode + _up,
-                IAutocadDirectionEnum.Direction.Left => _symbolPrefix + symbolTypeWave + _destinationSymbolCode + _left,
-                IAutocadDirectionEnum.Direction.Below => _symbolPrefix + symbolTypeWave + _destinationSymbolCode + _down,
-                _ => _symbolPrefix + symbolTypeWave + _destinationSymbolCode + _up,
-            };
-        }
-
-        private string GetSourceName(IAutocadDirectionEnum.Direction sourceDirection, string symbolTypeWave)
-        {
-            return sourceDirection switch
-            {
-                IAutocadDirectionEnum.Direction.Right => _symbolPrefix + symbolTypeWave + _sourceSymbolCode + _right,
-                IAutocadDirectionEnum.Direction.Above => _symbolPrefix + symbolTypeWave + _sourceSymbolCode + _up,
-                IAutocadDirectionEnum.Direction.Left => _symbolPrefix + symbolTypeWave + _sourceSymbolCode + _left,
-                IAutocadDirectionEnum.Direction.Below => _symbolPrefix + symbolTypeWave + _sourceSymbolCode + _down,
-                _ => _symbolPrefix + symbolTypeWave + _sourceSymbolCode + _down,
-            };
-        }
+        
 
         private IEnumerable<ObjectId> EraseUnpairSymbols(Transaction tr)
         {
@@ -288,26 +268,7 @@ namespace LinkCommands.Services
             return (startPoint, endPoint);
         }
 
-        private void GetExistSourceDestinationSymbols()
-        {
-            var sourceNames = new List<string>
-            {
-                _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _up,
-                _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _left,
-                _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _down,
-                _symbolPrefix + _symbolTypeWave + _sourceSymbolCode + _right
-            };
-            _sourceLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, sourceNames));
-
-            var destinationNames = new List<string>
-            {
-                _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _up,
-                _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _left,
-                _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _down,
-                _symbolPrefix + _symbolTypeWave + _destinationSymbolCode + _right
-            };
-            _destinationLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, destinationNames));
-        }
+        
 
         private void HighlightObjects(IEnumerable<Entity> entities)
         {

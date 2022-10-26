@@ -39,6 +39,7 @@ namespace CommonHelpers
 
         public static IEnumerable<ObjectId> GetBlockIdsByNames(Database db, IEnumerable<string> names)
         {
+            var result = new List<ObjectId>();
             using var tr = db.TransactionManager.StartTransaction();
             var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
             foreach (var item in btl)
@@ -60,12 +61,14 @@ namespace CommonHelpers
                     foreach (var name in names)
                     {
                         if (br.Name.Equals(name))
-                            yield return entity.Id;
+                            //yield return entity.Id;
+                            result.Add(entity.Id);
                     }
                     
                 }
             }
             tr.Commit();
+            return result;
         }
     }
 }
