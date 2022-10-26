@@ -101,6 +101,8 @@
     <Compile Include="Models\HalfWire.cs" />
     <Compile Include="Models\MultiWire.cs" />
     <Compile Include="Models\HalfMultiWire.cs" />
+    <Compile Include="Models\NetTypes.cs" />
+    <Compile Include="Models\NetTypeClassificator.cs" />
     <Compile Include="Models\Wire.cs" />
     <Compile Include="Models\HalfWireComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

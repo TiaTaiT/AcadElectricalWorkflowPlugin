@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.GraphicsInterface;
 using Autodesk.AutoCAD.Runtime;
 using CommonHelpers;
+using LinkCommands.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,26 +173,23 @@ namespace LinkCommands.Services
 
         private bool CheckValidRs485(string source, string destination)
         {
-            if (_rs485a.Contains(source) && _rs485a.Contains(destination))
-                return true;
+            var sourceType = NetTypeClassificator.GetNetTypes(source);
+            var destinationType = NetTypeClassificator.GetNetTypes(destination);
 
-            if (_rs485b.Contains(source) && _rs485b.Contains(destination))
+            if (sourceType == destinationType)
                 return true;
-
-            if (_rs485gnd.Contains(source) && _rs485gnd.Contains(destination))
-                return true;
-
+            
             return false;
         }
 
         private bool IsRs485(string source, string destination)
         {
-            return _rs485a.Contains(source) ||
-                   _rs485a.Contains(destination) ||
-                   _rs485b.Contains(source) ||
-                   _rs485b.Contains(destination) ||
-                   _rs485gnd.Contains(source) ||
-                   _rs485gnd.Contains(destination);
+            return NetTypeClassificator.IsRs485A(source) ||
+                   NetTypeClassificator.IsRs485A(destination) ||
+                   NetTypeClassificator.IsRs485B(source) ||
+                   NetTypeClassificator.IsRs485B(destination) ||
+                   NetTypeClassificator.IsRs485Gnd(source) ||
+                   NetTypeClassificator.IsRs485Gnd(destination);
         }
 
         
@@ -202,16 +200,6 @@ namespace LinkCommands.Services
             return new string(firstDigitsCharacters.ToArray());
         }
 
-        private List<string> _rs485a = new List<string>(
-            new string[] { "RS485A", "RS485(A)", "A", "A1", "A2", "A3", "A4" }
-        );
-
-        private List<string> _rs485b = new List<string>(
-            new string[] { "RS485B", "RS485(B)", "B", "B1", "B2", "B3", "B4" }
-        );
-
-        private List<string> _rs485gnd = new List<string>(
-            new string[] { "RS485GND", "RS485(GND)", "GND", "C", "C1", "C2", "C3", "C4" }
-        );
+        
     }
 }

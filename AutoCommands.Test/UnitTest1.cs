@@ -69,7 +69,7 @@ namespace AutoCommands.Test
             StringAssert.StartsWith(shortNamePowerPlus1, "+24В");
 
             var shortNamePowerPlus2 = WireNameGenerator.GetShortWireName("+24В", "+U1", WireNameGenerator.SignalType.Power);
-            StringAssert.StartsWith(shortNamePowerPlus1, "+24В");
+            StringAssert.StartsWith(shortNamePowerPlus2, "+24В");
 
             var shortNamePowerPlus3 = WireNameGenerator.GetShortWireName("+U1", "+24В", WireNameGenerator.SignalType.Power);
             StringAssert.StartsWith(shortNamePowerPlus3, "+24В");
