@@ -12,7 +12,6 @@ namespace AutocadCommands.Helpers
         /// <summary>
         /// Get attribute value.
         /// </summary>
-        /// <param name="tr">Autocad database transaction</param>
         /// <param name="attCol">Attribute collection</param>
         /// <param name="tagName">Attribute name</param>
         /// <returns></returns>
@@ -20,9 +19,29 @@ namespace AutocadCommands.Helpers
         {
             foreach (ObjectId attId in attCol)
             {
-                
+
                 var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 if (att.Tag.Equals(tagName))
+                {
+                    return att.TextString;
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Get attribute value start with 'tagNameStart'
+        /// </summary>
+        /// <param name="attCol">Attribute collection</param>
+        /// <param name="tagName">The beginning of the attribute name</param>
+        /// <returns></returns>
+        public static string GetAttributeValueStartWith(AttributeCollection attCol, string tagNameStart)
+        {
+            foreach (ObjectId attId in attCol)
+            {
+
+                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
+                if (att.Tag.StartsWith(tagNameStart))
                 {
                     return att.TextString;
                 }
@@ -43,13 +62,13 @@ namespace AutocadCommands.Helpers
             {
                 var br = (BlockReference)tr.GetObject(objectId, OpenMode.ForRead, false, true);
                 //var obj = objectId.GetObject(OpenMode.ForRead, false);
-                
+
 
                 var attrColl = /*((BlockReference)obj)*/br.AttributeCollection;
 
                 return attrColl;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -64,10 +83,32 @@ namespace AutocadCommands.Helpers
         public static Dictionary<string, string> GetAttributes(Transaction tr, AttributeCollection attCol)
         {
             var attributes = new Dictionary<string, string>();
-            
+
             foreach (ObjectId attId in attCol)
             {
                 var att = (AttributeReference)tr.GetObject(attId, OpenMode.ForRead);
+                if (att.Tag != null)
+                {
+                    attributes.Add(att.Tag, att.TextString);
+                }
+            }
+
+            return attributes;
+        }
+
+        /// <summary>
+        /// Get attributes from AttributeCollection without transaction
+        /// </summary>
+        /// <param name="attCol">Attributes collection</param>
+        /// <returns>Dictionary(AttributeTag, AttributeValue)</returns>
+        public static Dictionary<string, string> GetAttributesFromCollection(AttributeCollection attCol)
+        {
+            var attributes = new Dictionary<string, string>();
+
+            foreach (ObjectId attId in attCol)
+            {
+
+                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 if (att.Tag != null)
                 {
                     attributes.Add(att.Tag, att.TextString);

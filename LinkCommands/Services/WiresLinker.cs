@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.Runtime;
 using CommonHelpers;
 using CommonHelpers.Model;
 using LinkCommands.Models;
+using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,6 +23,8 @@ namespace AutocadCommands.Services
         
 
         private List<(ObjectId, ObjectId)> _sourceDestPairIds = new();
+        private ComponentsFactory _componentsFactory;
+
         //private List<FullWire> _fullWires = new();
         //private Polyline connectedMultiwire; // bus polyline
 
@@ -31,6 +34,8 @@ namespace AutocadCommands.Services
 
         public override bool Init()
         {
+            CreateComponentsFactory();
+
             var escape = false;
 
             while(!escape)
@@ -81,6 +86,13 @@ namespace AutocadCommands.Services
             return true;
         }
 
+        private void CreateComponentsFactory()
+        {
+            using var tr = _db.TransactionManager.StartTransaction();
+            _componentsFactory = new ComponentsFactory(_db);
+            tr.Dispose();
+        }
+
         private void HighlightObject(ObjectId sourceWireId)
         {
             using var tr = _db.TransactionManager.StartTransaction();
@@ -101,7 +113,9 @@ namespace AutocadCommands.Services
             using var tr = _db.TransactionManager.StartTransaction();
             for (var i = 0; i < _sourceDestPairIds.Count(); i++)
             {
-                var wire = new Wire(_sourceDestPairIds[i].Item1, _sourceDestPairIds[i].Item2);
+                var wire = new Wire(_sourceDestPairIds[i].Item1, 
+                                    _sourceDestPairIds[i].Item2, 
+                                    _componentsFactory.Components);
                 wire.Create();
             }
             

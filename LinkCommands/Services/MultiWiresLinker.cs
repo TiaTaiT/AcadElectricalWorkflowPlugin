@@ -6,8 +6,11 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
+using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +22,7 @@ namespace AutocadCommands.Services
 
         private List<Entity> _multiWireEntities = new();
         private List<MultiWire> _multiWires = new();
+        private ComponentsFactory _componentsFactory;
 
         public MultiWiresLinker(Document doc) : base(doc)
         {
@@ -26,6 +30,8 @@ namespace AutocadCommands.Services
 
         public override bool Init()
         {
+            CreateComponentsFactory();
+            
             //Make the selection   
             var selectedItems = _ed.SelectImplied();
 
@@ -85,6 +91,13 @@ namespace AutocadCommands.Services
             return _multiWireEntities.Any();
         }
 
+        private void CreateComponentsFactory()
+        {
+            using var tr = _db.TransactionManager.StartTransaction();
+            _componentsFactory = new ComponentsFactory(_db);           
+            tr.Dispose();
+        }
+
         private IEnumerable<Entity> GetMultiWireEntities(ObjectId[] objectIds)
         {
             using var acTrans = _db.TransactionManager.StartTransaction();
@@ -112,7 +125,7 @@ namespace AutocadCommands.Services
             foreach(Entity entity in _multiWireEntities)
             {
                 var polyLine = (Polyline)entity;
-                var multiWire = new MultiWire(polyLine);
+                var multiWire = new MultiWire(polyLine, _componentsFactory.Components);
                 multiWire.Clean();
                 multiWire.Create();
             }

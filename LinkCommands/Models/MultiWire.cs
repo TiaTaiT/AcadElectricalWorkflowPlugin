@@ -23,6 +23,7 @@ namespace AutocadCommands.Models
         private List<HalfWire> _destinationHalfWires = new();
         private List<Wire> _wires = new();
         private IEnumerable<Curve> _allWires;
+        private IEnumerable<ElectricalComponent> _components;
 
         private void CreateMultiwire()
         {
@@ -37,8 +38,8 @@ namespace AutocadCommands.Models
             Debug.WriteLine("Wires count = " + ConnectedWires.Count());
 
             var sortedHalfWires = GetSortHalfWire();
-            if (!SeparateSourceAndDestination(sortedHalfWires))
-                return; 
+            SeparateSourceAndDestination(sortedHalfWires);
+            
         }
 
         private bool CreateWires()
@@ -54,7 +55,7 @@ namespace AutocadCommands.Models
 
             for (var i = 0; i < max; i++)
             {
-                var wire = new Wire(_sourceHalfWires[i], _destinationHalfWires[i]);
+                var wire = new Wire(_sourceHalfWires[i], _destinationHalfWires[i], _components);
                 wire.Create();
                 result = true;
             }
@@ -131,8 +132,7 @@ namespace AutocadCommands.Models
 
             foreach (var wire in ConnectedWires)
             {
-                ;
-                connectedToMultiwireWires.Add(new HalfWire(wire));
+                connectedToMultiwireWires.Add(new HalfWire(wire, _components));
             }
             connectedToMultiwireWires.Sort(new HalfWireComparer());
             return connectedToMultiwireWires;
@@ -158,8 +158,9 @@ namespace AutocadCommands.Models
 
         
         #region Constructors
-        public MultiWire(Polyline polyLine)
+        public MultiWire(Polyline polyLine, IEnumerable<ElectricalComponent> components)
         {
+            _components = components;
             Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Multiwire = polyLine;
             var db = Application.DocumentManager.MdiActiveDocument.Database;
@@ -170,8 +171,10 @@ namespace AutocadCommands.Models
         public MultiWire(IEnumerable<Entity> sourceEntities, 
                          Entity sourceLinkSymbol, 
                          IEnumerable<Entity> destinationEntities,
-                         Entity destinationLinkSymbol)
+                         Entity destinationLinkSymbol,
+                         IEnumerable<ElectricalComponent> components)
         {
+            _components = components;
             Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Source = new HalfMultiWire
             {
@@ -226,14 +229,8 @@ namespace AutocadCommands.Models
         /// </summary>
         public void Clean()
         {
-            if(Source != null)
-            {
-                Source.Clean();
-            }
-            if (Destination != null)
-            {
-                Destination.Clean();
-            }
+            Source?.Clean();
+            Destination?.Clean();
         }
     }
 }

@@ -35,6 +35,7 @@ namespace LinkCommands.Services
         
         private ObjectId _sourceLinkSymbolId;
         private ObjectId _destinationLinkSymbolId;
+        private ComponentsFactory _componentsFactory;
 
         private List<FakeAttribute> GetAttributes(string description, string sigCode)
         {
@@ -57,6 +58,8 @@ namespace LinkCommands.Services
 
         public override bool Init()
         {
+            CreateComponentsFactory();
+
             //Make the selection
             var options1 = new PromptEntityOptions("\nSelect source line: ");
             options1.SetRejectMessage("\nSelected object is no a line.");
@@ -133,6 +136,13 @@ namespace LinkCommands.Services
             tr.Commit();
         }
 
+        private void CreateComponentsFactory()
+        {
+            using var tr = _db.TransactionManager.StartTransaction();
+            _componentsFactory = new ComponentsFactory(_db);
+            tr.Dispose();
+        }
+
         private void GetExistSourceDestinationSymbols()
         {
             var sourceNames = LinkSymbolNameResolver.GetSourceSymbolNames();
@@ -147,7 +157,12 @@ namespace LinkCommands.Services
             var sourceSymbolEntity = (Entity)_sourceLinkSymbolId.GetObject(OpenMode.ForRead);
             var destinationSymbolEntity = (Entity)_destinationLinkSymbolId.GetObject(OpenMode.ForRead);
 
-            var multiwire = new MultiWire(_sourceMultiwireEntities, sourceSymbolEntity, _destinationMultiwireEntities, destinationSymbolEntity);
+            var multiwire = 
+                new MultiWire(_sourceMultiwireEntities, 
+                              sourceSymbolEntity, 
+                              _destinationMultiwireEntities, 
+                              destinationSymbolEntity,
+                              _componentsFactory.Components);
             multiwire.Create();
         }
 

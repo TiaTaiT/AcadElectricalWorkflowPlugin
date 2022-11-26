@@ -61,19 +61,6 @@ namespace LinkCommands.Models
             public const string AttributeWire = "X0TERM";
         }
 
-        private bool IsOneOfTerminalLinks(string str)
-        {
-            if(string.IsNullOrEmpty(str)) return false;
-
-            if (str.StartsWith(Left.AttributeWire) ||
-               str.StartsWith(Right.AttributeWire) ||
-               str.StartsWith(Up.AttributeWire) ||
-               str.StartsWith(Down.AttributeWire))
-                return true;
-
-            return false;
-        }
-
         private string GetShortAttributeMultiwireConnected(string blockName)
         {
             if (blockName.Equals(Left.SourceBlockName) || blockName.Equals(Left.DestinationBlockName))
@@ -100,13 +87,6 @@ namespace LinkCommands.Models
                 return Up.AttributeWire;
 
             throw new Exception("GetAttributeMultiwireConnected. Block name not found!");
-        }
-
-        
-
-        private Point3d GetWirePoint()
-        {
-            throw new NotImplementedException();
         }
 
         private Point3d GetMultiWirePoint(ObjectId LinkSimbolId)
@@ -256,66 +236,21 @@ namespace LinkCommands.Models
                 Debug.WriteLine("Original Z: " + originSymbolPoint.Z + " -> " + shiftPoint.Z);
                 var moveVec = new Vector3d(originSymbolPoint.X - shiftPoint.X, originSymbolPoint.Y - shiftPoint.Y, originSymbolPoint.Z - shiftPoint.Z);
                 BlockUtils.MoveBlockReference(_db, linkSymbolId, moveVec);
-            }
-
-            //LinkerHelper.EraseBlockIfExist(db, PointConnectedToMultiWire);
-            
+            }            
         }
 
-        
-
-        public string GetWireDescription(Point3d point3D)
-        {
-            using var btr = (BlockTableRecord)SymbolUtilityServices.GetBlockModelSpaceId(_db).GetObject(OpenMode.ForRead);
-
-            var rxClass = RXClass.GetClass(typeof(BlockReference));
-            foreach (ObjectId id in btr)
-            {
-                if (id.ObjectClass.IsDerivedFrom(rxClass))
-                {
-                    var blkref = (BlockReference)id.GetObject(OpenMode.ForRead);
-                    var attributes = blkref.AttributeCollection;
-                    foreach (ObjectId attId in attributes)
-                    {
-                        var attref = (AttributeReference)attId.GetObject(OpenMode.ForRead);
-
-                        if (!attref.Position.Equals(point3D))
-                            continue;
-
-                        if (IsOneOfTerminalLinks(attref.Tag))
-                        {
-                            var terminalNumberString = attref.Tag.Substring(6); // Exclude X?TERM from X?TERM01
-                            var terminalDescriptionTag = "";
-                            // If it is terminal, we must read attribute DESC1 for net name
-                            if (blkref.Name.StartsWith("VT0002_") || blkref.Name.StartsWith("HT0002_"))
-                                terminalDescriptionTag = "DESC1";
-                            else
-                                terminalDescriptionTag = "TERM" + terminalNumberString;
-
-                            foreach (ObjectId objectId in attributes)
-                            {
-                                AttributeReference terminalAttr = (AttributeReference)objectId.GetObject(OpenMode.ForRead);
-                                if (terminalAttr.Tag.Equals(terminalDescriptionTag))
-                                {
-                                    ComponentId = blkref.ObjectId;
-                                    return terminalAttr.TextString;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            throw new Exception("Terminal attribute on this place wasn't found");
-        }
+        private IEnumerable<ElectricalComponent> _components;
 
         public Entity WireEntity { get; set; }
 
         public Point3d PointConnectedToMultiWire { get; set; }
 
-        public HalfWire(Entity wireEntity)
+        public HalfWire(Entity wireEntity, IEnumerable<ElectricalComponent> components)
         {
             if (wireEntity == null)
                 return;
+
+            _components = components;
 
             WireEntity = wireEntity;
 
@@ -336,82 +271,42 @@ namespace LinkCommands.Models
             _direction = GeometryFunc.GetDirection(zeroPoint, GetEndPoint(WireEntity));
         }
 
-        private bool SetWireComponentCross(Entity wireEntity)
-        {
-            var blockIds = GetObjectsUtils.GetObjects<BlockReference>(_db, Layers.Symbols).ToList();
-
-            if (blockIds == null || blockIds.Count() == 0)
-                return false;
-
-            var components = AttributeHelper.GetObjectsStartWith(_db, "TERM");
-            
-            foreach(var component in components)
-            {
-                
-                if (TryGetPointWhereWireConnectedToComponent(component, wireEntity))
-                {
-                    Debug.WriteLine("Point: X = " + PointConnectedToComponent.X + "; Y = " + PointConnectedToComponent.Y + "    " + Description);
-                    break;
-                }    
-            }
-
-            return false;
-        }
-
-        private bool TryGetPointWhereWireConnectedToComponent(BlockReference component, Entity wireEntity)
+        private void SetWireComponentCross(Entity wireEntity)
         {
             var curve = (Curve)wireEntity;
-            var startPoint = curve.StartPoint;
-            var endPoint = curve.EndPoint;
-
-
-            var blkref = (BlockReference)component;
-            var attributes = blkref.AttributeCollection;
-            foreach (ObjectId attrId in attributes)
+            foreach (var component in _components)
             {
-                var attref = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
-                if (!attref.Position.Equals(startPoint) && !attref.Position.Equals(endPoint))
-                    continue;
-
-                PointConnectedToComponent = startPoint;
-                    
-                if (attref.Position.Equals(startPoint))
+                foreach(var terminal in component.Terminals)
                 {
-                    PointConnectedToComponent = endPoint;
-                }
-                    
-                GetDescription(blkref, attributes, attref);
-                    
-                return true;
-            }
-            
-            
-            return false;
-        }
-
-        // Get terminal description in point where a wire connected to the component
-        private void GetDescription(BlockReference blkref, AttributeCollection attributes, AttributeReference attref)
-        {
-            if (IsOneOfTerminalLinks(attref.Tag))
-            {
-                var terminalNumberString = attref.Tag.Substring(6); // Exclude X?TERM from X?TERM01
-                var terminalDescriptionTag = "";
-                // If it is terminal, we must read attribute DESC1 for net name
-                if (blkref.Name.StartsWith("VT0002_") || blkref.Name.StartsWith("HT0002_"))
-                    terminalDescriptionTag = "DESC1";
-                else
-                    terminalDescriptionTag = "TERM" + terminalNumberString;
-
-                foreach (ObjectId objectId in attributes)
-                {
-                    AttributeReference terminalAttr = (AttributeReference)objectId.GetObject(OpenMode.ForRead);
-                    if (terminalAttr.Tag.Equals(terminalDescriptionTag))
+                    Debug.WriteLineIf(component.IsTerminal, component.Name + "; Terminals.count: " + component.Terminals.Count() + ". Connection points count = " + terminal.Points.Count());
+                    if (terminal.IsContainPoint(curve.StartPoint))
                     {
-                        ComponentId = blkref.ObjectId;
-                        Description = terminalAttr.TextString;
+                        SetWireDescription(curve.StartPoint, component, terminal);
+                        return;
+                        
+                    }
+                    if (terminal.IsContainPoint(curve.EndPoint))
+                    {
+                        SetWireDescription(curve.EndPoint, component, terminal);
+                        return;
                     }
                 }
             }
+           
+        }
+
+        private void SetWireDescription(Point3d point, ElectricalComponent component, ComponentTerminal terminal)
+        {
+            PointConnectedToComponent = point;
+
+            // Input/Output terminals have name field as the Description
+            if (component.IsTerminal)
+            {
+                Description = component.Name;
+                return;
+            }
+            // Rest components have description in the Value field
+            Description = terminal.Value;
         }
 
         public void SetWireMultiwireCross(Curve wireEntity)

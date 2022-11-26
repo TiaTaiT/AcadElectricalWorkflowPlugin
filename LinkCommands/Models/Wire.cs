@@ -14,6 +14,8 @@ namespace AutocadCommands.Models
 {
     public class Wire
     {
+        private IEnumerable<ElectricalComponent> _components;
+
         public HalfWire Source { get; set; }
         public HalfWire Destination { get; set; }
 
@@ -34,13 +36,14 @@ namespace AutocadCommands.Models
         }
 
         
-        public Wire(ObjectId sourceHalfWire, ObjectId destinationHalfWire)
+        public Wire(ObjectId sourceHalfWire, ObjectId destinationHalfWire, IEnumerable<ElectricalComponent> components)
         {
+            _components = components;
             var sourceLineEntity = (Entity)sourceHalfWire.GetObject(OpenMode.ForRead, false);
-            Source = new HalfWire(sourceLineEntity);
+            Source = new HalfWire(sourceLineEntity, components);
 
             var destinationLineEntity = (Entity)destinationHalfWire.GetObject(OpenMode.ForRead, false);
-            Destination = new HalfWire(destinationLineEntity);
+            Destination = new HalfWire(destinationLineEntity,components);
             
             SetWireAttributes();
         }
@@ -63,10 +66,11 @@ namespace AutocadCommands.Models
             Destination.ShortDescription = Source.ShortDescription;
         }
 
-        public Wire(HalfWire source, HalfWire destination)
+        public Wire(HalfWire source, HalfWire destination, IEnumerable<ElectricalComponent> components)
         {
             Source = source;
             Destination = destination;
+            _components = components;
             SetWireAttributes();
         }
 
