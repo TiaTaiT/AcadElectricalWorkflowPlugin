@@ -6,9 +6,11 @@ using Autodesk.AutoCAD.MacroRecorder;
 using CommonHelpers;
 using LinkCommands.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,22 +35,22 @@ namespace LinkCommands.Services
 
         private void FindElectricalComponents()
         {
-            var componentsList = new List<ElectricalComponent>();
+            var componentsList = new ConcurrentBag<ElectricalComponent>();
 
             var blkRefs = AttributeHelper.GetObjectsStartWith(_db, ComponentSign);
-            foreach (var blkRef in blkRefs)
-            {
-                componentsList.Add(CreateElectricalComponent(blkRef));
-            }
+            
+            Parallel.ForEach(blkRefs, new ParallelOptions() { MaxDegreeOfParallelism = 8 },
+                (item, i) => CreateElectricalComponent(item, componentsList));
+
             Components = componentsList;
         }
 
-        private ElectricalComponent CreateElectricalComponent(BlockReference blkRef)
+        private void CreateElectricalComponent(BlockReference blkRef, ConcurrentBag<ElectricalComponent> componentsList)
         {
             var component = GetComponent(blkRef);
 
             component.BlockRef = blkRef;
-            return component;
+            componentsList.Add(component);
         }
 
         private ElectricalComponent GetComponent(BlockReference blkRef)
@@ -88,15 +90,17 @@ namespace LinkCommands.Services
 
         private IEnumerable<ComponentTerminal> GetTerminals(AttributeCollection attributes, Dictionary<string,string> attrDict)
         {
+            var terminals = new List<ComponentTerminal>();
             foreach(var attr in attrDict)
             {
                 if(attr.Key.ToUpper().StartsWith(TerminalDescriptionSign))
                 {
                     var connectionNames = GetConnectionAttributeName(attr.Key, attrDict);
                     var connectionPoints = GetConnectionPoints(attributes, connectionNames);
-                    yield return new ComponentTerminal(connectionPoints, attr.Key, attr.Value);
+                    terminals.Add(new ComponentTerminal(connectionPoints, attr.Key, attr.Value));
                 }
             }
+            return terminals;
         }
 
         private IEnumerable<Point3d> GetConnectionPoints(AttributeCollection attributes, IEnumerable<string> names)

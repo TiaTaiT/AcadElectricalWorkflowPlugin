@@ -277,10 +277,10 @@ namespace LinkCommands.Models
         private void SetWireComponentCross(Curve curve)
         {
             Parallel.ForEach(_components, new ParallelOptions() { MaxDegreeOfParallelism = 8 },
-                (item, i, j) => DoMethod(item, i, curve));
+                (item, i, j) => FindWireTerminalCross(item, i, curve));
         }
 
-        private void DoMethod(ElectricalComponent component, ParallelLoopState loopState, Curve curve)
+        private void FindWireTerminalCross(ElectricalComponent component, ParallelLoopState loopState, Curve curve)
         {
             foreach (var terminal in component.Terminals)
             {
