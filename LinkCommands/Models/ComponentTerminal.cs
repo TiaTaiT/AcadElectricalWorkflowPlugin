@@ -1,4 +1,5 @@
 ﻿using Autodesk.AutoCAD.Geometry;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +7,8 @@ namespace LinkCommands.Models
 {
     public class ComponentTerminal
     {
+        private double _tolerance = 0.5;
+
         /// <summary>
         /// Zero coordinates
         /// </summary>

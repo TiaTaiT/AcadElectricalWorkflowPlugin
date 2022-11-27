@@ -54,7 +54,7 @@ namespace LinkCommands.Models
                 IsTerminal= true;
             }
             PopulateTiedTerminals();
-            DebugTiedTerminals();
+            //DebugTiedTerminals();
         }
 
         private bool IsOutputTerminal()

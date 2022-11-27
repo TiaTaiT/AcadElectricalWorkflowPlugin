@@ -10,8 +10,10 @@ using CommonHelpers.Model;
 using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
@@ -224,16 +226,16 @@ namespace LinkCommands.Models
             {
                 using var acadTr = _db.TransactionManager.TopTransaction;
                 var result = AttributeHelper.SetBlockFakeAttributes(acadTr, existingLinkSymbolId, attributes);
-                Debug.WriteLine("Ids = " + existingLinkSymbolId.ToString());
+                //Debug.WriteLine("Ids = " + existingLinkSymbolId.ToString());
             }
             else
             {
                 var linkSymbolId = BlockUtils.InsertBlockFormFile(db, symbolBlockName, PointConnectedToMultiWire, attributes, Layers.Symbols);
                 var originSymbolPoint = ((BlockReference)linkSymbolId.GetObject(OpenMode.ForRead)).Position;
                 var shiftPoint = GetMultiWirePoint(linkSymbolId);
-                Debug.WriteLine("Original X: " + originSymbolPoint.X + " -> " + shiftPoint.X);
-                Debug.WriteLine("Original Y: " + originSymbolPoint.Y + " -> " + shiftPoint.Y);
-                Debug.WriteLine("Original Z: " + originSymbolPoint.Z + " -> " + shiftPoint.Z);
+                //Debug.WriteLine("Original X: " + originSymbolPoint.X + " -> " + shiftPoint.X);
+                //Debug.WriteLine("Original Y: " + originSymbolPoint.Y + " -> " + shiftPoint.Y);
+                //Debug.WriteLine("Original Z: " + originSymbolPoint.Z + " -> " + shiftPoint.Z);
                 var moveVec = new Vector3d(originSymbolPoint.X - shiftPoint.X, originSymbolPoint.Y - shiftPoint.Y, originSymbolPoint.Z - shiftPoint.Z);
                 BlockUtils.MoveBlockReference(_db, linkSymbolId, moveVec);
             }            
@@ -271,28 +273,30 @@ namespace LinkCommands.Models
             _direction = GeometryFunc.GetDirection(zeroPoint, GetEndPoint(WireEntity));
         }
 
-        private void SetWireComponentCross(Entity wireEntity)
+        
+        private void SetWireComponentCross(Curve curve)
         {
-            var curve = (Curve)wireEntity;
-            foreach (var component in _components)
+            Parallel.ForEach(_components, new ParallelOptions() { MaxDegreeOfParallelism = 8 },
+                (item, i, j) => DoMethod(item, i, curve));
+        }
+
+        private void DoMethod(ElectricalComponent component, ParallelLoopState loopState, Curve curve)
+        {
+            foreach (var terminal in component.Terminals)
             {
-                foreach(var terminal in component.Terminals)
+                //Debug.WriteLineIf(component.IsTerminal, component.Name + "; Terminals.count: " + component.Terminals.Count() + ". Connection points count = " + terminal.Points.Count());
+                if (terminal.IsContainPoint(curve.StartPoint))
                 {
-                    Debug.WriteLineIf(component.IsTerminal, component.Name + "; Terminals.count: " + component.Terminals.Count() + ". Connection points count = " + terminal.Points.Count());
-                    if (terminal.IsContainPoint(curve.StartPoint))
-                    {
-                        SetWireDescription(curve.StartPoint, component, terminal);
-                        return;
-                        
-                    }
-                    if (terminal.IsContainPoint(curve.EndPoint))
-                    {
-                        SetWireDescription(curve.EndPoint, component, terminal);
-                        return;
-                    }
+                    SetWireDescription(curve.StartPoint, component, terminal);
+                    loopState.Stop();
+
+                }
+                if (terminal.IsContainPoint(curve.EndPoint))
+                {
+                    SetWireDescription(curve.EndPoint, component, terminal);
+                    loopState.Stop();
                 }
             }
-           
         }
 
         private void SetWireDescription(Point3d point, ElectricalComponent component, ComponentTerminal terminal)

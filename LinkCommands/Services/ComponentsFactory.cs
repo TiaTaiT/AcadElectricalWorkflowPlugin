@@ -101,15 +101,17 @@ namespace LinkCommands.Services
 
         private IEnumerable<Point3d> GetConnectionPoints(AttributeCollection attributes, IEnumerable<string> names)
         {
+            var points = new List<Point3d>();
             foreach (ObjectId attId in attributes)
             {
                 var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 foreach(var name in names)
                 {
                     if (att.Tag.Equals(name))
-                        yield return att.Position;
+                        points.Add(att.Position);
                 }
             }
+            return points;
         }
 
         private IEnumerable<string> GetConnectionAttributeName(string termTag, Dictionary<string, string> attrDict)

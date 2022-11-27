@@ -1,10 +1,12 @@
 ﻿using AutocadCommands.Services;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.GraphicsInterface;
 using CommonHelpers;
 using LinkCommands.Models;
+using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,14 +34,14 @@ namespace AutocadCommands.Models
             
             if (ConnectedWires == null || ConnectedWires.Count() == 0)
             {
-                Debug.WriteLine("Wires count = " + ConnectedWires.Count() + ";   Operation halt!");
+                //Debug.WriteLine("Wires count = " + ConnectedWires.Count() + ";   Operation halt!");
                 return;
             }
-            Debug.WriteLine("Wires count = " + ConnectedWires.Count());
+            //Debug.WriteLine("Wires count = " + ConnectedWires.Count());
 
             var sortedHalfWires = GetSortHalfWire();
             SeparateSourceAndDestination(sortedHalfWires);
-            
+            //Streamline();
         }
 
         private bool CreateWires()
