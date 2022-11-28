@@ -109,7 +109,7 @@ namespace AutocadCommands.Helpers
             {
 
                 var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
-                if (att.Tag != null)
+                if (!string.IsNullOrEmpty(att.Tag))
                 {
                     attributes.Add(att.Tag, att.TextString);
                 }

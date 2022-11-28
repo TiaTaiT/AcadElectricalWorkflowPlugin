@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Autodesk.AutoCAD.DatabaseServices.Ole2Frame;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 
 namespace CommonHelpers
@@ -110,6 +111,26 @@ namespace CommonHelpers
             return Direction.Above;
         }
 
+        public static IEnumerable<Curve> MoveConjugatedCurves(Curve selectedLine, List<Curve> curves)
+        {
+            var connectedLines = new List<Curve>
+            {
+                selectedLine
+            };
+
+            Func<Curve, bool> selectedCondition = 
+                item => connectedLines.Where(x => x.StartPoint.Equals(item.StartPoint) ||
+                                                  x.EndPoint.Equals(item.StartPoint) ||
+                                                  x.StartPoint.Equals(item.EndPoint) ||
+                                                  x.EndPoint.Equals(item.EndPoint)).Any();//(item => item.something > 10);
+
+            connectedLines.AddRange(curves.Where(selectedCondition));
+
+            curves.RemoveAll(new Predicate<Curve>(selectedCondition));
+
+            return connectedLines;
+        }
+
         /// <summary>
         /// Get collection of all connected lines (autocad type LINE)
         /// </summary>
@@ -120,7 +141,12 @@ namespace CommonHelpers
         public static IEnumerable<Curve> GetAllConjugatedCurves(Database db, Curve selectedLine, string layer)
         {
             var AllLinesFromSheet = GetObjectsUtils.GetObjects<Line>(db, layer);
-            
+
+            return GetConjugatedCurves(selectedLine, AllLinesFromSheet);
+        }
+
+        public static IEnumerable<Curve> GetConjugatedCurves(Curve selectedLine, IEnumerable<Line> AllLinesFromSheet)
+        {
             var connectedLines = new List<Curve>
             {
                 selectedLine

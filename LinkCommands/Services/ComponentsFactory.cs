@@ -8,6 +8,7 @@ using LinkCommands.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -18,19 +19,24 @@ namespace LinkCommands.Services
 {
     public class ComponentsFactory
     {
-        private readonly Database _db;
         private int _index = 0;
-
+        private Database _db;
         private const string ComponentSign = "CAT";
         private const string Description1 = "DESC1";
         private const string TerminalDescriptionSign = "TERM";
+        private const int MaxDegreesNumber = 4; // If this value is more than 4 AutoCAD may generate exception "eAtMaxReaders"
+                                                // The exception comes since the object is opened for read more than 255 times.
+                                                // It depends on object amount
 
         public IEnumerable<ElectricalComponent> Components { get; set; } = Enumerable.Empty<ElectricalComponent>();
 
         public ComponentsFactory(Database db)
         {
             _db = db;
+
+            using var tr = _db.TransactionManager.StartTransaction();
             FindElectricalComponents();
+            tr.Dispose();
         }
 
         private void FindElectricalComponents()
@@ -38,8 +44,8 @@ namespace LinkCommands.Services
             var componentsList = new ConcurrentBag<ElectricalComponent>();
 
             var blkRefs = AttributeHelper.GetObjectsStartWith(_db, ComponentSign);
-            
-            Parallel.ForEach(blkRefs, new ParallelOptions() { MaxDegreeOfParallelism = 8 },
+
+            Parallel.ForEach(blkRefs, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
                 (item, i) => CreateElectricalComponent(item, componentsList));
 
             Components = componentsList;
@@ -47,6 +53,9 @@ namespace LinkCommands.Services
 
         private void CreateElectricalComponent(BlockReference blkRef, ConcurrentBag<ElectricalComponent> componentsList)
         {
+            if (string.IsNullOrEmpty(blkRef?.Name))
+                return;
+
             var component = GetComponent(blkRef);
 
             component.BlockRef = blkRef;
@@ -108,7 +117,23 @@ namespace LinkCommands.Services
             var points = new List<Point3d>();
             foreach (ObjectId attId in attributes)
             {
-                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
+
+                AttributeReference att;
+                
+                try
+                {
+                    att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine("Error!!!" + ex.Message);
+                    continue;
+                }
+                
+                
+                if (att == null)
+                    continue;
+
                 foreach(var name in names)
                 {
                     if (att.Tag.Equals(name))

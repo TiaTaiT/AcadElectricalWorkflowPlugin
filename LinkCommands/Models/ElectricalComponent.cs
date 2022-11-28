@@ -16,7 +16,11 @@ namespace LinkCommands.Models
         public int Id { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
         public string Designation { get; set; } = string.Empty;
-        public bool IsTerminal { get; set; } = false;
+        public bool IsTerminal 
+        { 
+            get => BlockRef.Name.StartsWith("VT0002_") || BlockRef.Name.StartsWith("HT0002_");
+            private set { } 
+        }
 
         public List<ComponentTerminal> Terminals { get; set; } = new();
 
@@ -49,17 +53,8 @@ namespace LinkCommands.Models
             Terminals = terminals;
             BlockRef = blockReference;
 
-            if (IsOutputTerminal())
-            {
-                IsTerminal= true;
-            }
             PopulateTiedTerminals();
             //DebugTiedTerminals();
-        }
-
-        private bool IsOutputTerminal()
-        {
-            return BlockRef.Name.StartsWith("VT0002_") || BlockRef.Name.StartsWith("HT0002_");
         }
 
         private void DebugTiedTerminals()

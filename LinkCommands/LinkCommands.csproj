@@ -116,6 +116,7 @@
     <Compile Include="Services\LinkSymbolNameResolver.cs" />
     <Compile Include="Services\MultiWiresLinker.cs" />
     <Compile Include="Services\NamesConverter.cs" />
+    <Compile Include="Services\NetsFactory.cs" />
     <Compile Include="Services\PairMultiWiresLinker.cs" />
     <Compile Include="Services\WireNameGenerator.cs" />
     <Compile Include="Services\WiresLinker.cs" />

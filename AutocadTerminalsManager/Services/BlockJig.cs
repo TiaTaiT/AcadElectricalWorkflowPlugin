@@ -48,6 +48,7 @@ namespace AutocadTerminalsManager.Services
                 }
 
                 attrRef.Layer = attrInfo.Layer;
+                attrRef.DowngradeOpen();
             }
             return true;
         }

@@ -1,4 +1,5 @@
-﻿using AutocadCommands.Models;
+﻿using AutocadCommands.Helpers;
+using AutocadCommands.Models;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.ApplicationServices.Core;
 using Autodesk.AutoCAD.DatabaseServices;
@@ -19,10 +20,11 @@ namespace AutocadCommands.Services
 {
     public class MultiWiresLinker : CommandPrototype
     {
-
+        private const string ComponentSign = "CAT";
         private List<Entity> _multiWireEntities = new();
         private List<MultiWire> _multiWires = new();
         private ComponentsFactory _componentsFactory;
+        private NetsFactory _netsFactory;
 
         public MultiWiresLinker(Document doc) : base(doc)
         {
@@ -93,9 +95,8 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            using var tr = _db.TransactionManager.StartTransaction();
-            _componentsFactory = new ComponentsFactory(_db);           
-            tr.Dispose();
+            //_netsFactory = new NetsFactory(_db);
+            _componentsFactory = new ComponentsFactory(_db);
         }
 
         private IEnumerable<Entity> GetMultiWireEntities(ObjectId[] objectIds)

@@ -138,9 +138,7 @@ namespace LinkCommands.Services
 
         private void CreateComponentsFactory()
         {
-            using var tr = _db.TransactionManager.StartTransaction();
             _componentsFactory = new ComponentsFactory(_db);
-            tr.Dispose();
         }
 
         private void GetExistSourceDestinationSymbols()
