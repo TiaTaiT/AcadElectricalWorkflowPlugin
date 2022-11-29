@@ -12,9 +12,6 @@ namespace AutocadCommands.Services
 {
     public class TermFindAndReplace : CommandPrototype
     {
-        private readonly Database _db;
-        private readonly Document _doc;
-        private readonly Editor _ed;
         private string _searchString;
         private string replaceString;
         private string _searchMethod;
