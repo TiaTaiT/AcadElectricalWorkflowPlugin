@@ -42,5 +42,37 @@ namespace AutoCommands.Test
                 Assert.AreNotEqual(NetTypes.PowerNegative, NetTypeClassificator.GetNetTypes(item));
             }
         }
+
+        [TestMethod]
+        public void CheckRS485A()
+        {
+            var validNegatives = new List<string> { "RS485A", "RS485(A)", "A", "A1", "A2", "A3", "A4", "ЛС+" };
+            var notValidNegatives = new List<string>() { "K" };
+
+            foreach (var item in validNegatives)
+            {
+                Assert.AreEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetTypes(item));
+            }
+            foreach (var item in notValidNegatives)
+            {
+                Assert.AreNotEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetTypes(item));
+            }
+        }
+
+        [TestMethod]
+        public void CheckRS48B()
+        {
+            var validNegatives = new List<string> { "RS485B", "RS485(B)", "B", "B1", "B2", "B3", "B4", "ЛС-" };
+            var notValidNegatives = new List<string>() { "K" };
+
+            foreach (var item in validNegatives)
+            {
+                Assert.AreEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetTypes(item));
+            }
+            foreach (var item in notValidNegatives)
+            {
+                Assert.AreNotEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetTypes(item));
+            }
+        }
     }
 }

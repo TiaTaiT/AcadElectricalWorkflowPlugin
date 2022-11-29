@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AutocadTerminalsManager.Model;
 using Autodesk.AutoCAD.DatabaseServices;
 using CommonHelpers;
@@ -111,7 +112,14 @@ namespace AutocadCommands.Helpers
                 var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 if (!string.IsNullOrEmpty(att.Tag))
                 {
-                    attributes.Add(att.Tag, att.TextString);
+                    try
+                    {
+                        attributes.Add(att.Tag, att.TextString);
+                    }
+                    catch 
+                    {
+                        Debug.WriteLine("Failed to add a '" + att.Tag + "' to the dictionary");
+                    }
                 }
             }
 

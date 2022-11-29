@@ -41,6 +41,14 @@ namespace LinkCommands.Services
                     return shleifStr + TextAfter(destination, shleifStr);
                 if (source.Contains(shleifStr) && destination.Contains(shleifStr))
                     return shleifStr + TextAfter(source, shleifStr);
+                if (source.Contains(shleifStr) && destination.Contains("RE"))
+                    return shleifStr + TextAfter(source, shleifStr);
+                if (source.Contains("RE") && destination.Contains(shleifStr))
+                    return shleifStr + TextAfter(source, shleifStr);
+                if (source.Contains(shleifStr) && destination.StartsWith(""))
+                    return shleifStr + TextAfter(source, shleifStr);
+                if (source.StartsWith("") && destination.Contains(shleifStr))
+                    return shleifStr + TextAfter(source, shleifStr);
             }
 
             if (signalType == SignalType.KC)

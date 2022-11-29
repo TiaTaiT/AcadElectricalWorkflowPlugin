@@ -184,12 +184,12 @@ namespace LinkCommands.Services
 
         private bool IsRs485(string source, string destination)
         {
-            return NetTypeClassificator.IsRs485A(source) ||
-                   NetTypeClassificator.IsRs485A(destination) ||
-                   NetTypeClassificator.IsRs485B(source) ||
-                   NetTypeClassificator.IsRs485B(destination) ||
-                   NetTypeClassificator.IsRs485Gnd(source) ||
-                   NetTypeClassificator.IsRs485Gnd(destination);
+            return (NetTypeClassificator.IsRs485A(source) &&
+                   NetTypeClassificator.IsRs485A(destination)) ||
+                   (NetTypeClassificator.IsRs485B(source) &&
+                   NetTypeClassificator.IsRs485B(destination)) ||
+                   (NetTypeClassificator.IsRs485Gnd(source) &&
+                   NetTypeClassificator.IsRs485Gnd(destination));
         }
 
         

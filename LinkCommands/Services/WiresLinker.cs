@@ -20,13 +20,8 @@ namespace AutocadCommands.Services
 {
     public class WiresLinker : CommandPrototype
     {
-        
-
         private List<(ObjectId, ObjectId)> _sourceDestPairIds = new();
         private ComponentsFactory _componentsFactory;
-
-        //private List<FullWire> _fullWires = new();
-        //private Polyline connectedMultiwire; // bus polyline
 
         public WiresLinker(Document doc) : base(doc)
         {

@@ -85,7 +85,6 @@ namespace LinkCommands.Models
                     var tmp1 = GetTerminalByDescription(tied);
                     terminal.TiedTerminals.Add(tmp1);
                 }
-                
             }
         }
 

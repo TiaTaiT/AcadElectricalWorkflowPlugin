@@ -20,7 +20,6 @@ namespace AutocadCommands.Services
 {
     public class MultiWiresLinker : CommandPrototype
     {
-        private const string ComponentSign = "CAT";
         private List<Entity> _multiWireEntities = new();
         private List<MultiWire> _multiWires = new();
         private ComponentsFactory _componentsFactory;
@@ -95,7 +94,7 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            //_netsFactory = new NetsFactory(_db);
+            _netsFactory = new NetsFactory(_db);
             _componentsFactory = new ComponentsFactory(_db);
         }
 

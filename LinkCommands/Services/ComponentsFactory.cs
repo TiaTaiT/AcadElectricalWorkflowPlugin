@@ -130,7 +130,6 @@ namespace LinkCommands.Services
                     continue;
                 }
                 
-                
                 if (att == null)
                     continue;
 
