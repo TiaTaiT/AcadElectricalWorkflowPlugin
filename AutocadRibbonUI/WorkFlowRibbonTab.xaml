@@ -21,7 +21,7 @@
 
                 <windows:RibbonButton
                     Id="SecondButton"
-                    Text="Color"
+                    Text="BInc"
                     ShowText="True"
                     Size="Standard"
                     Image="Assets\71.png"
