@@ -24,9 +24,9 @@
                     Text="Color"
                     ShowText="True"
                     Size="Standard"
-                    Image="Assets\10.png"
+                    Image="Assets\71.png"
                     Orientation="Vertical"
-                    CommandParameter="TERMCOLOR">
+                    CommandParameter="BINCREMENT">
                 </windows:RibbonButton>
 
                 <windows:RibbonButton
