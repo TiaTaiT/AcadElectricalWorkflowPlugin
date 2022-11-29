@@ -11,9 +11,9 @@ namespace LinkCommands.Models
     {
         private static readonly IEnumerable<string> _powerNegative = new List<string> { "0В", "GND", "ПИ-", "ПИ1-", "ПИ2-", "ПИ3-", "ПИ4-", "ПИ5-", "ПИ6-", "ПИ7-", "ПИ8-", "-U1", "-U2" };
         private static readonly IEnumerable<string> _powerPositive = new List<string> { "ПИ+", "ПИ1+", "ПИ2+", "ПИ3+", "ПИ4+", "ПИ5+", "ПИ6+", "ПИ7+", "ПИ8+", "+U1", "+U2"  };
-        private static readonly IEnumerable<string> _rs485A = new List<string> { "RS485A", "RS485(A)", "A", "A1", "A2", "A3", "A4", "ЛС+" };
-        private static readonly IEnumerable<string> _rs485B = new List<string> { "RS485B", "RS485(B)", "B", "B1", "B2", "B3", "B4", "ЛС-" };
-        private static readonly IEnumerable<string> _rs485Gnd = new List<string> { "RS485GND", "RS485(GND)", "C", "C1", "C2", "C3", "C4" };
+        private static readonly IEnumerable<string> _rs485A = new List<string> { "RS485A", "RS485(A)", "A", "A1", "A2", "A3", "A4", "ЛС+", "2", "9" };
+        private static readonly IEnumerable<string> _rs485B = new List<string> { "RS485B", "RS485(B)", "B", "B1", "B2", "B3", "B4", "ЛС-", "5", "10" };
+        private static readonly IEnumerable<string> _rs485Gnd = new List<string> { "RS485GND", "RS485(GND)", "C", "C1", "C2", "C3", "C4", "3", "4", "8" };
         private static readonly IEnumerable<string> _dplsPositive = new List<string> { "ДПЛС-1+", "ДПЛС-2+", "ДПЛС1+", "ДПЛС2+" };
         private static readonly IEnumerable<string> _dplsNegative = new List<string> { "ДПЛС-1-", "ДПЛС-2-", "ДПЛС1-", "ДПЛС2-" };
 
