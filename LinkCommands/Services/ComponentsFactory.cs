@@ -41,17 +41,27 @@ namespace LinkCommands.Services
 
         private void FindElectricalComponents()
         {
-            var componentsList = new ConcurrentBag<ElectricalComponent>();
+            // Autocad is fully synchronize
+            // var componentsList = new ConcurrentBag<ElectricalComponent>();
+
+            var componentsList = new List<ElectricalComponent>();
 
             var blkRefs = AttributeHelper.GetObjectsStartWith(_db, ComponentSign);
 
+            /* Autocad is fully synchronize
             Parallel.ForEach(blkRefs, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
                 (item, i) => CreateElectricalComponent(item, componentsList));
+            */
+
+            foreach(var blockReference in blkRefs)
+            {
+                CreateElectricalComponent(blockReference, componentsList);
+            }
 
             Components = componentsList;
         }
 
-        private void CreateElectricalComponent(BlockReference blkRef, ConcurrentBag<ElectricalComponent> componentsList)
+        private void CreateElectricalComponent(BlockReference blkRef, List<ElectricalComponent> componentsList)
         {
             if (string.IsNullOrEmpty(blkRef?.Name))
                 return;
