@@ -112,14 +112,16 @@
     <Compile Include="Services\ComponentsFactory.cs" />
     <Compile Include="Services\ElectricalValidation.cs" />
     <Compile Include="Services\LinkerHelper.cs" />
-    <Compile Include="Services\LinkRemover.cs" />
+    <Compile Include="Services\LinkPairsRemover.cs" />
     <Compile Include="Services\LinkSymbolNameResolver.cs" />
     <Compile Include="Services\MultiWiresLinker.cs" />
     <Compile Include="Services\NamesConverter.cs" />
     <Compile Include="Services\NetsFactory.cs" />
     <Compile Include="Services\PairMultiWiresLinker.cs" />
+    <Compile Include="Services\WireLinksRemover.cs" />
     <Compile Include="Services\WireNameGenerator.cs" />
     <Compile Include="Services\WiresLinker.cs" />
+    <Compile Include="Services\WiresLinkNameResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

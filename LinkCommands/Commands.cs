@@ -57,7 +57,20 @@ namespace LinkCommands
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
 
-            var wiresLinker = new LinkRemover(doc);
+            var wiresLinker = new LinkPairsRemover(doc);
+            if (wiresLinker.Init())
+            {
+                wiresLinker.Run();
+            }
+        }
+
+        // Remove all wire-links simbols
+        [CommandMethod("LINKSREMOVE", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
+        public void LinksRemove()
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+
+            var wiresLinker = new WireLinksRemover(doc);
             if (wiresLinker.Init())
             {
                 wiresLinker.Run();

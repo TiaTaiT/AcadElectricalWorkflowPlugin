@@ -98,7 +98,7 @@
             <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
                 <windows:RibbonButton
                     Id="SixthButton"
-                    Text="Delete"
+                    Text="DelPairs"
                     ShowText="True"
                     Size="Standard"
                     Image="Assets\33.png"
@@ -107,11 +107,23 @@
                 </windows:RibbonButton>
             </windows:RibbonRowPanel>
 
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_4" >
+                <windows:RibbonButton
+                    Id="SeventhButton"
+                    Text="DelLinks"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\14.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKSREMOVE">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+            
             <windows:RibbonRowBreak/>
 
-            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_5" >
                 <windows:RibbonButton
-                    Id="SixthButton"
+                    Id="EighthButton"
                     Text="Poly"
                     ShowText="True"
                     Size="Standard"
@@ -121,9 +133,9 @@
                 </windows:RibbonButton>
             </windows:RibbonRowPanel>
 
-            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_6" >
                 <windows:RibbonButton
-                    Id="SeventhButton"
+                    Id="NinethButton"
                     Text="Pair"
                     ShowText="True"
                     Size="Standard"

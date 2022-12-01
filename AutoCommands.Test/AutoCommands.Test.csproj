@@ -109,6 +109,7 @@
     <Compile Include="TestMath.cs" />
     <Compile Include="TestNetTypeClassificator.cs" />
     <Compile Include="TestTiedTerminalsDb.cs" />
+    <Compile Include="TestWiresLinkNameResolver.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
