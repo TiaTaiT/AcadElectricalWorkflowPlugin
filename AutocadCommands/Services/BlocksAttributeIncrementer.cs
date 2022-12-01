@@ -29,13 +29,14 @@ namespace AutocadCommands.Services
         {
             #region Dialog with user
 
-            var promptResult = _ed.GetString("\nSearch method [Before After] <Default>: ");
+            var promptResult = _ed.GetString("\nSearch method [Before After] <After>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
 
             _searchMethod = promptResult.StringResult?.ToUpper();
-            if (_searchMethod == null)
-                return false;
+            if (string.IsNullOrEmpty(_searchMethod))
+                _searchMethod = "A";
+
 
             promptResult = _ed.GetString("\nWhat are we looking for?: ");
             if (promptResult.Status != PromptStatus.OK)
@@ -161,17 +162,13 @@ namespace AutocadCommands.Services
                     }
                 case "B":
                     {
-                        //result = attrValue.Substring(attrValue.LastIndexOf(_searchString), attrValue.Length - 1);
                         result = attrValue.Substring(attrValue.IndexOf(_searchString));
                         result = counter + result;
-                        //result = attrValue.Substring(0, attrValue.Length - _searchString.Length) + _replaceString;
                        
                         break;
                     }
                 default:
                     {
-                        
-
                         break;
                     }
             }
