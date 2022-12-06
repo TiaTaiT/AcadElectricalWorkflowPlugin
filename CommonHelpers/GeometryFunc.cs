@@ -26,7 +26,7 @@ namespace CommonHelpers
         /// <param name="end">The point at the other end of the curve segment.</param>
         /// <returns>true if the point argument lies on the segment of
         /// the curve between the start and end point arguments</returns>
-        private static bool IsOnSegment(this Curve curve, Point3d point, Point3d start, Point3d end)
+        private static bool IsOnSegment(Curve curve, Point3d point, Point3d start, Point3d end)
         {
             if (curve == null)
                 throw new ArgumentNullException(nameof(curve));
@@ -111,18 +111,25 @@ namespace CommonHelpers
             return Direction.Above;
         }
 
-        public static IEnumerable<Curve> MoveConjugatedCurves(Curve selectedLine, List<Curve> curves)
+        public static IEnumerable<Curve> MoveConjugatedCurves(Curve selectedLine, List<Curve> curves, IEnumerable<Point3d> terminators)
         {
             var connectedLines = new List<Curve>
             {
                 selectedLine
             };
+            
+            curves.Remove(selectedLine);
+
+            // For speed up return
+            if(curves.Count == 0) 
+                return connectedLines;
 
             Func<Curve, bool> selectedCondition = 
-                item => connectedLines.Where(x => x.StartPoint.Equals(item.StartPoint) ||
-                                                  x.EndPoint.Equals(item.StartPoint) ||
-                                                  x.StartPoint.Equals(item.EndPoint) ||
-                                                  x.EndPoint.Equals(item.EndPoint)).Any();//(item => item.something > 10);
+                item => connectedLines
+                        .Where(x => (x.StartPoint.Equals(item.StartPoint) && !IsPointTerminated(x.StartPoint, terminators)) ||
+                                    (x.EndPoint.Equals(item.StartPoint) && !IsPointTerminated(x.EndPoint, terminators)) ||
+                                    (x.StartPoint.Equals(item.EndPoint) && !IsPointTerminated(x.StartPoint, terminators)) ||
+                                    (x.EndPoint.Equals(item.EndPoint) && !IsPointTerminated(x.EndPoint, terminators)) ).Any();
 
             connectedLines.AddRange(curves.Where(selectedCondition));
 
@@ -186,5 +193,66 @@ namespace CommonHelpers
             }
 
         }
+
+        /*
+        /// <summary>
+        /// Function for searching for conjugated with selected curves
+        /// </summary>
+        /// <param name="selectedCurve">Selected curve/line</param>
+        /// <param name="candidateCurves">List with candidates to conjugated with selected line</param>
+        /// <param name="terminators">Stop points where search should be stop</param>
+        /// <returns></returns>
+        public static IEnumerable<Curve> GetConjugatedCurves(Curve selectedCurve,
+                                                             IEnumerable<Curve> candidateCurves,
+                                                             IEnumerable<Point3d> terminators)
+        {
+            var result = new List<Curve>() 
+            { 
+                selectedCurve 
+            };
+
+            var curves = candidateCurves.Where(c => c != selectedCurve);
+            
+            foreach (var curve in curves)
+            {
+                for(var i = 0; i < result.Count; i++)
+                {
+                    var candidate = result[i];
+                    if(!IsPointTerminated(candidate.StartPoint, terminators))
+                    {
+                        if (IsCurveConjugated(curve.StartPoint, candidate))
+                        {
+                            if(!result.Contains(candidate))
+                                result.Add(candidate);
+                        }
+                    }
+                    if (!IsPointTerminated(candidate.EndPoint, terminators))
+                    {
+                        if (IsCurveConjugated(curve.EndPoint, candidate))
+                        {
+                            if (!result.Contains(candidate))
+                                result.Add(candidate);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static bool IsCurveConjugated(Point3d point, Curve candidate)
+        {
+            return candidate.StartPoint.Equals(point) || candidate.EndPoint.Equals(point);
+        }
+*/
+        private static bool IsPointTerminated(Point3d point, IEnumerable<Point3d> terminators)
+        {
+            foreach(var terminator in terminators)
+            {
+                if(point.Equals(terminator))
+                    return true;
+            }
+            return false;
+        }
+        
     }
 }

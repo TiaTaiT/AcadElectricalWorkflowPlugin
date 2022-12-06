@@ -24,9 +24,7 @@ namespace LinkCommands.Services
         private const string ComponentSign = "CAT";
         private const string Description1 = "DESC1";
         private const string TerminalDescriptionSign = "TERM";
-        private const int MaxDegreesNumber = 4; // If this value is more than 4 AutoCAD may generate exception "eAtMaxReaders"
-                                                // The exception comes since the object is opened for read more than 255 times.
-                                                // It depends on object amount
+        private const int MaxDegreesNumber = 8; 
 
         public IEnumerable<ElectricalComponent> Components { get; set; } = Enumerable.Empty<ElectricalComponent>();
 
@@ -37,6 +35,25 @@ namespace LinkCommands.Services
             using var tr = _db.TransactionManager.StartTransaction();
             FindElectricalComponents();
             tr.Dispose();
+        }
+
+        public IEnumerable<Point3d> GetTerminalPoints()
+        {
+            var points = new ConcurrentBag<Point3d>();
+            
+            Parallel.ForEach(Components, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
+                (item, i) => PopulateTerminatedPoints(item, points));
+            /*
+            foreach (var component in Components)
+                points.AddRange(component.GetTerminalPoints());
+            */
+            return points;
+        }
+
+        private void PopulateTerminatedPoints(ElectricalComponent component, ConcurrentBag<Point3d> points)
+        {
+            foreach(var point in component.GetTerminalPoints())
+                points.Add(point);
         }
 
         private void FindElectricalComponents()
@@ -55,21 +72,22 @@ namespace LinkCommands.Services
 
             foreach(var blockReference in blkRefs)
             {
-                CreateElectricalComponent(blockReference, componentsList);
+                componentsList.Add(CreateElectricalComponent(blockReference));
             }
 
             Components = componentsList;
         }
 
-        private void CreateElectricalComponent(BlockReference blkRef, List<ElectricalComponent> componentsList)
+        private ElectricalComponent CreateElectricalComponent(BlockReference blkRef)
         {
+            /*
             if (string.IsNullOrEmpty(blkRef?.Name))
                 return;
-
+            */
             var component = GetComponent(blkRef);
 
             component.BlockRef = blkRef;
-            componentsList.Add(component);
+            return component;
         }
 
         private ElectricalComponent GetComponent(BlockReference blkRef)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using AutocadTerminalsManager.Model;
 using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
 
@@ -55,6 +56,23 @@ namespace AutocadCommands.Helpers
             var attrColl = GetAttributeCollection(tr, objectId);
 
             return GetAttributeValue(attrColl, tagName);
+        }
+
+        public static bool TryGetAttributePosition(string tag, AttributeCollection attributeCollection, out Point3d point)
+        {
+            foreach (ObjectId attId in attributeCollection)
+            {
+                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
+                if (string.IsNullOrEmpty(att.Tag))
+                    continue;
+                if (att.Tag.StartsWith(tag))
+                { 
+                    point = att.Position;
+                    return true;
+                }
+            }
+            point = new Point3d();
+            return false;
         }
 
         public static AttributeCollection GetAttributeCollection(Transaction tr, ObjectId objectId)
@@ -197,8 +215,11 @@ namespace AutocadCommands.Helpers
                 foreach(ObjectId attrId in attributes)
                 {
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
-                    if(attrRef.Tag.StartsWith(attributeTag))
+                    if (attrRef.Tag.StartsWith(attributeTag))
+                    {
                         yield return blkRef;
+                        break;
+                    }
                 }
             }
         }

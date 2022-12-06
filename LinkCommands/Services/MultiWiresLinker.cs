@@ -94,8 +94,9 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            _netsFactory = new NetsFactory(_db);
+            
             _componentsFactory = new ComponentsFactory(_db);
+            _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
         }
 
         private IEnumerable<Entity> GetMultiWireEntities(ObjectId[] objectIds)

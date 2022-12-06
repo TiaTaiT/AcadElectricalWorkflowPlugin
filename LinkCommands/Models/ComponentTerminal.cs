@@ -7,8 +7,6 @@ namespace LinkCommands.Models
 {
     public class ComponentTerminal
     {
-        private double _tolerance = 0.5;
-
         /// <summary>
         /// Zero coordinates
         /// </summary>
@@ -38,7 +36,7 @@ namespace LinkCommands.Models
         /// Check if point3d is one of the terminal connection points
         /// </summary>
         /// <param name="point3d">point for checking</param>
-        /// <returns>true if point3d contains in terminal connction point list</returns>
+        /// <returns>true if point3d contains in terminal connection point list</returns>
         public bool IsContainPoint(Point3d point3d)
         {
             foreach(var point in Points)

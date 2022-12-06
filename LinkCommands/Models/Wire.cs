@@ -16,6 +16,11 @@ namespace AutocadCommands.Models
     {
         private IEnumerable<ElectricalComponent> _components;
 
+        /// <summary>
+        /// If wire not devided by HalfWire, all parts of wire are here
+        /// </summary>
+        public IEnumerable<Curve> Curves = Enumerable.Empty<Curve>();
+
         public HalfWire Source { get; set; }
         public HalfWire Destination { get; set; }
 
@@ -35,7 +40,23 @@ namespace AutocadCommands.Models
             }
         }
 
-        
+        public Wire(HalfWire halfWire1, HalfWire halfWire2)
+        {
+            if (halfWire1.IsSource)
+            {
+                Source = halfWire1;
+                Destination = halfWire2;
+                return;
+            }
+            Source = halfWire2;
+            Destination = halfWire1;
+        }
+
+        public Wire(IEnumerable<Curve> curves)
+        {
+            Curves= curves;
+        }
+
         public Wire(ObjectId sourceHalfWire, ObjectId destinationHalfWire, IEnumerable<ElectricalComponent> components)
         {
             _components = components;

@@ -26,67 +26,32 @@ namespace LinkCommands.Models
         private Database _db;
         private Direction _direction;
 
-        private readonly struct Left
-        {
-            public const string SourceBlockName = "ha2s1_inline";
-            public const string DestinationBlockName = "ha2d1_inline";
-            public const string AttributeMultiwire = "X1TERM";
-            public const string AttributeWire = "X4TERM";
-        }
-
-        private readonly struct Down
-        {
-            public const string SourceBlockName = "ha2s2_inline";
-            public const string DestinationBlockName = "ha2d2_inline";
-            public const string AttributeMultiwire = "X2TERM";
-            public const string AttributeWire = "X8TERM";
-        }
-
-        private readonly struct Right
-        {
-            public const string SourceBlockName = "ha2s3_inline";
-            public const string DestinationBlockName = "ha2d3_inline";
-            public const string AttributeMultiwire = "X4TERM";
-            public const string AttributeWire = "X1TERM";
-        }
-
-        private readonly struct Up
-        {
-            public const string SourceBlockName = "ha2s4_inline";
-            public const string DestinationBlockName = "ha2d4_inline"; 
-            public const string AttributeMultiwire = "X8TERM";
-            public const string AttributeWire = "X2TERM";
-        }
-
-        private readonly struct Circle
-        {
-            public const string AttributeWire = "X0TERM";
-        }
+        
 
         private string GetShortAttributeMultiwireConnected(string blockName)
         {
-            if (blockName.Equals(Left.SourceBlockName) || blockName.Equals(Left.DestinationBlockName))
-                return Left.AttributeMultiwire;
-            if (blockName.Equals(Down.SourceBlockName) || blockName.Equals(Down.DestinationBlockName))
-                return Down.AttributeMultiwire;
-            if (blockName.Equals(Right.SourceBlockName) || blockName.Equals(Right.DestinationBlockName))
-                return Right.AttributeMultiwire;
-            if (blockName.Equals(Up.SourceBlockName) || blockName.Equals(Up.DestinationBlockName))
-                return Up.AttributeMultiwire;
+            if (blockName.Equals(LinkStruct.Left.SourceBlockName) || blockName.Equals(LinkStruct.Left.DestinationBlockName))
+                return LinkStruct.Left.AttributeMultiwire;
+            if (blockName.Equals(LinkStruct.Down.SourceBlockName) || blockName.Equals(LinkStruct.Down.DestinationBlockName))
+                return LinkStruct.Down.AttributeMultiwire;
+            if (blockName.Equals(LinkStruct.Right.SourceBlockName) || blockName.Equals(LinkStruct.Right.DestinationBlockName))
+                return LinkStruct.Right.AttributeMultiwire;
+            if (blockName.Equals(LinkStruct.Up.SourceBlockName) || blockName.Equals(LinkStruct.Up.DestinationBlockName))
+                return LinkStruct.Up.AttributeMultiwire;
 
             throw new Exception("GetAttributeMultiwireConnected. Block name not found!");
         }
 
         private string GetShortAttributeWireConnected(string blockName)
         {
-            if (blockName.Equals(Left.SourceBlockName) || blockName.Equals(Left.DestinationBlockName))
-                return Left.AttributeWire;
-            if (blockName.Equals(Down.SourceBlockName) || blockName.Equals(Down.DestinationBlockName))
-                return Down.AttributeWire;
-            if (blockName.Equals(Right.SourceBlockName) || blockName.Equals(Right.DestinationBlockName))
-                return Right.AttributeWire;
-            if (blockName.Equals(Up.SourceBlockName) || blockName.Equals(Up.DestinationBlockName))
-                return Up.AttributeWire;
+            if (blockName.Equals(LinkStruct.Left.SourceBlockName) || blockName.Equals(LinkStruct.Left.DestinationBlockName))
+                return LinkStruct.Left.AttributeWire;
+            if (blockName.Equals(LinkStruct.Down.SourceBlockName) || blockName.Equals(LinkStruct.Down.DestinationBlockName))
+                return LinkStruct.Down.AttributeWire;
+            if (blockName.Equals(LinkStruct.Right.SourceBlockName) || blockName.Equals(LinkStruct.Right.DestinationBlockName))
+                return LinkStruct.Right.AttributeWire;
+            if (blockName.Equals(LinkStruct.Up.SourceBlockName) || blockName.Equals(LinkStruct.Up.DestinationBlockName))
+                return LinkStruct.Up.AttributeWire;
 
             throw new Exception("GetAttributeMultiwireConnected. Block name not found!");
         }
@@ -161,10 +126,10 @@ namespace LinkCommands.Models
         {
             return _direction switch
             {
-                Direction.Left => Left.SourceBlockName,
-                Direction.Below => Down.SourceBlockName,
-                Direction.Right => Right.SourceBlockName,
-                Direction.Above => Up.SourceBlockName,
+                Direction.Left => LinkStruct.Left.SourceBlockName,
+                Direction.Below => LinkStruct.Down.SourceBlockName,
+                Direction.Right => LinkStruct.Right.SourceBlockName,
+                Direction.Above => LinkStruct.Up.SourceBlockName,
                 _ => throw new Exception("Unknown direction!"),
             };
         }
@@ -173,10 +138,10 @@ namespace LinkCommands.Models
         {
             return _direction switch
             {
-                Direction.Left => Left.DestinationBlockName,
-                Direction.Below => Down.DestinationBlockName,
-                Direction.Right => Right.DestinationBlockName,
-                Direction.Above => Up.DestinationBlockName,
+                Direction.Left => LinkStruct.Left.DestinationBlockName,
+                Direction.Below => LinkStruct.Down.DestinationBlockName,
+                Direction.Right => LinkStruct.Right.DestinationBlockName,
+                Direction.Above => LinkStruct.Up.DestinationBlockName,
                 _ => throw new Exception("Unknown direction!"),
             };
         }
@@ -185,14 +150,14 @@ namespace LinkCommands.Models
         {
             var strings = new List<string>()
             {
-                Left.SourceBlockName,
-                Left.DestinationBlockName,
-                Right.SourceBlockName,
-                Right.DestinationBlockName,
-                Down.SourceBlockName,
-                Down.DestinationBlockName,
-                Up.SourceBlockName,
-                Up.DestinationBlockName
+                LinkStruct.Left.SourceBlockName,
+                LinkStruct.Left.DestinationBlockName,
+                LinkStruct.Right.SourceBlockName,
+                LinkStruct.Right.DestinationBlockName,
+                LinkStruct.Down.SourceBlockName,
+                LinkStruct.Down.DestinationBlockName,
+                LinkStruct.Up.SourceBlockName,
+                LinkStruct.Up.DestinationBlockName
             };
             var blockRefIds = GetObjectsUtils.GetBlockIdsByNames(_db, strings);
             using var tr = _db.TransactionManager.StartTransaction();
@@ -246,6 +211,15 @@ namespace LinkCommands.Models
         public Entity WireEntity { get; set; }
 
         public Point3d PointConnectedToMultiWire { get; set; }
+
+        public HalfWire(IEnumerable<Curve> curves, Link link)
+        {
+            Curves = curves;
+            PointLinkAttachedToWire = link.WireConnectionPoint;
+            Description= link.Description;
+            SigCode= link.SigCode;
+            LinkSymbol = link.Reference;
+        }
 
         public HalfWire(Entity wireEntity, IEnumerable<ElectricalComponent> components)
         {
@@ -362,12 +336,26 @@ namespace LinkCommands.Models
         public string Description { get; set; }
 
         // Source/Destination Wire Signal Symbol
-        public Entity LinkSymbol { get; set; }
+        public BlockReference LinkSymbol { get; set; }
         public Point3d PointConnectedToComponent { get; private set; }
+
+        public Point3d PointLinkAttachedToWire { get; private set; }
 
         public ObjectId ComponentId { get; private set; }
 
         public string ShortDescription { get; set; }
+        public IEnumerable<Curve> Curves { get; private set; }
+
+        public bool IsSource 
+        {
+            get
+            {
+                if ((LinkSymbol.BlockName[3] == 'S') || (LinkSymbol.BlockName[3] == 's'))
+                    return true;
+                return false;
+            }
+            private set { } 
+        }
 
         public void Clean()
         {

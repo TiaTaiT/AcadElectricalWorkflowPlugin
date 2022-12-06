@@ -1,7 +1,9 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
+using Autodesk.AutoCAD.Geometry;
 using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,15 @@ namespace LinkCommands.Models
         }
 
         public List<ComponentTerminal> Terminals { get; set; } = new();
+
+        public IEnumerable<Point3d> GetTerminalPoints()
+        {
+            var points = new List<Point3d>();
+            foreach (var terminal in Terminals)
+                points.AddRange(terminal.Points);
+                    
+            return points;
+        }
 
         /// <summary>
         /// Get a list of all electrically tied terminals, including the desired terminal

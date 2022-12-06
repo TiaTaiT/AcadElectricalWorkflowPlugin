@@ -100,6 +100,8 @@
     <Compile Include="Models\CompareWire.cs" />
     <Compile Include="Models\ComponentTerminal.cs" />
     <Compile Include="Models\HalfWire.cs" />
+    <Compile Include="Models\Link.cs" />
+    <Compile Include="Models\LinkStruct.cs" />
     <Compile Include="Models\MultiWire.cs" />
     <Compile Include="Models\HalfMultiWire.cs" />
     <Compile Include="Models\NetTypes.cs" />
@@ -110,6 +112,7 @@
     <Compile Include="Models\HalfWireComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ComponentsFactory.cs" />
+    <Compile Include="Services\ConcurrentBug.cs" />
     <Compile Include="Services\ElectricalValidation.cs" />
     <Compile Include="Services\LinkerHelper.cs" />
     <Compile Include="Services\LinkPairsRemover.cs" />
