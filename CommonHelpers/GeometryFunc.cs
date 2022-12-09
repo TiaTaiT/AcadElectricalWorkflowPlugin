@@ -253,6 +253,18 @@ namespace CommonHelpers
             }
             return false;
         }
-        
+
+
+        public static bool IsPointOnCurveEnd(Point3d point, IEnumerable<Curve> curves)
+        {
+            foreach (var curve in curves)
+            {
+                if (curve.StartPoint.Equals(point) || curve.EndPoint.Equals(point))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

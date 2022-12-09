@@ -1,6 +1,7 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using CommonHelpers;
 using LinkCommands.Models;
 using LinkCommands.Services;
 using System;
@@ -24,21 +25,10 @@ namespace AutocadCommands.Models
         public HalfWire Source { get; set; }
         public HalfWire Destination { get; set; }
 
-        public ObjectId SourceComponentId
-        {
-            get
-            {
-                return Source.ComponentId;
-            }
-        }
-
-        public ObjectId DestinationComponentId
-        {
-            get
-            {
-                return Destination.ComponentId;
-            }
-        }
+        /// <summary>
+        /// List of the connected terminals
+        /// </summary>
+        public List<ComponentTerminal> Terminals = new();
 
         public Wire(HalfWire halfWire1, HalfWire halfWire2)
         {
@@ -99,6 +89,16 @@ namespace AutocadCommands.Models
         {
             Source.CreateSourceLink();
             Destination.CreateDestinationLink();
+        }
+
+        public bool IsPointOnEnd(Point3d point)
+        {
+            if (Curves.Any())
+                return GeometryFunc.IsPointOnCurveEnd(point, Curves);
+            if(Source != null && Destination != null)
+                return Source.IsPointOnEnd(point) || 
+                       Destination.IsPointOnEnd(point);
+            throw new Exception("Null!");
         }
     }
 }

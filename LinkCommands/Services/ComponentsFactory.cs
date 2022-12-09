@@ -50,6 +50,20 @@ namespace LinkCommands.Services
             return points;
         }
 
+        public IEnumerable<ComponentTerminal> GetAllTerminalsInComponents()
+        {
+            var terminals = new ConcurrentBag<ComponentTerminal>();
+            Parallel.ForEach(Components, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber},
+                (item, i) => PopulateTerminalsList(item, terminals));
+            return terminals;
+        }
+
+        private void PopulateTerminalsList(ElectricalComponent component, ConcurrentBag<ComponentTerminal> allTerminals)
+        {
+            foreach (var terminals in component.Terminals)
+                allTerminals.Add(terminals);
+        }
+
         private void PopulateTerminatedPoints(ElectricalComponent component, ConcurrentBag<Point3d> points)
         {
             foreach(var point in component.GetTerminalPoints())

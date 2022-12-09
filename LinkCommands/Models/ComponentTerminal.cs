@@ -1,4 +1,5 @@
-﻿using Autodesk.AutoCAD.Geometry;
+﻿using AutocadCommands.Models;
+using Autodesk.AutoCAD.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,14 @@ namespace LinkCommands.Models
         }
 
         /// <summary>
-        /// List of electrically connected terminals
+        /// List of electrically connected (tied) terminals
         /// </summary>
         public List<ComponentTerminal> TiedTerminals { get; set; } = new();
+
+        /// <summary>
+        /// List of wires connected to this terminal
+        /// </summary>
+        public List<Wire> ConnectedWires { get; set; } = new();
 
         /// <summary>
         /// Check if point3d is one of the terminal connection points

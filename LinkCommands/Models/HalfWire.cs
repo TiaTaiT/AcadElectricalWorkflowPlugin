@@ -26,8 +26,6 @@ namespace LinkCommands.Models
         private Database _db;
         private Direction _direction;
 
-        
-
         private string GetShortAttributeMultiwireConnected(string blockName)
         {
             if (blockName.Equals(LinkStruct.Left.SourceBlockName) || blockName.Equals(LinkStruct.Left.DestinationBlockName))
@@ -341,9 +339,8 @@ namespace LinkCommands.Models
 
         public Point3d PointLinkAttachedToWire { get; private set; }
 
-        public ObjectId ComponentId { get; private set; }
-
         public string ShortDescription { get; set; }
+
         public IEnumerable<Curve> Curves { get; private set; }
 
         public bool IsSource 
@@ -361,5 +358,10 @@ namespace LinkCommands.Models
         {
             LinkSymbol.Erase();
         }
+
+        public bool IsPointOnEnd(Point3d point)
+        {
+            return GeometryFunc.IsPointOnCurveEnd(point, Curves);
+        } 
     }
 }

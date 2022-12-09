@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
+using LinkCommands.Models;
 using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
@@ -94,9 +95,23 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            
             _componentsFactory = new ComponentsFactory(_db);
             _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
+            var terminals = _componentsFactory.GetAllTerminalsInComponents();
+            ComponentsWiresTier.CreateElectricalNet(terminals, _netsFactory.Wires);
+            DebugTier();
+        }
+
+        private void DebugTier()
+        {
+            foreach(var component in _componentsFactory.Components)
+            {
+                Debug.WriteLine(component.Name.ToString() + "; terminals: " + component.Terminals.Count);
+                foreach (var terminal in component.Terminals)
+                {
+                    Debug.WriteLine("    - " + terminal.Value + "; Wires = " + terminal.ConnectedWires.Count);
+                }
+            }
         }
 
         private IEnumerable<Entity> GetMultiWireEntities(ObjectId[] objectIds)
