@@ -9,12 +9,15 @@ namespace LinkCommands.Models
     public enum NetTypes
     {
         Unknown,
+        ShleifPositive,
+        ShleifNegative,
         PowerNegative,
         PowerPositive,
         Rs485A,
         Rs485B,
         Rs485Gnd,
         DplsPositive,
-        DplsNegative
+        DplsNegative,
+        Relay,
     }
 }

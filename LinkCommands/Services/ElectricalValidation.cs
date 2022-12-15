@@ -11,13 +11,20 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace LinkCommands.Services
 {
-    internal class ElectricalValidation
+    public class ElectricalValidation
     {
         public string ErrorMessage { get; set; } = "";
 
         public bool IsValid { get; set; } = true;
 
         public string ShortName { get; set; } = "";
+
+        public bool ValidationParameterIsTerminal = false;
+
+        public ElectricalValidation()
+        {
+
+        }
 
         public ElectricalValidation(string sourceDescription, string destinationDescription)
         {
@@ -30,6 +37,31 @@ namespace LinkCommands.Services
                 IsValid = false;
                 return;
             }
+
+            if(ValidationParameterIsTerminal)
+            {
+                var types = GetTypes(source, destination);
+
+                if (types.Item1 != types.Item2)
+                {
+                    ErrorMessage = "One of the description is terminal, but types aren't the same type";
+                    IsValid = false;
+                    return;
+                }
+
+                var sourceShortName = StringUtils.RemovePrefix(source);
+                var destShortName = StringUtils.RemovePrefix(destination);
+
+                if(!sourceShortName.Equals(destShortName))
+                {
+                    ErrorMessage = "One of the description is terminal, but short names aren't equal!";
+                    IsValid = false;
+                    return;
+                }
+                ShortName = sourceShortName;
+                return;
+            }
+
             if (IsRs485(source, destination))
             {
                 if (!CheckValidRs485(source, destination))
@@ -88,24 +120,85 @@ namespace LinkCommands.Services
 
         private bool CheckValidKc(string source, string destination)
         {
-            return true;
+            if (source.Equals(destination, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
         }
 
         private bool CheckValidShleif(string source, string destination)
         {
-            return true;
+            var types = GetTypes(source, destination);
+
+            // shleif <-> unknown
+            if (types.Item1 != NetTypes.Unknown ^ types.Item2 != NetTypes.Unknown)
+                return true;
+
+            // shleif+ <-> shleif+
+            if (types.Item1 == NetTypes.ShleifPositive && types.Item2 == NetTypes.ShleifPositive)
+            {
+                var sourceNumber = StringUtils.GetStringNumbersWithPoint(source).Last();
+                var destNumber = StringUtils.GetStringNumbersWithPoint(destination).Last();
+
+                if (sourceNumber.Equals(destNumber))
+                    return true;
+            }
+
+            // shleif- <-> shleif-
+            if (types.Item1 == NetTypes.ShleifNegative && types.Item2 == NetTypes.ShleifNegative)
+            {
+                var sourceNumber = StringUtils.GetStringNumbersWithPoint(source).Last();
+                var destNumber = StringUtils.GetStringNumbersWithPoint(destination).Last();
+
+                if (sourceNumber.Equals(destNumber))
+                    return true;
+            }
+
+            // shleif <-> Relay
+            if (types.Item1 == NetTypes.Relay ^ types.Item2 == NetTypes.Relay)
+                return true;
+
+            return false;
+        }
+
+        public (NetTypes, NetTypes) GetTypes(string source, string destination)
+        {
+            var sourceCore = source;
+            if (IsContainPrefix(source))
+                sourceCore = StringUtils.RemovePrefix(source);
+
+            var destinationCore = destination;
+            if (IsContainPrefix(destination))
+                StringUtils.RemovePrefix(destination);
+
+            return (NetTypeClassificator.GetNetType(sourceCore), NetTypeClassificator.GetNetType(destinationCore));
+        }
+
+        private bool IsContainPrefix(string testDescription)
+        {
+            return NetTypeClassificator.GetNetType(testDescription) == NetTypes.Unknown;
         }
 
         private bool CheckValidPower(string source, string destination)
         {
+            /*
             if ((source.StartsWith("+") && (destination.StartsWith("-") || destination.StartsWith("0В") || destination.Contains("GND"))) ||
                 ((source.StartsWith("-") || source.StartsWith("0В") || source.Contains("GND")) && destination.StartsWith("+")))
                 return false;
+            */
+            var sourceType = NetTypeClassificator.GetNetType(source);
+            var destType = NetTypeClassificator.GetNetType(destination);
 
-            var sourceVoltageRange = GetVoltageRange(source); // диапазон напряжений (минимум, максимум)
-            var destinationVoltageRange = GetVoltageRange(destination);
+            if (sourceType == destType)
+                return true;
 
-            return Mathematic.AreRangesIntersect(sourceVoltageRange, destinationVoltageRange);
+            if (sourceType == NetTypes.Unknown ^ destType == NetTypes.Unknown)
+            {
+                var sourceVoltageRange = GetVoltageRange(source); // диапазон напряжений (минимум, максимум)
+                var destinationVoltageRange = GetVoltageRange(destination);
+
+                return Mathematic.AreRangesIntersect(sourceVoltageRange, destinationVoltageRange);
+            }
+            return false;
         }
 
         private (int, int) GetVoltageRange(string str)
@@ -120,7 +213,7 @@ namespace LinkCommands.Services
 
             if (str.StartsWith("(") && str.Contains("-") && str.EndsWith(")В"))
             {
-                var numbers = Mathematic.GetAllNumbers(str);
+                var numbers = StringUtils.GetIntNumbers(str);
 
                 if (numbers.Count != 2)
                     throw new System.Exception("Numbers count != 2");
@@ -160,11 +253,11 @@ namespace LinkCommands.Services
 
         private string GetApproximateName(string source, string destination)
         {
-            if (Mathematic.IsNumeric(source))
+            if (StringUtils.IsNumeric(source))
             {
                 return destination;
             }
-            if (Mathematic.IsNumeric(destination))
+            if (StringUtils.IsNumeric(destination))
             {
                 return source;
             }
@@ -173,8 +266,8 @@ namespace LinkCommands.Services
 
         private bool CheckValidRs485(string source, string destination)
         {
-            var sourceType = NetTypeClassificator.GetNetTypes(source);
-            var destinationType = NetTypeClassificator.GetNetTypes(destination);
+            var sourceType = NetTypeClassificator.GetNetType(source);
+            var destinationType = NetTypeClassificator.GetNetType(destination);
 
             if (sourceType == destinationType)
                 return true;

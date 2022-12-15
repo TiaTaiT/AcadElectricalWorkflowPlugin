@@ -97,9 +97,9 @@ namespace LinkCommands.Services
                     return source;
                 if (!source.StartsWith("-") && destination.StartsWith("-"))
                     return destination;
-                if (Mathematic.IsNumeric(source) && !Mathematic.IsNumeric(destination))
+                if (StringUtils.IsNumeric(source) && !StringUtils.IsNumeric(destination))
                     return destination;
-                if (!Mathematic.IsNumeric(source) && Mathematic.IsNumeric(destination))
+                if (!StringUtils.IsNumeric(source) && StringUtils.IsNumeric(destination))
                     return source;
                 if (source.Equals(destination))
                     return source;

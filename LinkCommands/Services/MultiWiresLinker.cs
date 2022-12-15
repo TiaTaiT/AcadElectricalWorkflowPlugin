@@ -99,7 +99,8 @@ namespace AutocadCommands.Services
             _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
             var terminals = _componentsFactory.GetAllTerminalsInComponents();
             ComponentsWiresTier.CreateElectricalNet(terminals, _netsFactory.Wires);
-            DebugTier();
+            //DebugTier();
+
         }
 
         private void DebugTier()

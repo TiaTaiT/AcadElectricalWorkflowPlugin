@@ -57,14 +57,13 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "БИБ-02-24" },
+                new List<string>(){ "БИБ-02-24", "БИБ-02Р-24С" },
                 new List<List<string>>()
                 {
                     // Tied terminals
-                    new() { "2","9" },
-                    new() { "5","10"},
-                    new() { "5","10"},
-                    new() { "3","4","8" },
+                    new() { "1","5" },
+                    new() { "2","3","6","7"},
+                    new() { "4","8"},
                 }
             },
             { 
@@ -87,6 +86,34 @@ namespace LinkCommands.Models
                     new() { "3","4" },
                     new() { "5","6" },
                     new() { "7","8" },
+                }
+            },
+            { 
+                // Component names
+                new List<string>(){ "РСТ 4П 24/90/0.5 Р" },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "1","2" },
+                    new() { "3","4" },
+                    new() { "5","6" },
+                    new() { "7","8" },
+                }
+            },
+            { 
+                // Component names
+                new List<string>(){ "БЗК", "БЗК ИСП.01", "БЗК ИСП.02" },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "+U","Вых.1" },
+                    new() { "+U","Вых.2" },
+                    new() { "+U","Вых.3" },
+                    new() { "+U","Вых.4" },
+                    new() { "+U","Вых.5" },
+                    new() { "+U","Вых.6" },
+                    new() { "+U","Вых.7" },
+                    new() { "+U","Вых.8" },
                 }
             },
         };

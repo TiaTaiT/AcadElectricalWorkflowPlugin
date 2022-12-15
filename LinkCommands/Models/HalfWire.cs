@@ -243,6 +243,7 @@ namespace LinkCommands.Models
             var zeroPoint = GetZeroPoint(WireEntity);
                        
             _direction = GeometryFunc.GetDirection(zeroPoint, GetEndPoint(WireEntity));
+
         }
 
         
@@ -274,6 +275,7 @@ namespace LinkCommands.Models
         private void SetWireDescription(Point3d point, ElectricalComponent component, ComponentTerminal terminal)
         {
             PointConnectedToComponent = point;
+            Terminal = terminal;
 
             // Input/Output terminals have name field as the Description
             if (component.IsTerminal)
@@ -332,6 +334,11 @@ namespace LinkCommands.Models
         /// Description attribute
         /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Attached terminal
+        /// </summary>
+        public ComponentTerminal Terminal { get; set; }
 
         // Source/Destination Wire Signal Symbol
         public BlockReference LinkSymbol { get; set; }

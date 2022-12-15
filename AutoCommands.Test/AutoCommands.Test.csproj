@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoCommands.Test</RootNamespace>
-    <AssemblyName>AutoCommands.Test</AssemblyName>
+    <AssemblyName>7</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -21,6 +21,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,9 +106,11 @@
     <Compile Include="ComparerWire.cs" />
     <Compile Include="CompareWireComparer.cs" />
     <Compile Include="TestElectricalComponent.cs" />
+    <Compile Include="TestElectricalValidation.cs" />
     <Compile Include="TestLinkSymbolNameResolver.cs" />
     <Compile Include="TestMath.cs" />
     <Compile Include="TestNetTypeClassificator.cs" />
+    <Compile Include="TestStringUtils.cs" />
     <Compile Include="TestTiedTerminalsDb.cs" />
     <Compile Include="TestWiresLinkNameResolver.cs" />
     <Compile Include="UnitTest1.cs" />

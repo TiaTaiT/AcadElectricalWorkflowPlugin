@@ -50,9 +50,27 @@ namespace AutocadCommands.Models
             if (_sourceHalfWires == null || _destinationHalfWires == null)
                 return result;
 
+            var seeker = new HalfWirePairSeeker(_components);
+
+            var foundSources = new List<HalfWire>();
+            var foundDestinations = new List<HalfWire>();
+            foreach (var pair in seeker.GetPairs(_sourceHalfWires, _destinationHalfWires))
+            {
+                foundSources.Add(pair.Item1);
+                foundDestinations.Add(pair.Item2);
+            }
+            DebugPairs(foundSources, foundDestinations);
+
+            if(CreateWires(foundSources, foundDestinations))
+            {
+                // We need delete created halfWires from common collection (_sourceHalfWires and _destinationHalfWires)
+                // To avoid double create of wires 
+                DeleteFoundWires(foundSources, foundDestinations);
+            }
+
             var max = _sourceHalfWires.Count();
 
-            if(_sourceHalfWires.Count() > _destinationHalfWires.Count())
+            if (_sourceHalfWires.Count() > _destinationHalfWires.Count())
                 max = _destinationHalfWires.Count();
 
             for (var i = 0; i < max; i++)
@@ -63,6 +81,43 @@ namespace AutocadCommands.Models
             }
 
             return result;
+        }
+
+        private void DeleteFoundWires(IEnumerable<HalfWire> foundSources, IEnumerable<HalfWire> foundDestinations)
+        {
+            foreach(var foundSource in foundSources)
+            {
+                _sourceHalfWires.Remove(foundSource);
+            }
+            foreach (var foundDestination in foundDestinations)
+            {
+                _sourceHalfWires.Remove(foundDestination);
+            }
+        }
+
+        private bool CreateWires(IEnumerable<HalfWire> sources, IEnumerable<HalfWire> destination)
+        {
+            if(sources.Count() != destination.Count()) 
+                return false;
+
+            for(var i = 0; i < sources.Count(); i++)
+            {
+                var wire = new Wire(sources.ElementAt(i), destination.ElementAt(i), _components);
+                wire.Create();
+            }
+
+            return true;
+        }
+
+        private static void DebugPairs(IEnumerable<HalfWire> sources, IEnumerable<HalfWire> destinations)
+        {
+            Debug.WriteLine("sources found = " + sources.Count() + "; destinations found = " + destinations.Count());
+            
+            for(var i = 0; i < sources.Count(); i++)
+            {
+                Debug.WriteLine(sources.ElementAt(i).ShortDescription + " <=> " + destinations.ElementAt(i).ShortDescription);
+            }
+                
         }
 
         private bool SeparateSourceAndDestination(IEnumerable<HalfWire> sortedHalfWires)

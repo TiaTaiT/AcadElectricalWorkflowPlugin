@@ -48,8 +48,8 @@ namespace AutoCommands.Test
             var strWithoutNumbs = "(-)В";
 
             // Act
-            var result = Mathematic.GetAllNumbers(strWithNumbs);
-            var result2 = Mathematic.GetAllNumbers(strWithoutNumbs);
+            var result = StringUtils.GetIntNumbers(strWithNumbs);
+            var result2 = StringUtils.GetIntNumbers(strWithoutNumbs);
 
             // Assert
             Assert.AreEqual(result.Count(), 2);

@@ -1,5 +1,6 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
+using CommonHelpers;
 using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,8 @@ namespace LinkCommands.Models
         public string Name { get; set; } = string.Empty;
         public string Designation { get; set; } = string.Empty;
         public bool IsTerminal 
-        { 
-            get => BlockRef.Name.StartsWith("VT0002_") || BlockRef.Name.StartsWith("HT0002_");
+        {
+            get => SignaturesChecker.IsTerminal(BlockRef);
             private set { } 
         }
 
@@ -42,9 +43,9 @@ namespace LinkCommands.Models
         /// <returns>List of all electrically tied terminals</returns>
         public IEnumerable<ComponentTerminal> GetAllTiedTerminals(string description)
         {
-
-            var terminal = GetTerminalByDescription(description);
-            return terminal.TiedTerminals;
+            if(TryGetTerminalByDescription(description, out var foundTerminal))
+                return foundTerminal.TiedTerminals;
+            return Enumerable.Empty<ComponentTerminal>();
         }
 
         public ElectricalComponent()
@@ -93,20 +94,26 @@ namespace LinkCommands.Models
 
                 foreach(var tied in tiedList)
                 {
-                    var tmp1 = GetTerminalByDescription(tied);
-                    terminal.TiedTerminals.Add(tmp1);
+                    if (TryGetTerminalByDescription(tied, out var foundTerminal))
+                    { 
+                        terminal.TiedTerminals.Add(foundTerminal); 
+                    }
                 }
             }
         }
 
-        private ComponentTerminal GetTerminalByDescription(string description)
+        private bool TryGetTerminalByDescription(string description, out ComponentTerminal foundTerminal)
         {
             foreach (var terminal in Terminals)
             {
-                if(terminal.Value.ToUpper().Equals(description.ToUpper()))
-                    return terminal;
+                if (terminal.Value.ToUpper().Equals(description.ToUpper()))
+                { 
+                    foundTerminal = terminal; 
+                    return true;
+                }
             }
-            throw new InvalidOperationException($"Terminal with description: {description} not found.");
+            foundTerminal = null;
+            return false;
         }
     }
 }

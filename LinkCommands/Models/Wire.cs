@@ -65,15 +65,19 @@ namespace AutocadCommands.Models
 
             Source.SigCode = SigCode;
             Destination.SigCode = SigCode;
-            var electricalValidator = new ElectricalValidation(Source.Description, Destination.Description);
-            if(!electricalValidator.IsValid)
+            if(string.IsNullOrEmpty(Source.ShortDescription) || string.IsNullOrEmpty(Destination.ShortDescription))
             {
-                Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
-                ed.WriteMessage("\nWarning! " + electricalValidator.ErrorMessage);
-                //Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
-            }
+                var electricalValidator = new ElectricalValidation(Source.Description, Destination.Description);
+                if (!electricalValidator.IsValid)
+                {
+                    Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
+                    ed.WriteMessage("\nWarning! " + electricalValidator.ErrorMessage);
+                    //Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
+                }
 
-            Source.ShortDescription = electricalValidator.ShortName;
+                Source.ShortDescription = electricalValidator.ShortName;
+            }
+            
             Destination.ShortDescription = Source.ShortDescription;
         }
 

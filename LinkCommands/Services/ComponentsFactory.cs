@@ -24,7 +24,8 @@ namespace LinkCommands.Services
         private const string ComponentSign = "CAT";
         private const string Description1 = "DESC1";
         private const string TerminalDescriptionSign = "TERM";
-        private const int MaxDegreesNumber = 8; 
+        private const int MaxDegreesNumber = 8;
+        private const string ComponentTerminalDescriptionSign = "DESC1";
 
         public IEnumerable<ElectricalComponent> Components { get; set; } = Enumerable.Empty<ElectricalComponent>();
 
@@ -115,7 +116,9 @@ namespace LinkCommands.Services
             if (designation == null || name == null)
                 throw new Exception("designation or/and name of component is null");
 
-            var terminals = GetTerminals(attributes, attrDict).ToList();
+            var terminalFlag = SignaturesChecker.IsTerminal(blkRef);
+
+            var terminals = GetTerminals(attributes, attrDict, terminalFlag).ToList();
 
             return new ElectricalComponent(_index++, name, designation, terminals, blkRef);
         }
@@ -139,14 +142,29 @@ namespace LinkCommands.Services
             return string.Empty;
         }
 
-        private IEnumerable<ComponentTerminal> GetTerminals(AttributeCollection attributes, Dictionary<string,string> attrDict)
+        private IEnumerable<ComponentTerminal> GetTerminals(AttributeCollection attributes, 
+                                                            Dictionary<string,string> attrDict,
+                                                            bool terminalFlag)
         {
             var terminals = new List<ComponentTerminal>();
+
             foreach(var attr in attrDict)
             {
-                if(attr.Key.ToUpper().StartsWith(TerminalDescriptionSign))
+
+                if(attr.Key.ToUpper().StartsWith(TerminalDescriptionSign) && !terminalFlag)
                 {
                     var connectionNames = GetConnectionAttributeName(attr.Key, attrDict);
+                    var connectionPoints = GetConnectionPoints(attributes, connectionNames);
+                    terminals.Add(new ComponentTerminal(connectionPoints, attr.Key, attr.Value));
+                }
+                if (attr.Key.ToUpper().StartsWith(ComponentTerminalDescriptionSign) && terminalFlag)
+                {
+                    string key = "";
+                    foreach(var item in attrDict)
+                        if(item.Key.ToUpper().StartsWith(TerminalDescriptionSign))
+                            key = item.Key;
+
+                    var connectionNames = GetConnectionAttributeName(key, attrDict);
                     var connectionPoints = GetConnectionPoints(attributes, connectionNames);
                     terminals.Add(new ComponentTerminal(connectionPoints, attr.Key, attr.Value));
                 }

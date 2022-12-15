@@ -19,11 +19,11 @@ namespace AutoCommands.Test
 
             foreach (var item in validPositives)
             {
-                Assert.AreEqual(NetTypes.PowerPositive, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreEqual(NetTypes.PowerPositive, NetTypeClassificator.GetNetType(item));
             }
             foreach (var item in notValidPositives)
             {
-                Assert.AreNotEqual(NetTypes.PowerPositive, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreNotEqual(NetTypes.PowerPositive, NetTypeClassificator.GetNetType(item));
             }           
         }
 
@@ -35,11 +35,11 @@ namespace AutoCommands.Test
 
             foreach (var item in validNegatives)
             {
-                Assert.AreEqual(NetTypes.PowerNegative, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreEqual(NetTypes.PowerNegative, NetTypeClassificator.GetNetType(item));
             }
             foreach (var item in notValidNegatives)
             {
-                Assert.AreNotEqual(NetTypes.PowerNegative, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreNotEqual(NetTypes.PowerNegative, NetTypeClassificator.GetNetType(item));
             }
         }
 
@@ -51,11 +51,11 @@ namespace AutoCommands.Test
 
             foreach (var item in validNegatives)
             {
-                Assert.AreEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetType(item));
             }
             foreach (var item in notValidNegatives)
             {
-                Assert.AreNotEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreNotEqual(NetTypes.Rs485A, NetTypeClassificator.GetNetType(item));
             }
         }
 
@@ -67,11 +67,27 @@ namespace AutoCommands.Test
 
             foreach (var item in validNegatives)
             {
-                Assert.AreEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetType(item));
             }
             foreach (var item in notValidNegatives)
             {
-                Assert.AreNotEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetTypes(item));
+                Assert.AreNotEqual(NetTypes.Rs485B, NetTypeClassificator.GetNetType(item));
+            }
+        }
+
+        [TestMethod]
+        public void CheckRelay()
+        {
+            var valid = new List<string> { "NO1", "NC2", "COM", "K4" };
+            var notValid = new List<string>() { "ШС" };
+
+            foreach (var item in valid)
+            {
+                Assert.AreEqual(NetTypes.Relay, NetTypeClassificator.GetNetType(item));
+            }
+            foreach (var item in notValid)
+            {
+                Assert.AreNotEqual(NetTypes.Relay, NetTypeClassificator.GetNetType(item));
             }
         }
     }

@@ -113,7 +113,9 @@
     <Compile Include="Models\HalfWireComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ComponentsFactory.cs" />
+    <Compile Include="Services\ElectricalComponents.cs" />
     <Compile Include="Services\ElectricalValidation.cs" />
+    <Compile Include="Services\HalfWirePairSeeker.cs" />
     <Compile Include="Services\LinkerHelper.cs" />
     <Compile Include="Services\LinkPairsRemover.cs" />
     <Compile Include="Services\LinkSymbolNameResolver.cs" />

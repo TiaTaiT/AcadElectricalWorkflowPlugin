@@ -8,39 +8,6 @@ namespace CommonHelpers
 {
     public static class Mathematic
     {
-        public static bool IsNumeric(string s)
-        {
-            foreach (char c in s)
-            {
-                if (!char.IsDigit(c))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public static List<int> GetAllNumbers(string str)
-        {
-            var nums = new List<int>();
-            var start = -1;
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (start < 0 && Char.IsDigit(str[i]))
-                {
-                    start = i;
-                }
-                else if (start >= 0 && !Char.IsDigit(str[i]))
-                {
-                    nums.Add(int.Parse(str.Substring(start, i - start)));
-                    start = -1;
-                }
-            }
-            if (start >= 0)
-                nums.Add(int.Parse(str.Substring(start, str.Length - start)));
-            return nums;
-        }
-
         public static bool AreRangesIntersect((int, int) interval1, (int, int) interval2)
         {
             int start1;

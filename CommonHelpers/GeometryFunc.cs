@@ -194,56 +194,6 @@ namespace CommonHelpers
 
         }
 
-        /*
-        /// <summary>
-        /// Function for searching for conjugated with selected curves
-        /// </summary>
-        /// <param name="selectedCurve">Selected curve/line</param>
-        /// <param name="candidateCurves">List with candidates to conjugated with selected line</param>
-        /// <param name="terminators">Stop points where search should be stop</param>
-        /// <returns></returns>
-        public static IEnumerable<Curve> GetConjugatedCurves(Curve selectedCurve,
-                                                             IEnumerable<Curve> candidateCurves,
-                                                             IEnumerable<Point3d> terminators)
-        {
-            var result = new List<Curve>() 
-            { 
-                selectedCurve 
-            };
-
-            var curves = candidateCurves.Where(c => c != selectedCurve);
-            
-            foreach (var curve in curves)
-            {
-                for(var i = 0; i < result.Count; i++)
-                {
-                    var candidate = result[i];
-                    if(!IsPointTerminated(candidate.StartPoint, terminators))
-                    {
-                        if (IsCurveConjugated(curve.StartPoint, candidate))
-                        {
-                            if(!result.Contains(candidate))
-                                result.Add(candidate);
-                        }
-                    }
-                    if (!IsPointTerminated(candidate.EndPoint, terminators))
-                    {
-                        if (IsCurveConjugated(curve.EndPoint, candidate))
-                        {
-                            if (!result.Contains(candidate))
-                                result.Add(candidate);
-                        }
-                    }
-                }
-            }
-            return result;
-        }
-
-        private static bool IsCurveConjugated(Point3d point, Curve candidate)
-        {
-            return candidate.StartPoint.Equals(point) || candidate.EndPoint.Equals(point);
-        }
-*/
         private static bool IsPointTerminated(Point3d point, IEnumerable<Point3d> terminators)
         {
             foreach(var terminator in terminators)
