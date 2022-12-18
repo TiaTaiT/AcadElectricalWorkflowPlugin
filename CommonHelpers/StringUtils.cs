@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.AutoCAD.ViewModel.CommandLine;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,20 +33,39 @@ namespace CommonHelpers
 
         public static IEnumerable<string> GetStringNumbersWithPoint(string str)
         {
-            var nums = new List<string>();
+            var result = new List<string>();
             var numbStr = new StringBuilder();
+            var lastChar = '\0';
+            var isChangeStateRequired = false;
 
-            foreach(var c in str)
+            for (var i = 0; i < str.Length; i++)
             {
-                if (IsCharDigitWithPoint(c))
+                if((result.Count() > 0 || numbStr.Length >= 1) && 
+                    (str[i] == 'i' && lastChar != str[i]))
                 {
-                    numbStr.Append(c);
+                    result.Add(numbStr.ToString());
+                    numbStr.Clear();
+
+                    result.Add(str[i].ToString());
+                    
+                    lastChar = str[i];
                     continue;
                 }
-                yield return numbStr.ToString();
-                numbStr.Clear();
+                if(IsCharDigitWithPoint(lastChar) ^ IsCharDigitWithPoint(str[i]) && lastChar != 'i' && (numbStr.Length > 0))
+                {
+                    result.Add(numbStr.ToString());
+                    numbStr.Clear();
+                }
+                numbStr.Append(str[i]);
+                lastChar = str[i];
             }
+            result.Add(numbStr.ToString());
+            
+            return result;
         }
+
+        public static string RemoveCharacters(this string s, params char[] unwantedCharacters)
+        => s == null ? null : string.Join(string.Empty, s.Split(unwantedCharacters));
 
         public static bool IsNumeric(string s)
         {

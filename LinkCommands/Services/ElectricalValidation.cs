@@ -26,16 +26,31 @@ namespace LinkCommands.Services
 
         }
 
-        public ElectricalValidation(string sourceDescription, string destinationDescription)
+        public ElectricalValidation(bool validationParameterIsTerminal)
         {
-            ValidateWire(sourceDescription, destinationDescription);
+            ValidationParameterIsTerminal = validationParameterIsTerminal;
         }
-        public void ValidateWire(string source, string destination)
+
+        public bool IsLinkValid(string source, string destination)
+        {
+            if (source == null || destination == null)
+                return false;
+
+            var sourceDesignation = DesignationParser.GetDesignation(source);
+            var destDesignation = DesignationParser.GetDesignation(destination);
+
+            if (ValidationParameterIsTerminal)
+            {
+
+            }
+            return false;
+        }
+
+        public bool ValidateWire(string source, string destination)
         {
             if (source == null || destination == null)
             {
-                IsValid = false;
-                return;
+                return false;
             }
 
             if(ValidationParameterIsTerminal)
@@ -46,7 +61,7 @@ namespace LinkCommands.Services
                 {
                     ErrorMessage = "One of the description is terminal, but types aren't the same type";
                     IsValid = false;
-                    return;
+                    return IsValid;
                 }
 
                 var sourceShortName = StringUtils.RemovePrefix(source);
@@ -56,10 +71,10 @@ namespace LinkCommands.Services
                 {
                     ErrorMessage = "One of the description is terminal, but short names aren't equal!";
                     IsValid = false;
-                    return;
+                    return IsValid;
                 }
                 ShortName = sourceShortName;
-                return;
+                return IsValid;
             }
 
             if (IsRs485(source, destination))
@@ -74,7 +89,7 @@ namespace LinkCommands.Services
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Rs485);
 
-                return;
+                return IsValid;
             }
 
             if (IsShleif(source, destination))
@@ -86,7 +101,7 @@ namespace LinkCommands.Services
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Shleif);
 
-                return;
+                return IsValid;
             }
 
             if (IsKc(source, destination))
@@ -98,7 +113,7 @@ namespace LinkCommands.Services
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.KC);
 
-                return;
+                return IsValid;
             }
 
             if (IsPower(source, destination))
@@ -110,12 +125,13 @@ namespace LinkCommands.Services
                 }
                 ShortName = WireNameGenerator.GetShortWireName(source, destination, WireNameGenerator.SignalType.Power);
 
-                return;
+                return IsValid;
             }
 
             ShortName = GetApproximateName(source, destination);
             ErrorMessage = "Unrecognized signal type!";
             IsValid = false;
+            return IsValid;
         }
 
         private bool CheckValidKc(string source, string destination)

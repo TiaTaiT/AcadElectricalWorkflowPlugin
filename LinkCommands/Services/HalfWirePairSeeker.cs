@@ -119,17 +119,18 @@ namespace LinkCommands.Services
                 ValidationParameterIsTerminal = true
             };
 
-            validator.ValidateWire(source, destination);
+            var validateResult = validator.ValidateWire(source, destination);
             shortTerminalName = validator.ShortName;
 
-            return validator.IsValid;
+            return validateResult;
         }
 
         private bool IsDescriptionsCompatible(string sourceDescription, string destinationDescription, out string shortName)
         {
             shortName = string.Empty;
-            var validator = new ElectricalValidation(sourceDescription, destinationDescription);
-            if (validator.IsValid)
+            var validator = new ElectricalValidation();
+
+            if (validator.ValidateWire(sourceDescription, destinationDescription))
             {
                 shortName = NamesConverter.GetShortAlias(sourceDescription, destinationDescription);
                 return true;

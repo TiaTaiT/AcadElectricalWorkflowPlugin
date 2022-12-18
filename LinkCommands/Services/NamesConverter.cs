@@ -14,10 +14,11 @@ namespace LinkCommands.Services
             if (sourceDescription == null || destinationDescription == null)
                 return string.Empty;
 
-            var electricalChecker = new ElectricalValidation(sourceDescription, destinationDescription);
-            if(!electricalChecker.IsValid)
-                Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalChecker.ErrorMessage);
-            sourceDescription = electricalChecker.ShortName;
+            var electricalValidator = new ElectricalValidation();
+            var validationResult = electricalValidator.ValidateWire(sourceDescription, destinationDescription);
+            if(!validationResult)
+                Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
+            sourceDescription = electricalValidator.ShortName;
             
             return sourceDescription;
         }

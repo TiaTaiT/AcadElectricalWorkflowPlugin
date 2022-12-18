@@ -67,8 +67,9 @@ namespace AutocadCommands.Models
             Destination.SigCode = SigCode;
             if(string.IsNullOrEmpty(Source.ShortDescription) || string.IsNullOrEmpty(Destination.ShortDescription))
             {
-                var electricalValidator = new ElectricalValidation(Source.Description, Destination.Description);
-                if (!electricalValidator.IsValid)
+                var electricalValidator = new ElectricalValidation();
+                var validationResult = electricalValidator.ValidateWire(Source.Description, Destination.Description);
+                if (!validationResult)
                 {
                     Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
                     ed.WriteMessage("\nWarning! " + electricalValidator.ErrorMessage);

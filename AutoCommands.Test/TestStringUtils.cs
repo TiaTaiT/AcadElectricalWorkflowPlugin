@@ -11,15 +11,71 @@ namespace AutoCommands.Test
     [TestClass]
     public class TestStringUtils
     {
-        [TestMethod] 
-        public void TestGetStringNumbersWithPoint() 
+        [TestMethod]
+        public void TestGetStringNumbersWithPoint()
         {
-            var testStr1 = "1.1ШСi2.3+";
-            var expected1 = "2.3";
-
-            var result = StringUtils.GetStringNumbersWithPoint(testStr1).Last();
-
-            Assert.AreEqual(expected1, result);
+            var testList = new List<string>
+            {
+                "1.2A",
+                "iШС13+",
+                "ШСi3+",
+                "1.1ШСi2.3+",
+                "0В",
+                "+24В1",
+                "GND",
+            };
+            var expectedList = new List<List<string>>()
+            {
+                new List<string>()
+                {
+                    "1.2",
+                    "A",
+                },
+                new List<string>()
+                {
+                    "iШС",
+                    "13",
+                    "+",
+                },
+                new List<string>()
+                {
+                    "ШС",
+                    "i",
+                    "3",
+                    "+",
+                },
+                new List<string>()
+                {
+                    "1.1",
+                    "ШС",
+                    "i",
+                    "2.3",
+                    "+",
+                },
+                new List<string>()
+                {
+                    "0",
+                    "В",
+                },
+                new List<string>()
+                {
+                    "+",
+                    "24",
+                    "В",
+                    "1",
+                },
+                new List<string>()
+                {
+                    "GND",
+                },
+            };
+            
+            for(var i = 0; i < testList.Count; i++)
+            {
+                var result = StringUtils.GetStringNumbersWithPoint(testList[i]).ToList();
+                CollectionAssert.AreEquivalent(expectedList[i], result);
+            }
+            
         }
 
         [TestMethod]
