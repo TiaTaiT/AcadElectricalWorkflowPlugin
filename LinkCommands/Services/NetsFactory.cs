@@ -5,14 +5,9 @@ using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using LinkCommands.Models;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Autodesk.AutoCAD.Internal;
 
 namespace LinkCommands.Services
 {
@@ -22,7 +17,6 @@ namespace LinkCommands.Services
         private readonly IEnumerable<ElectricalComponent> _components;
         private const string _linkSign = "SIGCODE";
         private const string _descriptionSign = "DESC1";
-        private int MaxDegreesNumber = 8;
         private IEnumerable<Point3d> _terminators;
 
         private IEnumerable<HalfWire> HalfWires { get; set; }
@@ -83,13 +77,11 @@ namespace LinkCommands.Services
                     if (terminatorsCounter == 0)
                         continue;
 
-                    
                     if (terminatorsCounter >= 2)
                     {
                         wires.Add(curveGroup);
                         break; 
                     }
-                    //terminatorsCounter++;
                 }
             }
             return wires;
@@ -214,11 +206,6 @@ namespace LinkCommands.Services
                 }
             }
             return terminatedWireEnds;
-        }
-
-        public IEnumerable<Wire> GetAllExistWires()
-        {
-            throw new NotImplementedException();
         }
     }
 }

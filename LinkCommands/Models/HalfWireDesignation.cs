@@ -6,84 +6,41 @@ using System.Threading.Tasks;
 
 namespace LinkCommands.Models
 {
-    public class HalfWireDesignation
+    public class HalfWireDesignation : Designation
     {
-        /// <summary>
-        /// Location code. For example, in designation "7.1ШСi12.3+" location code is "7.1".
-        /// Optional.
-        /// </summary>
-        public string Location { get; set; } = "";
-
-        /// <summary>
-        /// Signal appointment. For example, in designation "7.1ШСi12.3+" signal appointment is "ШС" or
-        /// in designation "+12В1" signal appointment is "+12В"
-        /// Required.
-        /// </summary>
-        public string Appointment { get; set; } = "";
-
-        /// <summary>
-        /// Spark protection on signal/power circuits. For example, in designation "7.1ШСi12.3+" spark protection is "i".
-        /// Optional.
-        /// </summary>
-        public string SparkProtection { get; set; } = "";
-
-        /// <summary>
-        /// Signal number. For example, in designation "7.1ШСi12.3+" signal number is "12.3" or
-        /// in designation "+12В1" signal number is "1"
-        /// Optional
-        /// </summary>
-        public string Number { get; set; } = "";
-
-        /// <summary>
-        /// Last part of the full designation. For example, in designation "7.1ШСi12.3+" Suffix is "+".
-        /// </summary>
-        public string Suffix { get; set; } = "";
-
-        public override string ToString()
+        public bool IsInRangeVoltage(int voltage)
         {
-            return Location + Appointment+ SparkProtection + Number + Suffix;
+            return (voltage >= LowerVoltage) && (voltage <= UpperVoltage);
         }
 
-        public NetTypes GetElectricalType()
+        public bool IsPower
         {
-            return NetTypeClassificator.GetNetType(Appointment);
+            get => (ElectricalType == NetTypes.PowerPositive) ||
+                   (ElectricalType == NetTypes.PowerPositive);
         }
 
-        public override bool Equals(object obj)
+        public bool IsShleif
         {
-            if ((obj == null) || !GetType().Equals(obj.GetType()))
-            {
-                return false;
-            }
-            var testObj = (HalfWireDesignation)obj;
-            
-            if(testObj.Location.Equals(Location) &&
-               testObj.Appointment.Equals(Appointment) &&
-               testObj.SparkProtection.Equals(SparkProtection) &&
-               testObj.Number.Equals(Number) &&
-               testObj.Suffix.Equals(Suffix)) 
-                return true;
-
-            return false;
+            get => (ElectricalType == NetTypes.ShleifPositive) ||
+                   (ElectricalType == NetTypes.ShleifNegative);
         }
 
-        public override int GetHashCode()
+        public bool IsDpls
         {
-            unchecked
-            {
-                int hashCode = 0;
+            get => (ElectricalType == NetTypes.DplsPositive) ||
+                   (ElectricalType == NetTypes.DplsNegative);
+        }
 
-                // String properties
-                hashCode = (hashCode * 397) ^ (Location  != null ? Location.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Appointment != null ? Location.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (SparkProtection != null ? Appointment.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Number != null ? SparkProtection.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (Suffix != null ? Number.GetHashCode() : 0);
+        public bool IsLadogaRs
+        {
+            get => (ElectricalType == NetTypes.LadogaRsPositive) ||
+                   (ElectricalType == NetTypes.LadogaRsNegative);
+        }
 
-                // int properties
-                //hashCode = (hashCode * 397) ^ intProperty;
-                return hashCode;
-            }
+        public bool IsRs485
+        {
+            get => (ElectricalType == NetTypes.Rs485A ||
+                    ElectricalType == NetTypes.Rs485B);
         }
     }
 }

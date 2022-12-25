@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LinkCommands.Models
+﻿namespace LinkCommands.Models
 {
     public enum NetTypes
     {
@@ -13,9 +7,12 @@ namespace LinkCommands.Models
         ShleifNegative,
         PowerNegative,
         PowerPositive,
+        PowerAc,
         Rs485A,
         Rs485B,
         Rs485Gnd,
+        LadogaRsPositive, 
+        LadogaRsNegative,
         DplsPositive,
         DplsNegative,
         Relay,

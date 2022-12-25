@@ -7,31 +7,43 @@ using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutocadCommands.Models
 {
     public class Wire
     {
         private IEnumerable<ElectricalComponent> _components;
+        private readonly DesignationParser _designationParser;
+        private readonly NamesConverter _namesConverter;
 
         /// <summary>
         /// If wire not devided by HalfWire, all parts of wire are here
         /// </summary>
         public IEnumerable<Curve> Curves = Enumerable.Empty<Curve>();
-
         public HalfWire Source { get; set; }
         public HalfWire Destination { get; set; }
+
+        private string _descritption;
+        public string Description 
+        {
+            get
+            {
+                if (Source == null || Destination == null)
+                    return _descritption;
+                return Source.Description.Equals(Destination.Description) ? Source.Description : Description;
+            }
+            set => _descritption = value;
+        }
 
         /// <summary>
         /// List of the connected terminals
         /// </summary>
         public List<ComponentTerminal> Terminals = new();
-
+        
         public Wire(HalfWire halfWire1, HalfWire halfWire2)
         {
+            _designationParser = new DesignationParser();
+            _namesConverter = new NamesConverter();
             if (halfWire1.IsSource)
             {
                 Source = halfWire1;
@@ -45,10 +57,14 @@ namespace AutocadCommands.Models
         public Wire(IEnumerable<Curve> curves)
         {
             Curves= curves;
+            _designationParser = new DesignationParser();
+            _namesConverter = new NamesConverter();
         }
 
         public Wire(ObjectId sourceHalfWire, ObjectId destinationHalfWire, IEnumerable<ElectricalComponent> components)
         {
+            _designationParser = new DesignationParser();
+            _namesConverter = new NamesConverter();
             _components = components;
             var sourceLineEntity = (Entity)sourceHalfWire.GetObject(OpenMode.ForRead, false);
             Source = new HalfWire(sourceLineEntity, components);
@@ -67,8 +83,8 @@ namespace AutocadCommands.Models
             Destination.SigCode = SigCode;
             if(string.IsNullOrEmpty(Source.ShortDescription) || string.IsNullOrEmpty(Destination.ShortDescription))
             {
-                var electricalValidator = new ElectricalValidation();
-                var validationResult = electricalValidator.ValidateWire(Source.Description, Destination.Description);
+                var electricalValidator = new ElectricalValidation(_designationParser, _namesConverter);
+                var validationResult = electricalValidator.IsConnectionValid(Source.Description, Destination.Description);
                 if (!validationResult)
                 {
                     Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
@@ -87,6 +103,8 @@ namespace AutocadCommands.Models
             Source = source;
             Destination = destination;
             _components = components;
+            _designationParser = new DesignationParser();
+            _namesConverter = new NamesConverter();
             SetWireAttributes();
         }
 

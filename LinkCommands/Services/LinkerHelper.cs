@@ -1,18 +1,10 @@
-﻿using AutocadCommands.Helpers;
-using AutocadCommands.Models;
-using Autodesk.AutoCAD.DatabaseServices;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.GraphicsInterface;
-using Autodesk.AutoCAD.Runtime;
 using CommonHelpers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Exception = System.Exception;
 using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
 

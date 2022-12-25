@@ -1,9 +1,5 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkCommands.Models
 {
@@ -25,6 +21,16 @@ namespace LinkCommands.Models
 
             return (Math.Abs(this.X - ((CompareWire)obj).X) < _tolerance &&
                    Math.Abs(this.Y - ((CompareWire)obj).Y) < _tolerance);
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = -2013743655;
+            hashCode = hashCode * -1521134295 + _tolerance.GetHashCode();
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            hashCode = hashCode * -1521134295 + WireId.GetHashCode();
+            return hashCode;
         }
     }
 }

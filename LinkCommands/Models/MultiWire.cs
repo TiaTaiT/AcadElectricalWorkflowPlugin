@@ -1,19 +1,13 @@
 ﻿using AutocadCommands.Services;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.GraphicsInterface;
 using CommonHelpers;
 using LinkCommands.Models;
 using LinkCommands.Services;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
 
 namespace AutocadCommands.Models
@@ -116,8 +110,7 @@ namespace AutocadCommands.Models
             for(var i = 0; i < sources.Count(); i++)
             {
                 Debug.WriteLine(sources.ElementAt(i).ShortDescription + " <=> " + destinations.ElementAt(i).ShortDescription);
-            }
-                
+            }  
         }
 
         private bool SeparateSourceAndDestination(IEnumerable<HalfWire> sortedHalfWires)
@@ -194,7 +187,6 @@ namespace AutocadCommands.Models
             connectedToMultiwireWires.Sort(new HalfWireComparer());
             return connectedToMultiwireWires;
         }
-
         
         private static IEnumerable<Curve> GetConnectedWires(IEnumerable<Curve> multiwireSegments, IEnumerable<Curve> allWires)
         {
@@ -212,7 +204,6 @@ namespace AutocadCommands.Models
                 }
             }
         }
-
         
         #region Constructors
         public MultiWire(Polyline polyLine, IEnumerable<ElectricalComponent> components)
@@ -248,8 +239,6 @@ namespace AutocadCommands.Models
             var db = Application.DocumentManager.MdiActiveDocument.Database;
             _allWires = LinkerHelper.GetAllWiresFromDb(db);
             CreateLinkedMultiwire();
-
-            
         }
         #endregion Constructors
 

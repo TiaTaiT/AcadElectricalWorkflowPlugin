@@ -110,6 +110,7 @@
     <Compile Include="TestElectricalValidation.cs" />
     <Compile Include="TestLinkSymbolNameResolver.cs" />
     <Compile Include="TestMath.cs" />
+    <Compile Include="TestNamesConverter.cs" />
     <Compile Include="TestNetTypeClassificator.cs" />
     <Compile Include="TestStringUtils.cs" />
     <Compile Include="TestTiedTerminalsDb.cs" />

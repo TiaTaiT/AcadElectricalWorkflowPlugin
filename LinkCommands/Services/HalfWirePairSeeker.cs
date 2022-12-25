@@ -1,21 +1,14 @@
 ﻿using AutocadCommands.Models;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.GraphicsInterface;
-using Autodesk.AutoCAD.MacroRecorder;
 using LinkCommands.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Autodesk.AutoCAD.DatabaseServices.RenderGlobal;
 
 namespace LinkCommands.Services
 {
     public class HalfWirePairSeeker
     {
         private IEnumerable<ElectricalComponent> _components;
-        private Wire _wires;
+        private NamesConverter _namesConverter;
         private List<HalfWire> _sources;
         private List<HalfWire> _destinations;
 
@@ -26,7 +19,7 @@ namespace LinkCommands.Services
         public HalfWirePairSeeker(IEnumerable<ElectricalComponent> components)
         {
             _components = components;
-            
+            _namesConverter = new NamesConverter();
         }
 
         public IEnumerable<(HalfWire, HalfWire)> GetPairs(
@@ -80,62 +73,45 @@ namespace LinkCommands.Services
             if (!sourceTiedWires.Any() && destTiedWires.Any())
             {
                 sourceDescription = source.Terminal.Value;
-                destinationDescription = destTiedWires.FirstOrDefault().Source.Description;
+                destinationDescription = GetDescritpion(destTiedWires);
 
             }
             else if(!destTiedWires.Any() && sourceTiedWires.Any())
             {
                 destinationDescription = destination.Terminal.Value;
-                sourceDescription = sourceTiedWires.FirstOrDefault().Source.Description;
+                sourceDescription = GetDescritpion(sourceTiedWires);
             }
             else 
             {
-                sourceDescription = sourceTiedWires.FirstOrDefault().Source.Description;
-                destinationDescription = destTiedWires.FirstOrDefault().Source.Description;
+                sourceDescription = GetDescritpion(sourceTiedWires);
+                destinationDescription = GetDescritpion(destTiedWires);
             }
-            /*
-            if(sComponnet.IsTerminal || dComponnet.IsTerminal)
-            {
-                if(IsShortNamesAreEqual(sourceDescription, destinationDescription, out var shortTerminalName))
-                {
-                    description= shortTerminalName;
-                    return true;
-                }
-                return false;
-            }
-            */
-            if (IsDescriptionsCompatible(sourceDescription, destinationDescription, out var shortName))
-            {
-                description = shortName;
-                return true;
-            }
-            return false;
-        }
 
-        private bool IsShortNamesAreEqual(string source, string destination, out string shortTerminalName)
-        {
-            var validator = new ElectricalValidation()
+            var validator = new ElectricalValidation(new DesignationParser(), _namesConverter)
             {
-                ValidationParameterIsTerminal = true
+                ValidationParameterIsTerminal = sComponnet.IsTerminal || dComponnet.IsTerminal,
             };
-
-            var validateResult = validator.ValidateWire(source, destination);
-            shortTerminalName = validator.ShortName;
-
-            return validateResult;
-        }
-
-        private bool IsDescriptionsCompatible(string sourceDescription, string destinationDescription, out string shortName)
-        {
-            shortName = string.Empty;
-            var validator = new ElectricalValidation();
-
-            if (validator.ValidateWire(sourceDescription, destinationDescription))
+            
+            if (validator.IsConnectionValid(sourceDescription, destinationDescription))
             {
-                shortName = NamesConverter.GetShortAlias(sourceDescription, destinationDescription);
+                description = validator.ShortName;
                 return true;
             }
             return false;
+        }
+
+        //Need to loop for finding description
+        private static string GetDescritpion(IEnumerable<Wire> tiedWires)
+        {
+            foreach(var wire in tiedWires)
+            {
+                if (string.IsNullOrEmpty(wire.Description))
+                {
+                    continue;
+                }
+                return wire.Description;
+            }
+            return tiedWires.FirstOrDefault().Terminals.FirstOrDefault().Value;
         }
 
         private IEnumerable<Wire> GetTiedWires(ElectricalComponent sComponnet, ComponentTerminal terminal)

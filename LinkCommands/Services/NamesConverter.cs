@@ -1,26 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
+﻿using LinkCommands.Interfaces;
+using LinkCommands.Models;
 
 namespace LinkCommands.Services
 {
-    internal static class NamesConverter
+    public class NamesConverter : INamesConverter
     {
-        public static string GetShortAlias(string sourceDescription, string destinationDescription)
+        private const string _positiveSign = "+";
+        
+        public string GetShortName(HalfWireDesignation sourceDesignation, HalfWireDesignation destDesignation)
         {
-            if (sourceDescription == null || destinationDescription == null)
-                return string.Empty;
+            if (sourceDesignation.ElectricalType == NetTypes.Unknown && 
+                destDesignation.ElectricalType == NetTypes.PowerPositive)
+            {
+                return _positiveSign + 
+                       destDesignation.LowerVoltage + 
+                       destDesignation.Appointment + 
+                       destDesignation.Number + 
+                       destDesignation.Suffix;
+            }
 
-            var electricalValidator = new ElectricalValidation();
-            var validationResult = electricalValidator.ValidateWire(sourceDescription, destinationDescription);
-            if(!validationResult)
-                Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
-            sourceDescription = electricalValidator.ShortName;
-            
-            return sourceDescription;
+            if (sourceDesignation.ElectricalType == NetTypes.Unknown &&
+                destDesignation.ElectricalType == NetTypes.PowerNegative)
+            {
+                return destDesignation.LowerVoltage +
+                       destDesignation.Appointment +
+                       destDesignation.Number +
+                       destDesignation.Suffix;
+            }
+
+            if (destDesignation.ElectricalType == NetTypes.Unknown &&
+                sourceDesignation.ElectricalType == NetTypes.PowerPositive)
+            {
+                return _positiveSign +
+                       sourceDesignation.LowerVoltage + 
+                       sourceDesignation.Appointment + 
+                       sourceDesignation.Number + 
+                       sourceDesignation.Suffix;
+            }
+
+            if (destDesignation.ElectricalType == NetTypes.Unknown &&
+                sourceDesignation.ElectricalType == NetTypes.PowerNegative)
+            {
+                return sourceDesignation.LowerVoltage +
+                       sourceDesignation.Appointment +
+                       sourceDesignation.Number +
+                       sourceDesignation.Suffix;
+            }
+
+            if (sourceDesignation.ElectricalType == NetTypes.PowerPositive ||
+                destDesignation.ElectricalType == NetTypes.PowerPositive)
+            {
+                return _positiveSign + sourceDesignation.LowerVoltage + sourceDesignation.Appointment + sourceDesignation.Number;
+            }
+
+            if (sourceDesignation.ElectricalType == NetTypes.PowerNegative ||
+                destDesignation.ElectricalType == NetTypes.PowerNegative)
+            {
+                return sourceDesignation.LowerVoltage + sourceDesignation.Appointment + sourceDesignation.Number;
+            }
+
+            if (sourceDesignation.IsShleif)
+            {
+                return sourceDesignation.Appointment + sourceDesignation.Number + sourceDesignation.Suffix;
+            }
+
+            if (destDesignation.IsShleif)
+            {
+                return destDesignation.Appointment + destDesignation.Number + destDesignation.Suffix;
+            }
+
+            return sourceDesignation.Appointment + sourceDesignation.Number + sourceDesignation.Suffix;
         }
     }
 }

@@ -3,6 +3,7 @@ using LinkCommands.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,58 @@ namespace AutoCommands.Test
         [TestMethod]  
         public void TestGetDesignation()
         {
+            var designationParser = new DesignationParser();
+
             List<(string, HalfWireDesignation)> validExpected = new()
             {
+                ("ЛС+", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "ЛС",
+                        Number = "",
+                        SparkProtection = "",
+                        Suffix = "+",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.LadogaRsPositive,
+                    }
+                ),
+                ("ЛС-", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "ЛС",
+                        Number = "",
+                        SparkProtection = "",
+                        Suffix = "-",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.LadogaRsNegative,
+                    }
+                ),
+                ("+U1", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "+U",
+                        Number = "1",
+                        SparkProtection = "",
+                        Suffix = "",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.PowerPositive,
+                    }
+                ),
+                ("ПИ1+", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "ПИ",
+                        Number = "1",
+                        SparkProtection = "",
+                        Suffix = "+",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.PowerPositive,
+                    }
+                ),
                 ("ШСi3+", new HalfWireDesignation()
                     {
                         Location = "",
@@ -24,6 +75,7 @@ namespace AutoCommands.Test
                         Number = "3",
                         SparkProtection = "i",
                         Suffix = "+",
+                        ElectricalType = NetTypes.ShleifPositive,
                     }
                 ),
                 ("L", new HalfWireDesignation()
@@ -33,6 +85,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerAc,
                     }
                 ),
                 ("N1", new HalfWireDesignation()
@@ -42,6 +95,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerAc,
                     }
                 ),
                 ("PE1", new HalfWireDesignation()
@@ -51,6 +105,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerAc,
                     }
                 ),
                 ("GND1", new HalfWireDesignation()
@@ -60,6 +115,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
                 ("GND", new HalfWireDesignation()
@@ -69,6 +125,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
                 ("2.1GND5", new HalfWireDesignation()
@@ -78,51 +135,91 @@ namespace AutoCommands.Test
                         Number = "5",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
-                ("0В", new HalfWireDesignation()
+                ("0В", new HalfWireDesignation()  // В - русская
                     {
                         Location = "",
-                        Appointment = "0В",
+                        Appointment = "В", // В - русская
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
-                ("0В3", new HalfWireDesignation()
+                ("0В3", new HalfWireDesignation() // В - русская
                     {
                         Location = "",
-                        Appointment = "0В",
+                        Appointment = "В", // В - русская
                         Number = "3",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
                 ("0V", new HalfWireDesignation()
                     {
                         Location = "",
-                        Appointment = "0V",
+                        Appointment = "V",
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 0,
+                        UpperVoltage = 0,
+                        ElectricalType = NetTypes.PowerNegative,
                     }
                 ),
-                ("+5В", new HalfWireDesignation()
+                ("+5В", new HalfWireDesignation() // В - русская
                     {
                         Location = "",
-                        Appointment = "+5В",
+                        Appointment = "В", // В - русская
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 5,
+                        UpperVoltage = 5,
+                        ElectricalType = NetTypes.PowerPositive,
                     }
                 ),
-                ("+24В24", new HalfWireDesignation()
+                ("+24В25", new HalfWireDesignation() // В - русская
                     {
                         Location = "",
-                        Appointment = "+24В",
-                        Number = "24",
+                        Appointment = "В", // В - русская
+                        Number = "25",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 24,
+                        UpperVoltage = 24,
+                        ElectricalType = NetTypes.PowerPositive,
+                    }
+                ),
+                ("(10-28)В", new HalfWireDesignation() // В - русская
+                    {
+                        Location = "",
+                        Appointment = "В", // В - русская
+                        Number = "",
+                        SparkProtection = "",
+                        Suffix = "",
+                        LowerVoltage = 10,
+                        UpperVoltage = 28,
+                        ElectricalType = NetTypes.PowerPositive,
+                    }
+                ),
+                ("(10-28)В1", new HalfWireDesignation() // В - русская
+                    {
+                        Location = "",
+                        Appointment = "В", // В - русская
+                        Number = "1",
+                        SparkProtection = "",
+                        Suffix = "",
+                        LowerVoltage = 10,
+                        UpperVoltage = 28,
+                        ElectricalType = NetTypes.PowerPositive,
                     }
                 ),
                 ("ШС3+", new HalfWireDesignation()
@@ -132,6 +229,7 @@ namespace AutoCommands.Test
                         Number = "3",
                         SparkProtection = "",
                         Suffix = "+",
+                        ElectricalType = NetTypes.ShleifPositive,
                     }
                 ),
                 
@@ -142,6 +240,7 @@ namespace AutoCommands.Test
                         Number = "20",
                         SparkProtection = "",
                         Suffix = "-",
+                        ElectricalType = NetTypes.ShleifNegative,
                     }
                 ),
                 ("1.3ШС18-", new HalfWireDesignation()
@@ -151,6 +250,7 @@ namespace AutoCommands.Test
                         Number = "18",
                         SparkProtection = "",
                         Suffix = "-",
+                        ElectricalType = NetTypes.ShleifNegative,
                     }
                 ),
                 ("1.3ШСi18-", new HalfWireDesignation()
@@ -160,6 +260,7 @@ namespace AutoCommands.Test
                         Number = "18",
                         SparkProtection = "i",
                         Suffix = "-",
+                        ElectricalType = NetTypes.ShleifNegative,
                     }
                 ),
                 ("5ШС19-", new HalfWireDesignation()
@@ -169,6 +270,7 @@ namespace AutoCommands.Test
                         Number = "19",
                         SparkProtection = "",
                         Suffix = "-",
+                        ElectricalType = NetTypes.ShleifNegative,
                     }
                 ),
                 ("1.3.4КЦ10-", new HalfWireDesignation()
@@ -178,6 +280,17 @@ namespace AutoCommands.Test
                         Number = "10",
                         SparkProtection = "",
                         Suffix = "-",
+                        ElectricalType = NetTypes.ShleifNegative,
+                    }
+                ),
+                ("NO1", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "NO",
+                        Number = "1",
+                        SparkProtection = "",
+                        Suffix = "",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("5NO3", new HalfWireDesignation()
@@ -187,6 +300,7 @@ namespace AutoCommands.Test
                         Number = "3",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("5NC3", new HalfWireDesignation()
@@ -196,6 +310,19 @@ namespace AutoCommands.Test
                         Number = "3",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Relay,
+                    }
+                ),
+                ("NC2(+12В)", new HalfWireDesignation()
+                    {
+                        Location = "",
+                        Appointment = "NC",
+                        Number = "2",
+                        SparkProtection = "",
+                        Suffix = "",
+                        LowerVoltage = 12,
+                        UpperVoltage = 12,
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("1.6NO2(+12В)", new HalfWireDesignation()
@@ -205,6 +332,9 @@ namespace AutoCommands.Test
                         Number = "2",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 12,
+                        UpperVoltage = 12,
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("4K1(+12В)", new HalfWireDesignation()
@@ -214,6 +344,9 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "",
+                        LowerVoltage = 12,
+                        UpperVoltage = 12,
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("K", new HalfWireDesignation()
@@ -223,6 +356,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("NO", new HalfWireDesignation()
@@ -232,6 +366,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("ДК1+", new HalfWireDesignation()
@@ -241,6 +376,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "+",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("4.3.8ДК1+", new HalfWireDesignation()
@@ -250,6 +386,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "+",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("ДКi12+", new HalfWireDesignation()
@@ -259,6 +396,7 @@ namespace AutoCommands.Test
                         Number = "12",
                         SparkProtection = "i",
                         Suffix = "+",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("4.3.8ДКi1+", new HalfWireDesignation()
@@ -268,6 +406,7 @@ namespace AutoCommands.Test
                         Number = "1",
                         SparkProtection = "i",
                         Suffix = "+",
+                        ElectricalType = NetTypes.Relay,
                     }
                 ),
                 ("RS485(A)", new HalfWireDesignation()
@@ -277,6 +416,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485A,
                     }
                 ),
                 ("RS485(B)", new HalfWireDesignation()
@@ -286,6 +426,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485B,
                     }
                 ),
                 ("RS485(GND)", new HalfWireDesignation()
@@ -295,6 +436,7 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485Gnd,
                     }
                 ),
                 ("A", new HalfWireDesignation()
@@ -304,33 +446,38 @@ namespace AutoCommands.Test
                         Number = "",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485A,
                     }
                 ),
-                ("B5", new HalfWireDesignation()
+                ("B5", new HalfWireDesignation() // B - english
                     {
                         Location = "",
-                        Appointment = "B",
+                        Appointment = "B", // B - english
                         Number = "5",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485B,
                     }
                 ),
-                ("1.2B1", new HalfWireDesignation()
+                ("1.2B1", new HalfWireDesignation() // B - english
                     {
                         Location = "1.2",
-                        Appointment = "B",
+                        Appointment = "B", // B - english
                         Number = "1",
                         SparkProtection = "",
                         Suffix = "",
+                        ElectricalType = NetTypes.Rs485B,
                     }
                 ),
             };
 
+            var counter = 0;
             foreach(var expected in validExpected)
             {
-                var result = DesignationParser.GetDesignation(expected.Item1);
-
+                var result = designationParser.GetDesignation(expected.Item1);
+                Debug.WriteLine(counter + "  Test Designation: " + expected.Item1);
                 Assert.AreEqual(expected.Item2, result);
+                counter++;
             }
             
 

@@ -1,20 +1,13 @@
 ﻿using AutocadCommands.Helpers;
-using AutocadCommands.Models;
 using AutocadCommands.Services;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
 using CommonHelpers;
 using CommonHelpers.Model;
-using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 using Exception = System.Exception;
@@ -162,7 +155,6 @@ namespace LinkCommands.Models
             
             foreach (var blkRefId in blockRefIds) 
             {
-
                 var attributesCollection = ((BlockReference)(blkRefId.GetObject(OpenMode.ForRead, false))).AttributeCollection;
                 
                 foreach(ObjectId attrId in attributesCollection)
@@ -170,7 +162,6 @@ namespace LinkCommands.Models
                     var att = (AttributeReference)(attrId.GetObject(OpenMode.ForRead, false));
                     if (att.Position.Equals(GetZeroPoint(wire)))
                     {
-
                         output = blkRefId;
                         return true;
                     }
