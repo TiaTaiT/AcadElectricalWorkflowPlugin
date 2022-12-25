@@ -14,11 +14,11 @@ namespace AutocadCommands.Models
             var x2 = second.PointConnectedToMultiWire.X;
             var y2 = second.PointConnectedToMultiWire.Y;
 
-            if(Math.Abs(y2 - y1) < _tolerance)
+            if (Math.Abs(y2 - y1) < _tolerance)
             {
-                if(x2 - x1 > _tolerance)
+                if (x2 - x1 > _tolerance)
                     return -1;
-                
+
                 if (x2 - x1 < 0 - _tolerance)
                     return 1;
 
@@ -31,7 +31,7 @@ namespace AutocadCommands.Models
                 if (y2 - y1 < 0 - _tolerance)
                     return 1;
                 return 0;
-            } 
+            }
             return 0;
         }
     }

@@ -1,10 +1,7 @@
 ﻿using CommonHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoCommands.Test
 {
@@ -69,13 +66,13 @@ namespace AutoCommands.Test
                     "GND",
                 },
             };
-            
-            for(var i = 0; i < testList.Count; i++)
+
+            for (var i = 0; i < testList.Count; i++)
             {
                 var result = StringUtils.GetStringNumbersWithPoint(testList[i]).ToList();
                 CollectionAssert.AreEquivalent(expectedList[i], result);
             }
-            
+
         }
 
         [TestMethod]
@@ -85,7 +82,7 @@ namespace AutoCommands.Test
             var expected1 = "NO1";
 
             var result1 = StringUtils.RemovePrefix(testStr1);
-            
+
             Assert.AreEqual(expected1, result1);
 
             var testStr2 = "NO1";

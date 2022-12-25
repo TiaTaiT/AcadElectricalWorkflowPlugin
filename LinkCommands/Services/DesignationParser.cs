@@ -52,10 +52,10 @@ namespace LinkCommands.Services
         {
             var designationParts = StringUtils.GetStringNumbersWithPoint(designation);
 
-            if(TryFindAcPowerSupply(designationParts, out var indexAcPower))
+            if (TryFindAcPowerSupply(designationParts, out var indexAcPower))
             {
                 // L, N, PE,...
-                if(designationParts.Count() == 1)
+                if (designationParts.Count() == 1)
                 {
                     return new HalfWireDesignation()
                     {
@@ -75,7 +75,7 @@ namespace LinkCommands.Services
                 }
             }
 
-            if(TryFindDcPowerSupply(designationParts, out var indexDcPower))
+            if (TryFindDcPowerSupply(designationParts, out var indexDcPower))
             {
                 //GND, L, N, PE
                 if (designationParts.ElementAt(indexDcPower).Equals("GND"))
@@ -126,7 +126,7 @@ namespace LinkCommands.Services
                 }
 
                 //В || V
-                if (designationParts.ElementAt(indexDcPower).Equals("В") || 
+                if (designationParts.ElementAt(indexDcPower).Equals("В") ||
                     designationParts.ElementAt(indexDcPower).Equals("V") ||
                     designationParts.ElementAt(indexDcPower).Equals("+U") ||
                     designationParts.ElementAt(indexDcPower).Equals("-U") ||
@@ -255,9 +255,9 @@ namespace LinkCommands.Services
                         var upperVoltageStr = designationParts.ElementAt(3);
                         var voltageSign = designationParts.ElementAt(4);
 
-                        if ( int.TryParse(lowerVoltageStr, out var lowerVoltage) &&
+                        if (int.TryParse(lowerVoltageStr, out var lowerVoltage) &&
                              int.TryParse(upperVoltageStr, out var upperVoltage) &&
-                             voltageSign.Length == 2 )
+                             voltageSign.Length == 2)
                         {
                             return new HalfWireDesignation()
                             {
@@ -267,7 +267,7 @@ namespace LinkCommands.Services
                                 Number = designationParts.ElementAt(5),
                                 ElectricalType = NetTypes.PowerPositive,
                             };
-                        }   
+                        }
                     }
                 }
             }
@@ -331,7 +331,7 @@ namespace LinkCommands.Services
                 }
             }
 
-            if(TryFindRelays(designationParts, out var indexRelay))
+            if (TryFindRelays(designationParts, out var indexRelay))
             {
                 // NO, COM, NC, K
                 if (indexRelay == 0 && designationParts.Count() == 1)
@@ -362,7 +362,7 @@ namespace LinkCommands.Services
                         Location = designationParts.ElementAt(indexRelay - 1),
                         Appointment = designationParts.ElementAt(indexRelay),
                         Number = designationParts.ElementAt(indexRelay + 1),
-                        ElectricalType= NetTypes.Relay,
+                        ElectricalType = NetTypes.Relay,
                     };
                 }
 
@@ -370,7 +370,7 @@ namespace LinkCommands.Services
                 if (indexRelay == 0 && designationParts.Count() == 5)
                 {
                     if (int.TryParse(designationParts.ElementAt(indexRelay + 3), out var voltage))
-                    { 
+                    {
                         return new HalfWireDesignation()
                         {
                             Appointment = designationParts.ElementAt(indexRelay),
@@ -469,7 +469,7 @@ namespace LinkCommands.Services
                         electricalType = NetTypes.Rs485A;
                     if (withoutBrackets.Equals(_rs485bChar))
                         electricalType = NetTypes.Rs485B;
-                    
+
                     return new HalfWireDesignation()
                     {
                         Appointment = withoutBrackets,
@@ -484,7 +484,7 @@ namespace LinkCommands.Services
                     return new HalfWireDesignation()
                     {
                         Appointment = rsLetter,
-                        ElectricalType = rsLetter.Equals(_rs485aChar) ? NetTypes.Rs485A : NetTypes.Rs485B, 
+                        ElectricalType = rsLetter.Equals(_rs485aChar) ? NetTypes.Rs485A : NetTypes.Rs485B,
                     };
                 }
 
@@ -506,19 +506,19 @@ namespace LinkCommands.Services
                     var rsLetter = designationParts.ElementAt(indexRs);
                     return new HalfWireDesignation()
                     {
-                        Location = designationParts.ElementAt(indexRs- 1),
+                        Location = designationParts.ElementAt(indexRs - 1),
                         Appointment = rsLetter,
                         Number = designationParts.ElementAt(indexRs + 1),
                         ElectricalType = rsLetter.Equals(_rs485aChar) ? NetTypes.Rs485A : NetTypes.Rs485B,
                     };
                 }
             }
-            if(TryFindLadogaRs(designationParts, out var indexLadogaRs))
+            if (TryFindLadogaRs(designationParts, out var indexLadogaRs))
             {
                 //  ЛС+, ЛС-
                 if (indexLadogaRs == 0 && designationParts.Count() == 1)
                 {
-                    var appointment = designationParts.ElementAt(indexLadogaRs)[0].ToString() + 
+                    var appointment = designationParts.ElementAt(indexLadogaRs)[0].ToString() +
                                       designationParts.ElementAt(indexLadogaRs)[1].ToString();
                     var suffix = designationParts.ElementAt(indexLadogaRs).Last().ToString();
                     return new HalfWireDesignation()
@@ -567,8 +567,8 @@ namespace LinkCommands.Services
             return FindType(designationParts, _powerSupplies, out index);
         }
 
-        private static bool FindType(IEnumerable<string> designationParts, 
-                                     IEnumerable<string> types, 
+        private static bool FindType(IEnumerable<string> designationParts,
+                                     IEnumerable<string> types,
                                      out int index)
         {
             //if (designationParts.Intersect(types).Any())

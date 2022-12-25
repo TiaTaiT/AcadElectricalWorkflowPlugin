@@ -1,6 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AutocadTerminalsManager;
+﻿using AutocadTerminalsManager;
 using LinkCommands.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AutoCommands.Test
 {
@@ -28,7 +28,7 @@ namespace AutoCommands.Test
         {
             var sourceShleif = "2ШС6+";
             var targetShleif = "ШС6+";
-            
+
             var shortNameShleif = WireNameGenerator.GetShortWireName(sourceShleif,
                 targetShleif, WireNameGenerator.SignalType.Shleif);
             StringAssert.StartsWith(shortNameShleif, "ШС6+");

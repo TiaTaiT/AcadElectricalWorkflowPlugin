@@ -117,7 +117,7 @@ namespace LinkCommands.Models
 
         public static IEnumerable<string> GetTiedTerminals(string componentName, string terminalDescription)
         {
-            foreach(var item in _tiedTerminals)
+            foreach (var item in _tiedTerminals)
             {
                 if (item.Key.Contains(componentName))
                 {
@@ -129,14 +129,14 @@ namespace LinkCommands.Models
 
         private static IEnumerable<string> GetTieds(IEnumerable<IEnumerable<string>> tieds, string description)
         {
-            foreach(var tied in tieds)
+            foreach (var tied in tieds)
             {
                 if (tied.Contains(description))
                 {
                     var restTieds = new List<string>();
-                    foreach(var item in tied)
+                    foreach (var item in tied)
                     {
-                        if(!item.Equals(description))
+                        if (!item.Equals(description))
                         {
                             restTieds.Add(item);
                         }

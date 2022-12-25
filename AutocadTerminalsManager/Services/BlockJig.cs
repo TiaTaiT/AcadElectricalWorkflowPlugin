@@ -1,8 +1,8 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
+﻿using AutocadTerminalsManager.Model;
+using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using System.Collections.Generic;
-using AutocadTerminalsManager.Model;
 using Application = Autodesk.AutoCAD.ApplicationServices.Application;
 
 namespace AutocadTerminalsManager.Services

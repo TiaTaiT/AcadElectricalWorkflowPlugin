@@ -1,19 +1,15 @@
 ﻿using LinkCommands.Models;
 using LinkCommands.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutoCommands.Test
-{ 
+{
     [TestClass]
     public class TestDesignationParser
     {
-        [TestMethod]  
+        [TestMethod]
         public void TestGetDesignation()
         {
             var designationParser = new DesignationParser();
@@ -232,7 +228,7 @@ namespace AutoCommands.Test
                         ElectricalType = NetTypes.ShleifPositive,
                     }
                 ),
-                
+
                 ("ШС20-", new HalfWireDesignation()
                     {
                         Location = "",
@@ -472,14 +468,14 @@ namespace AutoCommands.Test
             };
 
             var counter = 0;
-            foreach(var expected in validExpected)
+            foreach (var expected in validExpected)
             {
                 var result = designationParser.GetDesignation(expected.Item1);
                 Debug.WriteLine(counter + "  Test Designation: " + expected.Item1);
                 Assert.AreEqual(expected.Item2, result);
                 counter++;
             }
-            
+
 
         }
     }

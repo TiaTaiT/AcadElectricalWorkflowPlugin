@@ -1,9 +1,6 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+﻿using Autodesk.Windows;
+using System;
 using System.Windows.Input;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.Windows;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace AutocadRibbonUI
@@ -22,7 +19,7 @@ namespace AutocadRibbonUI
                 //var doc = Application.DocumentManager.CurrentDocument;
                 var cmdString = button1.CommandParameter + " ";
                 if (Application.DocumentManager != null)
-                { 
+                {
                     Application.DocumentManager.MdiActiveDocument.SendStringToExecute
                         (cmdString,
                         true,
@@ -30,7 +27,7 @@ namespace AutocadRibbonUI
                         true);
                 }
             }
-            
+
 
         }
 

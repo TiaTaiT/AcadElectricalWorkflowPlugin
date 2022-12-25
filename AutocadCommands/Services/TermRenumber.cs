@@ -1,15 +1,10 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.ApplicationServices.Core;
+﻿using AutocadCommands.Models;
+using AutocadCommands.Utils;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.Internal;
-using System.Collections.Generic;
-using System.Linq;
-using AutocadCommands.Models;
-using AutocadCommands.Utils;
 using CommonHelpers;
+using System.Collections.Generic;
 using static System.Int32;
 
 namespace AutocadCommands.Services
@@ -28,7 +23,7 @@ namespace AutocadCommands.Services
             var promptResult = _ed.GetString("\nEnter the start number <1>: ");
             if (promptResult.Status != PromptStatus.OK)
                 return false;
-            if(string.IsNullOrEmpty(promptResult.StringResult))
+            if (string.IsNullOrEmpty(promptResult.StringResult))
                 startNumb = 1;
             else if (!TryParse(promptResult.StringResult, out startNumb))
                 return false;

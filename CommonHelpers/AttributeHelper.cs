@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using AutocadTerminalsManager.Model;
+﻿using AutocadTerminalsManager.Model;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace AutocadCommands.Helpers
 {
@@ -66,7 +66,7 @@ namespace AutocadCommands.Helpers
                 if (string.IsNullOrEmpty(att.Tag))
                     continue;
                 if (att.Tag.StartsWith(tag))
-                { 
+                {
                     point = att.Position;
                     return true;
                 }
@@ -134,7 +134,7 @@ namespace AutocadCommands.Helpers
                     {
                         attributes.Add(att.Tag, att.TextString);
                     }
-                    catch 
+                    catch
                     {
                         Debug.WriteLine("Failed to add a '" + att.Tag + "' to the dictionary");
                     }
@@ -161,12 +161,12 @@ namespace AutocadCommands.Helpers
                 if (att == null) continue;
                 if (!attrDict.TryGetValue(att.Tag, out var valueText))
                     continue;
-                if(valueText == null)
+                if (valueText == null)
                     continue;
                 att.UpgradeOpen();
                 att.TextString = valueText;
                 att.DowngradeOpen();
-                
+
                 if (!att.TextString.Equals(valueText))
                 {
                     result = false;
@@ -187,14 +187,14 @@ namespace AutocadCommands.Helpers
                 if (id.IsNull || id.IsErased || id.IsEffectivelyErased || !id.IsValid) continue;
                 if (entity is not BlockReference br) continue;
                 if (br.AttributeCollection.Count == 0) continue;
-                
+
                 var attrDict = GetAttributes(tr, br.AttributeCollection);
                 // we need only objects contain attributeTag
                 if (!attrDict.ContainsKey(attributeTag)) continue;
                 // then we need only objects contain attributeValue
                 attrDict.TryGetValue(attributeTag, out var tagValue);
                 if (tagValue == null || !tagValue.Equals(attributeValue)) continue;
-                
+
                 yield return entity.Id;
             }
         }
@@ -204,15 +204,15 @@ namespace AutocadCommands.Helpers
             var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
             foreach (var blkRef in blockRefs)
             {
-                
+
 
                 if (blkRef.IsErased) continue;
-                
+
                 if (blkRef.AttributeCollection.Count == 0) continue;
 
                 var attributes = blkRef.AttributeCollection;
-                
-                foreach(ObjectId attrId in attributes)
+
+                foreach (ObjectId attrId in attributes)
                 {
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
                     if (attrRef.Tag.StartsWith(attributeTag))
@@ -228,7 +228,7 @@ namespace AutocadCommands.Helpers
         {
             var attrColl = GetAttributeCollection(tr, objectId);
             var attrDictionary = new Dictionary<string, string>();
-            foreach(var fakeAttr in attributes)
+            foreach (var fakeAttr in attributes)
             {
                 if (!attrDictionary.ContainsKey(fakeAttr.Tag))
                 {
@@ -243,7 +243,7 @@ namespace AutocadCommands.Helpers
         {
             var attrColl = GetAttributeCollection(tr, objectId);
 
-            return(SetAttributes(tr, attrColl, attributes));
+            return (SetAttributes(tr, attrColl, attributes));
         }
 
         /// <summary>

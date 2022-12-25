@@ -31,7 +31,7 @@ namespace LinkCommands.Services
 
             var compatible = AreTypesCompatible(source.ElectricalType, destination.ElectricalType);
 
-            if(compatible)
+            if (compatible)
             {
                 ShortName = _namesConverter.GetShortName(source, destination);
                 if (ValidationParameterIsTerminal)
@@ -46,7 +46,7 @@ namespace LinkCommands.Services
 
                 return true;
             }
-            
+
             return false;
         }
 
@@ -110,7 +110,7 @@ namespace LinkCommands.Services
         {
             if (netType1 == netType2)
                 return true;
-            if(netType1 == NetTypes.Unknown || netType2 == NetTypes.Unknown)
+            if (netType1 == NetTypes.Unknown || netType2 == NetTypes.Unknown)
                 return true;
             if ((netType1 == NetTypes.ShleifNegative || netType1 == NetTypes.ShleifPositive) && netType2 == NetTypes.Relay)
                 return true;
@@ -118,6 +118,6 @@ namespace LinkCommands.Services
                 return true;
 
             return false;
-        }        
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace AutocadCommands.Services
 
             var escape = false;
 
-            while(!escape)
+            while (!escape)
             {
                 var options1 = new PromptEntityOptions("\nSelect source wire: ");
                 options1.SetRejectMessage("not valid Object \n");
@@ -39,7 +39,7 @@ namespace AutocadCommands.Services
                         return false;
                     else return true;
                 }
-                    
+
                 var sourceWireId = selectionBlock1.ObjectId;
 
                 HighlightObject(sourceWireId);
@@ -56,7 +56,7 @@ namespace AutocadCommands.Services
                         return false;
                     else return true;
                 }
-                
+
                 var destinationWireId = selectionBlock2.ObjectId;
 
                 if (sourceWireId == destinationWireId)
@@ -67,7 +67,7 @@ namespace AutocadCommands.Services
 
                 HighlightObject(destinationWireId);
 
-                _sourceDestPairIds.Add((sourceWireId, destinationWireId));       
+                _sourceDestPairIds.Add((sourceWireId, destinationWireId));
             }
             return true;
         }
@@ -92,26 +92,26 @@ namespace AutocadCommands.Services
             Entity ent = (Entity)tr.GetObject(sourceWireId, OpenMode.ForWrite);
             ent.Unhighlight();
         }
-        
+
         public override void Run()
         {
             _doc.LockDocument();
             using var tr = _db.TransactionManager.StartTransaction();
             for (var i = 0; i < _sourceDestPairIds.Count(); i++)
             {
-                var wire = new Wire(_sourceDestPairIds[i].Item1, 
-                                    _sourceDestPairIds[i].Item2, 
+                var wire = new Wire(_sourceDestPairIds[i].Item1,
+                                    _sourceDestPairIds[i].Item2,
                                     _componentsFactory.Components);
                 wire.Create();
             }
-            
+
             UnhighlightAllPassedObjects();
             tr.Commit();
         }
 
         private void UnhighlightAllPassedObjects()
         {
-            foreach(var pair in _sourceDestPairIds)
+            foreach (var pair in _sourceDestPairIds)
             {
                 UnhighlightObject(pair.Item1);
                 UnhighlightObject(pair.Item2);

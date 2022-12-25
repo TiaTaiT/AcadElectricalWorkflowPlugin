@@ -14,7 +14,7 @@ namespace LinkCommands.Services
         }
         public static string GetShortWireName(string source, string destination, SignalType signalType)
         {
-            if(signalType == SignalType.Rs485)
+            if (signalType == SignalType.Rs485)
             {
                 if (source.Contains("A") || destination.Contains("A"))
                     return "A";
@@ -76,7 +76,7 @@ namespace LinkCommands.Services
                     return destination;
                 if (source.StartsWith("+") && !destination.StartsWith("+"))
                     return source;
-                if(!source.StartsWith("+") && destination.StartsWith("+"))
+                if (!source.StartsWith("+") && destination.StartsWith("+"))
                     return destination;
                 if (source.StartsWith("-ПИ") && !destination.StartsWith("-ПИ"))
                     return destination;

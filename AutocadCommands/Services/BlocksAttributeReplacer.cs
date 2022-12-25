@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using AutocadCommands.Helpers;
+﻿using AutocadCommands.Helpers;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
-using TransactionManager = Autodesk.AutoCAD.ApplicationServices.TransactionManager;
+using System.Collections.Generic;
 
 namespace AutocadCommands.Services
 {
@@ -65,7 +64,7 @@ namespace AutocadCommands.Services
 
         public override void Run()
         {
-            
+
 
             var attributesDict = new Dictionary<string, string>()
             {
@@ -90,6 +89,6 @@ namespace AutocadCommands.Services
             tr.Commit();
         }
 
-        
+
     }
 }

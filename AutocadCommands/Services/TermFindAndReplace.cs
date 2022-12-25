@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using AutocadCommands.Models;
+﻿using AutocadCommands.Models;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
+using System.Collections.Generic;
 
 namespace AutocadCommands.Services
 {
@@ -71,7 +68,7 @@ namespace AutocadCommands.Services
 
         public override void Run()
         {
-            
+
 
             var terminals = new List<Terminal>();
 
@@ -105,38 +102,38 @@ namespace AutocadCommands.Services
                 switch (searchMethod)
                 {
                     case "F":
-                    {
-                        if (desc1.StartsWith(searchString))
                         {
-                            desc1 = replaceString + desc1.Substring(searchString.Length);
-                        }
+                            if (desc1.StartsWith(searchString))
+                            {
+                                desc1 = replaceString + desc1.Substring(searchString.Length);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case "E":
-                    {
-                        if (desc1.EndsWith(searchString))
                         {
-                            desc1 = desc1.Substring(0, desc1.Length - searchString.Length) + replaceString;
-                        }
+                            if (desc1.EndsWith(searchString))
+                            {
+                                desc1 = desc1.Substring(0, desc1.Length - searchString.Length) + replaceString;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     default:
-                    {
-                        if (desc1.Contains(searchString))
                         {
-                            desc1 = desc1.Replace(searchString, replaceString);
-                        }
+                            if (desc1.Contains(searchString))
+                            {
+                                desc1 = desc1.Replace(searchString, replaceString);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
 
                 terminal.Description1 = desc1;
             }
         }
 
-        
+
     }
 }

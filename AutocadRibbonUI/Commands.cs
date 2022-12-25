@@ -1,22 +1,19 @@
-﻿using Autodesk.AutoCAD.Runtime;
+﻿using Autodesk.AutoCAD.Ribbon;
+using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
 using System;
-using Autodesk.AutoCAD.Ribbon;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace AutocadRibbonUI
 {
     public class Commands : IExtensionApplication
     {
-        private RibbonControl _ribbon;        
+        private RibbonControl _ribbon;
         private WorkFlowRibbonTab _tab;
-        
+
         public RibbonCommandHandler ribbonCmdHandler { get; set; }
-        public string SAMPLERIBBONSTABID { get=> "Workflow";}
+        public string SAMPLERIBBONSTABID { get => "Workflow"; }
 
         public void Initialize()
         {
@@ -53,9 +50,9 @@ namespace AutocadRibbonUI
                 Id = "MyTab_001"
             };
             _ribbon.Tabs.Add(_tab);
-            
+
             ribbonCmdHandler = new RibbonCommandHandler();
-            for(var i=0; i<_tab.Panels.Count(); i++)
+            for (var i = 0; i < _tab.Panels.Count(); i++)
             {
                 IterateItems(i);
             }
@@ -94,7 +91,7 @@ namespace AutocadRibbonUI
             {
                 return null;
             }
-            
+
         }
 
         private void RibbonPaletteLoaded(object sender, EventArgs e)
@@ -119,8 +116,8 @@ namespace AutocadRibbonUI
 
         public void Terminate()
         {
-           // _ribbon.Tabs.Remove(_tab);
-            
-        }        
+            // _ribbon.Tabs.Remove(_tab);
+
+        }
     }
 }

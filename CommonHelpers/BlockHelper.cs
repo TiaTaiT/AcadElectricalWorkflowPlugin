@@ -3,9 +3,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.Runtime;
-using System.Collections;
 using System.Collections.Generic;
-using Exception = System.Exception;
 
 namespace AutocadCommands.Services
 {
@@ -83,7 +81,7 @@ namespace AutocadCommands.Services
                 {
                     var entity = tr.GetObject(id, OpenMode.ForWrite);
                     entity.Erase();
-                    
+
                     erasedIds.Add(entity.ObjectId);
                 }
             }

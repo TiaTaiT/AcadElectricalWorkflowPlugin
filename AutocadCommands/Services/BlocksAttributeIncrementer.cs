@@ -5,11 +5,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutocadCommands.Services
 {
@@ -81,7 +77,7 @@ namespace AutocadCommands.Services
             // Lock the document
             using var acLckDoc = _doc.LockDocument();
             var objIds = new ObjectIdCollection(_selectedBlocks.Value.GetObjectIds());
-            
+
 
             var loppedObjects = GetFakeAcadObjectsCollection(objIds);
 
@@ -109,7 +105,7 @@ namespace AutocadCommands.Services
             var fakeAcadObjects = new List<AcadObjectWithAttributes>();
             using (var acTrans = _db.TransactionManager.StartTransaction())
             {
-                
+
 
                 foreach (ObjectId blkId in objIds)
                 {
@@ -129,7 +125,7 @@ namespace AutocadCommands.Services
                 }
 
                 acTrans.Commit();
-               
+
             }
             return fakeAcadObjects;
         }
@@ -148,7 +144,7 @@ namespace AutocadCommands.Services
         public string FindReplaceWithIncrement(string attrValue, int counter)
         {
             var result = attrValue;
-            
+
             if (!attrValue.Contains(_searchString))
                 return null;
             switch (_searchMethod)
@@ -157,14 +153,14 @@ namespace AutocadCommands.Services
                     {
                         result = attrValue.Substring(0, attrValue.LastIndexOf(_searchString) + _searchString.Length);
                         result += counter;
-                        
+
                         break;
                     }
                 case "B":
                     {
                         result = attrValue.Substring(attrValue.IndexOf(_searchString));
                         result = counter + result;
-                       
+
                         break;
                     }
                 default:

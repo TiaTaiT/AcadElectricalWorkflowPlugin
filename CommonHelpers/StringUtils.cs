@@ -1,9 +1,7 @@
-﻿using Autodesk.AutoCAD.ViewModel.CommandLine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
@@ -40,18 +38,18 @@ namespace CommonHelpers
 
             for (var i = 0; i < str.Length; i++)
             {
-                if((result.Count() > 0 || numbStr.Length >= 1) && 
+                if ((result.Count() > 0 || numbStr.Length >= 1) &&
                     (str[i] == 'i' && lastChar != str[i]))
                 {
                     result.Add(numbStr.ToString());
                     numbStr.Clear();
 
                     result.Add(str[i].ToString());
-                    
+
                     lastChar = str[i];
                     continue;
                 }
-                if(IsCharDigitWithPoint(lastChar) ^ IsCharDigitWithPoint(str[i]) && lastChar != 'i' && (numbStr.Length > 0))
+                if (IsCharDigitWithPoint(lastChar) ^ IsCharDigitWithPoint(str[i]) && lastChar != 'i' && (numbStr.Length > 0))
                 {
                     result.Add(numbStr.ToString());
                     numbStr.Clear();
@@ -60,7 +58,7 @@ namespace CommonHelpers
                 lastChar = str[i];
             }
             result.Add(numbStr.ToString());
-            
+
             return result;
         }
 
@@ -83,9 +81,9 @@ namespace CommonHelpers
         {
             if (c == '+' || c == '-')
                 return false;
-            if(c == '.')
+            if (c == '.')
                 return true;
-            if(char.IsDigit(c))
+            if (char.IsDigit(c))
                 return true;
             return false;
         }
@@ -94,14 +92,14 @@ namespace CommonHelpers
         {
             var result = new StringBuilder();
             var isFirst = true;
-            foreach(char c in str)
+            foreach (char c in str)
             {
                 if (IsCharDigitWithPoint(c) && isFirst)
                     continue;
                 isFirst = false;
                 result.Append(c);
             }
-            
+
 
             return result.ToString();
         }

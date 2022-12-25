@@ -68,7 +68,7 @@ namespace LinkCommands.Models
         {
             if (sourceEntity is Polyline polyline)
             {
-                if(polyline.EndPoint.IsEqualTo(PointConnectedToMultiWire))
+                if (polyline.EndPoint.IsEqualTo(PointConnectedToMultiWire))
                     return polyline.EndPoint;
                 return polyline.StartPoint;
             }
@@ -152,12 +152,12 @@ namespace LinkCommands.Models
             };
             var blockRefIds = GetObjectsUtils.GetBlockIdsByNames(_db, strings);
             using var tr = _db.TransactionManager.StartTransaction();
-            
-            foreach (var blkRefId in blockRefIds) 
+
+            foreach (var blkRefId in blockRefIds)
             {
                 var attributesCollection = ((BlockReference)(blkRefId.GetObject(OpenMode.ForRead, false))).AttributeCollection;
-                
-                foreach(ObjectId attrId in attributesCollection)
+
+                foreach (ObjectId attrId in attributesCollection)
                 {
                     var att = (AttributeReference)(attrId.GetObject(OpenMode.ForRead, false));
                     if (att.Position.Equals(GetZeroPoint(wire)))
@@ -192,7 +192,7 @@ namespace LinkCommands.Models
                 //Debug.WriteLine("Original Z: " + originSymbolPoint.Z + " -> " + shiftPoint.Z);
                 var moveVec = new Vector3d(originSymbolPoint.X - shiftPoint.X, originSymbolPoint.Y - shiftPoint.Y, originSymbolPoint.Z - shiftPoint.Z);
                 BlockUtils.MoveBlockReference(_db, linkSymbolId, moveVec);
-            }            
+            }
         }
 
         private IEnumerable<ElectricalComponent> _components;
@@ -205,8 +205,8 @@ namespace LinkCommands.Models
         {
             Curves = curves;
             PointLinkAttachedToWire = link.WireConnectionPoint;
-            Description= link.Description;
-            SigCode= link.SigCode;
+            Description = link.Description;
+            SigCode = link.SigCode;
             LinkSymbol = link.Reference;
         }
 
@@ -232,12 +232,12 @@ namespace LinkCommands.Models
             }
 
             var zeroPoint = GetZeroPoint(WireEntity);
-                       
+
             _direction = GeometryFunc.GetDirection(zeroPoint, GetEndPoint(WireEntity));
 
         }
 
-        
+
         private void SetWireComponentCross(Curve curve)
         {
             Parallel.ForEach(_components, new ParallelOptions() { MaxDegreeOfParallelism = 8 },
@@ -290,17 +290,17 @@ namespace LinkCommands.Models
                 return;
             }
 
-            foreach(var multiWire in multiWires)
+            foreach (var multiWire in multiWires)
             {
                 var polyWire = (Curve)multiWire;
-                
+
                 var result = LinkerHelper.TryGetPointConnectedToMultiwire(polyWire, wireEntity, out var crossPoint);
                 if (result)
                 {
                     PointConnectedToMultiWire = crossPoint;
                     return;
                 }
-            }            
+            }
         }
 
         public void CreateSourceLink()
@@ -314,7 +314,7 @@ namespace LinkCommands.Models
             string symbolBlockName = GetDestinationSymbolBlockName();
             CreateSymbol(_db, symbolBlockName);
         }
-                
+
         /// <summary>
         /// Attribute carries the unique signal code that is user-defined as the symbol is inserted.
         /// This value is used to match up each source signal with its destination signals.
@@ -341,7 +341,7 @@ namespace LinkCommands.Models
 
         public IEnumerable<Curve> Curves { get; private set; }
 
-        public bool IsSource 
+        public bool IsSource
         {
             get
             {
@@ -349,7 +349,7 @@ namespace LinkCommands.Models
                     return true;
                 return false;
             }
-            private set { } 
+            private set { }
         }
 
         public void Clean()
@@ -360,6 +360,6 @@ namespace LinkCommands.Models
         public bool IsPointOnEnd(Point3d point)
         {
             return GeometryFunc.IsPointOnCurveEnd(point, Curves);
-        } 
+        }
     }
 }

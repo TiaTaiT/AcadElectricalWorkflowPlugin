@@ -12,7 +12,7 @@ namespace LinkCommands.Services
         private const char _left = '1';
 
         private const string _symbolPrefix = "HA";
-        
+
         private const string _sourceSymbolCode = "S";
         private const string _destinationSymbolCode = "D";
 

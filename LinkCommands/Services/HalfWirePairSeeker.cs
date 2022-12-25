@@ -23,28 +23,28 @@ namespace LinkCommands.Services
         }
 
         public IEnumerable<(HalfWire, HalfWire)> GetPairs(
-               List<HalfWire> sources, List<HalfWire> destinations) 
+               List<HalfWire> sources, List<HalfWire> destinations)
         {
             _sources = sources;
             _destinations = destinations;
-            
+
             var pairs = new List<(HalfWire, HalfWire)>();
 
-            for(var i = 0; i < _sources.Count(); i++)
+            for (var i = 0; i < _sources.Count(); i++)
             {
-                for(var j = 0; j < _destinations.Count(); j++)
+                for (var j = 0; j < _destinations.Count(); j++)
                 {
                     var source = _sources[i];
                     var destination = _destinations[j];
                     if (TryCheckLinkAllow(source, destination, out string description))
-                    { 
+                    {
                         source.ShortDescription = description;
                         destination.ShortDescription = description;
-                        pairs.Add( (source, destination) );
+                        pairs.Add((source, destination));
                         _sources.RemoveAt(i);
                         _destinations.RemoveAt(j);
                         i = -1;
-                        
+
                         break;
                     }
                 }
@@ -65,7 +65,7 @@ namespace LinkCommands.Services
             IEnumerable<Wire> sourceTiedWires = GetTiedWires(sComponnet, source.Terminal);
             IEnumerable<Wire> destTiedWires = GetTiedWires(dComponnet, destination.Terminal);
 
-            if(!sourceTiedWires.Any() && !destTiedWires.Any()) 
+            if (!sourceTiedWires.Any() && !destTiedWires.Any())
                 return false;
 
             string sourceDescription;
@@ -76,12 +76,12 @@ namespace LinkCommands.Services
                 destinationDescription = GetDescritpion(destTiedWires);
 
             }
-            else if(!destTiedWires.Any() && sourceTiedWires.Any())
+            else if (!destTiedWires.Any() && sourceTiedWires.Any())
             {
                 destinationDescription = destination.Terminal.Value;
                 sourceDescription = GetDescritpion(sourceTiedWires);
             }
-            else 
+            else
             {
                 sourceDescription = GetDescritpion(sourceTiedWires);
                 destinationDescription = GetDescritpion(destTiedWires);
@@ -91,7 +91,7 @@ namespace LinkCommands.Services
             {
                 ValidationParameterIsTerminal = sComponnet.IsTerminal || dComponnet.IsTerminal,
             };
-            
+
             if (validator.IsConnectionValid(sourceDescription, destinationDescription))
             {
                 description = validator.ShortName;
@@ -103,7 +103,7 @@ namespace LinkCommands.Services
         //Need to loop for finding description
         private static string GetDescritpion(IEnumerable<Wire> tiedWires)
         {
-            foreach(var wire in tiedWires)
+            foreach (var wire in tiedWires)
             {
                 if (string.IsNullOrEmpty(wire.Description))
                 {
@@ -119,7 +119,7 @@ namespace LinkCommands.Services
             var tiedWires = new List<Wire>();
             foreach (var tiedTerminal in sComponnet.GetAllTiedTerminals(terminal.Value))
             {
-                tiedWires.AddRange( tiedTerminal.ConnectedWires );
+                tiedWires.AddRange(tiedTerminal.ConnectedWires);
             }
             return tiedWires;
         }
@@ -128,7 +128,7 @@ namespace LinkCommands.Services
         {
             foreach (var component in _components)
             {
-                foreach(var terminal in component.Terminals)
+                foreach (var terminal in component.Terminals)
                 {
                     if (halfWire.Terminal == terminal)
                         return component;

@@ -17,10 +17,10 @@ namespace AutoCommands.Test
 
             var valids = new List<Triad>()
             {
-                new Triad() 
+                new Triad()
                 {
-                    ExpectedShortName = "0В", 
-                    Source = parser.GetDesignation("0В"), 
+                    ExpectedShortName = "0В",
+                    Source = parser.GetDesignation("0В"),
                     Destination = parser.GetDesignation("0В"),
                 },
                 new Triad()
@@ -55,7 +55,7 @@ namespace AutoCommands.Test
                 },
             };
 
-            for(var i = 0; i < valids.Count; i++)
+            for (var i = 0; i < valids.Count; i++)
             {
                 var valid = valids[i];
                 var result = namesConverter.GetShortName(valid.Source, valid.Destination);
@@ -75,7 +75,7 @@ namespace AutoCommands.Test
 
         public override bool Equals(object obj)
         {
-            if (obj == null) 
+            if (obj == null)
                 return false;
 
             if (obj is Triad triad)
@@ -85,7 +85,7 @@ namespace AutoCommands.Test
                     Destination.Equals(triad.Destination))
                     return true;
             }
-            
+
             return false;
         }
 

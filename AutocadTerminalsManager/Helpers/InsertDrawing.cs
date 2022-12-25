@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using AutocadCommands.Helpers;
+﻿using AutocadCommands.Helpers;
 using AutocadTerminalsManager.Model;
 using AutocadTerminalsManager.Services;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace AutocadTerminalsManager.Helpers
@@ -41,7 +39,7 @@ namespace AutocadTerminalsManager.Helpers
             _sourceDb = new Database(false, true);
 
             _orthoMode = _doc.Database.Orthomode;
-            
+
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace AutocadTerminalsManager.Helpers
             {
                 _sourceDb.ReadDwgFile(_sourceFile, FileShare.Read, true, "");
                 var acObjIdColl = GetObjectsIdsFromDb(_sourceDb);
-                
+
                 return acObjIdColl;
             }
             catch (System.Exception ex)
@@ -90,12 +88,12 @@ namespace AutocadTerminalsManager.Helpers
 
             // Clone the objects to the new database
             var acIdMap = new IdMapping();
-            
+
 
             var destOwnerId = acBlkTblRecNewDoc.ObjectId;
 
             _sourceDb.WblockCloneObjects(objIdColl, destOwnerId, acIdMap, DuplicateRecordCloning.Ignore, false);
-            
+
             /*
             using (Transaction currDbTr = _currentDb.TransactionManager.StartTransaction())
             {
@@ -133,7 +131,7 @@ namespace AutocadTerminalsManager.Helpers
             var blockName = "";
             using var tr = sourceDb.TransactionManager.StartTransaction();
             var sourceBtr = tr.GetObject(id, OpenMode.ForRead);
-            if(sourceBtr != null && sourceBtr is BlockTableRecord)
+            if (sourceBtr != null && sourceBtr is BlockTableRecord)
             {
                 blockName = ((BlockTableRecord)sourceBtr).Name;
             }
@@ -178,7 +176,7 @@ namespace AutocadTerminalsManager.Helpers
             return new ObjectId();
         }
 
-        
+
 
         /// <summary>
         /// Prepare and start jigging
@@ -188,11 +186,11 @@ namespace AutocadTerminalsManager.Helpers
         private bool StartJig(IdMapping acIdMap)
         {
             using var tr = _currentDb.TransactionManager.StartTransaction();
-            
+
             var onlyPrimaryEntities = GetPrimaryEntities(tr, acIdMap);
 
             //Objects with right attributes
-            var attrObjects = 
+            var attrObjects =
                 AttributeHelper.GetObjectsWithAttribute(tr, onlyPrimaryEntities, "CABLEDESIGNATION");
 
             //Replace attributes in fake objects
@@ -272,30 +270,30 @@ namespace AutocadTerminalsManager.Helpers
             {
                 if (id.IsErased) continue;
                 var obj = tr.GetObject(id, OpenMode.ForWrite);
-                if(obj.GetType() == typeof(BlockReference))
+                if (obj.GetType() == typeof(BlockReference))
                 {
                     var blockRef = (BlockReference)obj;
                     var btr = (BlockTableRecord)tr.GetObject(blockRef.BlockTableRecord, OpenMode.ForRead);
-                    
+
                     var dot = (DrawOrderTable)tr.GetObject(btr.DrawOrderTableId, OpenMode.ForWrite);
                     _editor.WriteMessage("\n" + btr.Name);
                     var oColl = dot.GetFullDrawOrder(0);
-                    
-                    foreach(var o in btr)
+
+                    foreach (var o in btr)
                     {
-                        
+
                         _editor.WriteMessage("\n" + o.ToString());
                     }
-                        
+
                 }
                 acObjIdColl.Add(id);
             }
-            
+
             tr.Commit();
             return acObjIdColl;
         }
 
-        
+
 
         /// <summary>
         /// The method replaces fields "CABLEDESIGNATION" and "CABLEBRAND" in fake objects.
@@ -308,16 +306,16 @@ namespace AutocadTerminalsManager.Helpers
             IEnumerable<Cable> cables)
         {
             Debug.WriteLine("-----------------------------------");
-            
+
             foreach (var attrObject in attrObjects)
             {
                 var attributes = attrObject.Attributes;
 
-                
-                if(!attributes.TryGetValue(_cableDesignation, out var cableIndexStr)) 
+
+                if (!attributes.TryGetValue(_cableDesignation, out var cableIndexStr))
                     continue;
 
-                if(!int.TryParse(cableIndexStr, out var cableIndex))
+                if (!int.TryParse(cableIndexStr, out var cableIndex))
                     continue;
 
                 // The numbering of cables in the drawing starts from one and not from zero
@@ -332,7 +330,7 @@ namespace AutocadTerminalsManager.Helpers
 
                 attributes[_cableDesignation] = cables.ElementAt(cableIndex).Designation;
 
-                
+
                 if (!attributes.ContainsKey(_cableBrand))
                     continue;
 

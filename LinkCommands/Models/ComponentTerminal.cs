@@ -43,7 +43,7 @@ namespace LinkCommands.Models
         /// <returns>true if point3d contains in terminal connection point list</returns>
         public bool IsContainPoint(Point3d point3d)
         {
-            foreach(var point in Points)
+            foreach (var point in Points)
             {
                 if (point.Equals(point3d))
                     return true;

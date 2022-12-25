@@ -25,7 +25,7 @@ namespace AutocadCommands.Models
         {
             var multiwires = new List<Curve>() { Multiwire };
             ConnectedWires = GetConnectedWires(multiwires, _allWires).ToList();
-            
+
             if (ConnectedWires == null || ConnectedWires.Count() == 0)
             {
                 //Debug.WriteLine("Wires count = " + ConnectedWires.Count() + ";   Operation halt!");
@@ -55,7 +55,7 @@ namespace AutocadCommands.Models
             }
             DebugPairs(foundSources, foundDestinations);
 
-            if(CreateWires(foundSources, foundDestinations))
+            if (CreateWires(foundSources, foundDestinations))
             {
                 // We need delete created halfWires from common collection (_sourceHalfWires and _destinationHalfWires)
                 // To avoid double create of wires 
@@ -79,7 +79,7 @@ namespace AutocadCommands.Models
 
         private void DeleteFoundWires(IEnumerable<HalfWire> foundSources, IEnumerable<HalfWire> foundDestinations)
         {
-            foreach(var foundSource in foundSources)
+            foreach (var foundSource in foundSources)
             {
                 _sourceHalfWires.Remove(foundSource);
             }
@@ -91,10 +91,10 @@ namespace AutocadCommands.Models
 
         private bool CreateWires(IEnumerable<HalfWire> sources, IEnumerable<HalfWire> destination)
         {
-            if(sources.Count() != destination.Count()) 
+            if (sources.Count() != destination.Count())
                 return false;
 
-            for(var i = 0; i < sources.Count(); i++)
+            for (var i = 0; i < sources.Count(); i++)
             {
                 var wire = new Wire(sources.ElementAt(i), destination.ElementAt(i), _components);
                 wire.Create();
@@ -106,37 +106,37 @@ namespace AutocadCommands.Models
         private static void DebugPairs(IEnumerable<HalfWire> sources, IEnumerable<HalfWire> destinations)
         {
             Debug.WriteLine("sources found = " + sources.Count() + "; destinations found = " + destinations.Count());
-            
-            for(var i = 0; i < sources.Count(); i++)
+
+            for (var i = 0; i < sources.Count(); i++)
             {
                 Debug.WriteLine(sources.ElementAt(i).ShortDescription + " <=> " + destinations.ElementAt(i).ShortDescription);
-            }  
+            }
         }
 
         private bool SeparateSourceAndDestination(IEnumerable<HalfWire> sortedHalfWires)
         {
-            if(sortedHalfWires.Count() < 2)
+            if (sortedHalfWires.Count() < 2)
                 return false;
 
             var sourceDestSwitch = false;
             var lastValue = sortedHalfWires.First().PointConnectedToMultiWire.Y;
             _sourceHalfWires.Add(sortedHalfWires.First());
 
-            for(var i = 1; i < sortedHalfWires.Count(); i++)
+            for (var i = 1; i < sortedHalfWires.Count(); i++)
             {
                 var currentWireY = sortedHalfWires.ElementAt(i).PointConnectedToMultiWire.Y;
-                
+
                 if (currentWireY != lastValue)
                 {
                     sourceDestSwitch = true;
                 }
-                if(!sourceDestSwitch)
+                if (!sourceDestSwitch)
                 {
                     _sourceHalfWires.Add(sortedHalfWires.ElementAt(i));
                 }
                 else
                 {
-                    if(_sourceHalfWires.Count() > _destinationHalfWires.Count())
+                    if (_sourceHalfWires.Count() > _destinationHalfWires.Count())
                     {
                         _destinationHalfWires.Add(sortedHalfWires.ElementAt(i));
                     }
@@ -145,9 +145,9 @@ namespace AutocadCommands.Models
             }
 
             // if multiwire is one line
-            if(_sourceHalfWires.Count() > 0 && _destinationHalfWires.Count() == 0)
+            if (_sourceHalfWires.Count() > 0 && _destinationHalfWires.Count() == 0)
             {
-                if(_sourceHalfWires.Count() % 2 != 0)
+                if (_sourceHalfWires.Count() % 2 != 0)
                     return false;
 
                 // split source collection in half
@@ -187,7 +187,7 @@ namespace AutocadCommands.Models
             connectedToMultiwireWires.Sort(new HalfWireComparer());
             return connectedToMultiwireWires;
         }
-        
+
         private static IEnumerable<Curve> GetConnectedWires(IEnumerable<Curve> multiwireSegments, IEnumerable<Curve> allWires)
         {
             foreach (var multiwireSegment in multiwireSegments)
@@ -204,7 +204,7 @@ namespace AutocadCommands.Models
                 }
             }
         }
-        
+
         #region Constructors
         public MultiWire(Polyline polyLine, IEnumerable<ElectricalComponent> components)
         {
@@ -216,8 +216,8 @@ namespace AutocadCommands.Models
             CreateMultiwire();
         }
 
-        public MultiWire(IEnumerable<Entity> sourceEntities, 
-                         Entity sourceLinkSymbol, 
+        public MultiWire(IEnumerable<Entity> sourceEntities,
+                         Entity sourceLinkSymbol,
                          IEnumerable<Entity> destinationEntities,
                          Entity destinationLinkSymbol,
                          IEnumerable<ElectricalComponent> components)

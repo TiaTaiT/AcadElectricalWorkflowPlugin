@@ -14,5 +14,5 @@ namespace AutocadRibbonUI
             InitializeComponent();
         }
     }
-    
+
 }

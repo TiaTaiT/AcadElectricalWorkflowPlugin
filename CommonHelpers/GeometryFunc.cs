@@ -3,9 +3,6 @@ using Autodesk.AutoCAD.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Autodesk.AutoCAD.DatabaseServices.Ole2Frame;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 
 namespace CommonHelpers
@@ -39,7 +36,7 @@ namespace CommonHelpers
         private static bool IsOnLine(Line line, Point3d point)
         {
             var segment = new LineSegment3d(line.StartPoint, line.EndPoint);
-            if(segment.IsOn(point)) 
+            if (segment.IsOn(point))
                 return true;
             return false;
         }
@@ -69,13 +66,13 @@ namespace CommonHelpers
 
         public static bool IsPointOnLine<T>(T tLine, Point3d point) where T : Curve
         {
-            if(tLine == null)
+            if (tLine == null)
                 return false;
-            if(tLine is Line line)
+            if (tLine is Line line)
                 return IsOnLine(line, point);
-            if(tLine is Polyline polyline)
+            if (tLine is Polyline polyline)
                 return IsOnPolyline(polyline, point);
-            if(tLine.GetType() == typeof(Curve))
+            if (tLine.GetType() == typeof(Curve))
             {
                 var curve = (Curve)tLine;
                 return IsOnSegment(curve, point, curve.StartPoint, curve.EndPoint);
@@ -117,19 +114,19 @@ namespace CommonHelpers
             {
                 selectedLine
             };
-            
+
             curves.Remove(selectedLine);
 
             // For speed up return
-            if(curves.Count == 0) 
+            if (curves.Count == 0)
                 return connectedLines;
 
-            Func<Curve, bool> selectedCondition = 
+            Func<Curve, bool> selectedCondition =
                 item => connectedLines
                         .Where(x => (x.StartPoint.Equals(item.StartPoint) && !IsPointTerminated(x.StartPoint, terminators)) ||
                                     (x.EndPoint.Equals(item.StartPoint) && !IsPointTerminated(x.EndPoint, terminators)) ||
                                     (x.StartPoint.Equals(item.EndPoint) && !IsPointTerminated(x.StartPoint, terminators)) ||
-                                    (x.EndPoint.Equals(item.EndPoint) && !IsPointTerminated(x.EndPoint, terminators)) ).Any();
+                                    (x.EndPoint.Equals(item.EndPoint) && !IsPointTerminated(x.EndPoint, terminators))).Any();
 
             connectedLines.AddRange(curves.Where(selectedCondition));
 
@@ -196,9 +193,9 @@ namespace CommonHelpers
 
         private static bool IsPointTerminated(Point3d point, IEnumerable<Point3d> terminators)
         {
-            foreach(var terminator in terminators)
+            foreach (var terminator in terminators)
             {
-                if(point.Equals(terminator))
+                if (point.Equals(terminator))
                     return true;
             }
             return false;

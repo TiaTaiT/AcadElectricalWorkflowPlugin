@@ -1,11 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using LinkCommands.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using LinkCommands.Services;
 using System.Diagnostics;
-using LinkCommands.Interfaces;
 
 namespace AutoCommands.Test
 {
@@ -137,7 +133,7 @@ namespace AutoCommands.Test
                     ValidationParameterIsTerminal = true
                 };
                 var result = validator.IsConnectionValid(_invalidSetTerminal[i].Item1, _invalidSetTerminal[i].Item2);
-                Debug.WriteLine(i +"  Source = " + _invalidSetTerminal[i].Item1 + " & Destination = " + _invalidSetTerminal[i].Item2 + "; Invalid Terminal");
+                Debug.WriteLine(i + "  Source = " + _invalidSetTerminal[i].Item1 + " & Destination = " + _invalidSetTerminal[i].Item2 + "; Invalid Terminal");
                 Assert.IsFalse(result);
             }
 

@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace AutocadTerminalsManager.Model
 {
@@ -24,6 +24,6 @@ namespace AutocadTerminalsManager.Model
         public PerimeterDevice Device { get; set; }
         public IEnumerable<Cable> PerimeterCables { get; set; }
 
-        
+
     }
 }

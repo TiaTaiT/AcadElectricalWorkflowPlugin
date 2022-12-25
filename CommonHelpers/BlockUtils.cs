@@ -5,7 +5,6 @@ using CommonHelpers.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace CommonHelpers
 {
@@ -67,7 +66,7 @@ namespace CommonHelpers
                     tmpDb.ReadDwgFile(blockPath, FileShare.Read, true, null);
                     return blockTable.Database.Insert(Path.GetFileNameWithoutExtension(blockName), tmpDb, true);
                 }
-                
+
             }
             catch
             {

@@ -1,15 +1,6 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.ApplicationServices.Core;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
-using Autodesk.AutoCAD.Internal;
-using System;
-using System.Collections.Generic;
-using AutocadTerminalsManager.Helpers;
+﻿using AutocadTerminalsManager.Helpers;
 using AutocadTerminalsManager.Model;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
+using Autodesk.AutoCAD.Runtime;
 
 namespace AutocadTerminalsManager
 {
@@ -21,7 +12,7 @@ namespace AutocadTerminalsManager
 
         public void Initialize()
         {
-            
+
         }
 
         public void Terminate()

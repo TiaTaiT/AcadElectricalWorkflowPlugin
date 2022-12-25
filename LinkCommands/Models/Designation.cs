@@ -50,7 +50,7 @@ namespace LinkCommands.Models
 
         public override bool Equals(object obj)
         {
-            
+
             if ((obj == null) && (this != null))
             {
                 return false;

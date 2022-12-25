@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Autodesk.AutoCAD.DatabaseServices;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.GraphicsInterface;
+using System.Collections.Generic;
 
 namespace AutocadTerminalsManager.Services
 {
@@ -27,7 +26,7 @@ namespace AutocadTerminalsManager.Services
             foreach (var entity in _entities)
             {
                 wGeom.Draw(entity);
-                
+
             }
             wGeom.PopModelTransform();
             return true;
@@ -46,7 +45,7 @@ namespace AutocadTerminalsManager.Services
             if (ppr.Value.IsEqualTo(_dragPoint))
                 return SamplerStatus.NoChange;
             _dragPoint = ppr.Value;
-            
+
             return SamplerStatus.OK;
         }
 
@@ -59,7 +58,7 @@ namespace AutocadTerminalsManager.Services
                 entity.TransformBy(_displacement);
                 entity.DowngradeOpen();
             }
-            
+
         }
     }
 }

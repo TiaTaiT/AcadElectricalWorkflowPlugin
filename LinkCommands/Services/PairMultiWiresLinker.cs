@@ -22,12 +22,12 @@ namespace LinkCommands.Services
         private Curve _selectedDestinationLine;
 
         private List<string> _existedSigCodes = new();
-        
+
         private List<ObjectId> _sourceLinkSymbols = new();
         private List<ObjectId> _destinationLinkSymbols = new();
         private List<(ObjectId, ObjectId)> _sourceDestinationLinkSymbols = new();
 
-        
+
         private ObjectId _sourceLinkSymbolId;
         private ObjectId _destinationLinkSymbolId;
         private ComponentsFactory _componentsFactory;
@@ -82,7 +82,7 @@ namespace LinkCommands.Services
             if (selectionBlock2.Status != PromptStatus.OK)
                 return false;
 
-            if(selectionBlock2.ObjectId == null)
+            if (selectionBlock2.ObjectId == null)
                 return false;
 
             using (var tr = _db.TransactionManager.StartTransaction())
@@ -150,10 +150,10 @@ namespace LinkCommands.Services
             var sourceSymbolEntity = (Entity)_sourceLinkSymbolId.GetObject(OpenMode.ForRead);
             var destinationSymbolEntity = (Entity)_destinationLinkSymbolId.GetObject(OpenMode.ForRead);
 
-            var multiwire = 
-                new MultiWire(_sourceMultiwireEntities, 
-                              sourceSymbolEntity, 
-                              _destinationMultiwireEntities, 
+            var multiwire =
+                new MultiWire(_sourceMultiwireEntities,
+                              sourceSymbolEntity,
+                              _destinationMultiwireEntities,
                               destinationSymbolEntity,
                               _componentsFactory.Components);
             multiwire.Create();
@@ -178,7 +178,7 @@ namespace LinkCommands.Services
             _destinationLinkSymbolId = BlockUtils.InsertBlockFormFile(_db, destinationSymbolName, destinationSymbolPoint, attributes, Layers.Symbols);
         }
 
-        
+
 
         private IEnumerable<ObjectId> EraseUnpairSymbols(Transaction tr)
         {
@@ -231,7 +231,7 @@ namespace LinkCommands.Services
             sourceAndDestinationMultiwires.AddRange(_sourceMultiwireEntities);
             sourceAndDestinationMultiwires.AddRange(_destinationMultiwireEntities);
 
-            if ((_sourceMultiwireEntities.Count() == 1 && _sourceMultiwireEntities.Contains(selectedMultiwirePart)) 
+            if ((_sourceMultiwireEntities.Count() == 1 && _sourceMultiwireEntities.Contains(selectedMultiwirePart))
                 || (_destinationMultiwireEntities.Count() == 1 && _destinationMultiwireEntities.Contains(selectedMultiwirePart)))
             {
                 var wires = LinkerHelper.GetAllWiresFromDb(_db);
@@ -246,7 +246,7 @@ namespace LinkCommands.Services
                 return (startPoint, endPoint);
             }
 
-            if(_sourceMultiwireEntities.Contains(selectedMultiwirePart))
+            if (_sourceMultiwireEntities.Contains(selectedMultiwirePart))
             {
                 foreach (var entity in _sourceMultiwireEntities)
                 {
@@ -276,11 +276,11 @@ namespace LinkCommands.Services
             return (startPoint, endPoint);
         }
 
-        
+
 
         private void HighlightObjects(IEnumerable<Entity> entities)
         {
-            foreach(var entity in entities)
+            foreach (var entity in entities)
             {
                 entity.Highlight();
             }
@@ -297,11 +297,11 @@ namespace LinkCommands.Services
         private int GetFirstFreeNumber(Transaction tr)
         {
             var existedDescriptions = new SortedSet<int>();
-            foreach(var symbolId in _sourceLinkSymbols)
+            foreach (var symbolId in _sourceLinkSymbols)
             {
                 var description = AttributeHelper.GetAttributeValueFromBlock(tr, symbolId, "DESC1");
-                
-                if(int.TryParse(description, out var number))
+
+                if (int.TryParse(description, out var number))
                 {
                     existedDescriptions.Add(number);
                 }

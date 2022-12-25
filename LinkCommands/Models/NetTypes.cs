@@ -11,7 +11,7 @@
         Rs485A,
         Rs485B,
         Rs485Gnd,
-        LadogaRsPositive, 
+        LadogaRsPositive,
         LadogaRsNegative,
         DplsPositive,
         DplsNegative,

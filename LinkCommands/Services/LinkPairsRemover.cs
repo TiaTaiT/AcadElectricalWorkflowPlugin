@@ -24,7 +24,7 @@ namespace LinkCommands.Services
             if (string.IsNullOrEmpty(_startNumberStr))
                 return false;
 
-            if(_startNumberStr.Equals("Y"))
+            if (_startNumberStr.Equals("Y"))
                 return true;
 
             return false;
@@ -33,14 +33,14 @@ namespace LinkCommands.Services
 
         public override void Run()
         {
-            
+
             var symbolNames = LinkSymbolNameResolver.GetAllNames();
 
             var linkIds = GetObjectsUtils.GetBlockIdsByNames(_db, symbolNames);
             _doc.LockDocument();
             BlockHelper.EraseEntitiesByIds(_db, linkIds);
-            
-            
+
+
         }
     }
 }

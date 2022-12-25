@@ -1,11 +1,8 @@
-﻿using LinkCommands.Models;
+﻿using Autodesk.AutoCAD.Geometry;
+using LinkCommands.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autodesk.AutoCAD.Geometry;
 
 namespace AutoCommands.Test
 {

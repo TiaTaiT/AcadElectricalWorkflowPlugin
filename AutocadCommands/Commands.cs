@@ -1,8 +1,8 @@
-﻿using Autodesk.AutoCAD.Runtime;
+﻿using AutocadCommands.Services;
+using Autodesk.AutoCAD.ApplicationServices.Core;
+using Autodesk.AutoCAD.Runtime;
 using System;
 using System.IO;
-using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices.Core;
 
 namespace AutocadCommands
 {
@@ -42,7 +42,7 @@ namespace AutocadCommands
             {
                 tColorReplacer.Run();
             }
-            
+
         }
 
         // Advanced DESC1 increment of terminals
@@ -56,7 +56,7 @@ namespace AutocadCommands
             {
                 tDescInc.Run();
             }
-            
+
         }
 
         // Advanced blocks increment
@@ -84,7 +84,7 @@ namespace AutocadCommands
             {
                 tDescInc.Run();
             }
-            
+
         }
 
         // Find and replace part of DESC1 of terminals
@@ -113,6 +113,6 @@ namespace AutocadCommands
             }
         }
 
-        
+
     }
 }

@@ -1,9 +1,5 @@
 ﻿using Autodesk.AutoCAD.DatabaseServices;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommonHelpers
 {
@@ -28,7 +24,7 @@ namespace CommonHelpers
                         continue;
 
                     //var br = (T)tr.GetObject(obj, OpenMode.ForRead);
-                    if(!entity.Layer.Equals(layer))
+                    if (!entity.Layer.Equals(layer))
                         continue;
 
                     yield return (T)entity;
@@ -64,7 +60,7 @@ namespace CommonHelpers
                             //yield return entity.Id;
                             result.Add(entity.Id);
                     }
-                    
+
                 }
             }
             tr.Commit();

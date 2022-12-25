@@ -1,46 +1,45 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
 
 namespace CommonHelpers
 {
-	public static class AttributesHelper2
+    public static class AttributesHelper2
     {
-		public static void UpdateAttributesByBlockName(Database db, string blockName, string attbName, string attbValue)
-		{
-			var doc = Application.DocumentManager.MdiActiveDocument;
-			var ed = doc.Editor;
-			// Get the IDs of the spaces we want to process
-			// and simply call a function to process each
-			ObjectId msId, psId;
-			var tr = db.TransactionManager.StartTransaction();
-			using (tr)
-			{
-				var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-				msId = bt[BlockTableRecord.ModelSpace];
-				psId = bt[BlockTableRecord.PaperSpace];
-				// Not needed, but quicker than aborting
-				tr.Commit();
-			}
-			UpdateAttributesInBlock(msId, blockName, attbName, attbValue);
-			UpdateAttributesInBlock(psId, blockName, attbName, attbValue);
-			//ed.Regen();
-			// Display the results
-			/*
+        public static void UpdateAttributesByBlockName(Database db, string blockName, string attbName, string attbValue)
+        {
+            var doc = Application.DocumentManager.MdiActiveDocument;
+            var ed = doc.Editor;
+            // Get the IDs of the spaces we want to process
+            // and simply call a function to process each
+            ObjectId msId, psId;
+            var tr = db.TransactionManager.StartTransaction();
+            using (tr)
+            {
+                var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+                msId = bt[BlockTableRecord.ModelSpace];
+                psId = bt[BlockTableRecord.PaperSpace];
+                // Not needed, but quicker than aborting
+                tr.Commit();
+            }
+            UpdateAttributesInBlock(msId, blockName, attbName, attbValue);
+            UpdateAttributesInBlock(psId, blockName, attbName, attbValue);
+            //ed.Regen();
+            // Display the results
+            /*
 			ed.WriteMessage("\nProcessing file: " + db.Filename);
 			ed.WriteMessage("\nUpdated {0} instance{1} of " + "attribute {2} in the modelspace.", msCount, msCount == 1 ? "" : "s", attbName);
 			ed.WriteMessage("\nUpdated {0} instance{1} of " + "attribute {2} in the default paperspace.", psCount, psCount == 1 ? "" : "s", attbName);
 			*/
-		}
+        }
 
-		private static void UpdateAttributesInBlock(ObjectId btrId, string blockName, string attbName, string attbValue)
-		{
-			// Will return the number of attributes modified
-			var changedCount = 0;
-			var doc = Application.DocumentManager.MdiActiveDocument;
-             
+        private static void UpdateAttributesInBlock(ObjectId btrId, string blockName, string attbName, string attbValue)
+        {
+            // Will return the number of attributes modified
+            var changedCount = 0;
+            var doc = Application.DocumentManager.MdiActiveDocument;
+
             using var tr = doc.TransactionManager.StartTransaction();
-            
+
             var btr = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
             // Test each entity in the container...
             foreach (ObjectId entId in btr)
@@ -74,6 +73,6 @@ namespace CommonHelpers
             }
             tr.Commit();
             //return changedCount;
-		}
-	}
+        }
+    }
 }

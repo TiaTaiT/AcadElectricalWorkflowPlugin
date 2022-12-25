@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Autodesk.AutoCAD.DatabaseServices;
+﻿using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.Runtime;
+using System;
+using System.Collections.Generic;
 using AcRx = Autodesk.AutoCAD.Runtime;
 
 namespace CommonHelpers

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using AutocadCommands.Models;
+﻿using AutocadCommands.Models;
 using AutocadCommands.Utils;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
+using System.Collections.Generic;
 
 namespace AutocadCommands.Services
 {

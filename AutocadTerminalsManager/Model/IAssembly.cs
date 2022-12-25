@@ -16,6 +16,6 @@ namespace AutocadTerminalsManager.Model
         /// <summary>
         /// Perimeter cable for a fire alarm detector. 
         /// </summary>
-        IEnumerable<Cable> PerimeterCable { get; set; }       
+        IEnumerable<Cable> PerimeterCable { get; set; }
     }
 }

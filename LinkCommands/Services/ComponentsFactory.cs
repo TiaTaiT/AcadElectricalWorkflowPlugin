@@ -36,7 +36,7 @@ namespace LinkCommands.Services
         public IEnumerable<Point3d> GetTerminalPoints()
         {
             var points = new ConcurrentBag<Point3d>();
-            
+
             Parallel.ForEach(Components, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
                 (item, i) => PopulateTerminatedPoints(item, points));
             /*
@@ -49,7 +49,7 @@ namespace LinkCommands.Services
         public IEnumerable<ComponentTerminal> GetAllTerminalsInComponents()
         {
             var terminals = new ConcurrentBag<ComponentTerminal>();
-            Parallel.ForEach(Components, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber},
+            Parallel.ForEach(Components, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
                 (item, i) => PopulateTerminalsList(item, terminals));
             return terminals;
         }
@@ -62,7 +62,7 @@ namespace LinkCommands.Services
 
         private void PopulateTerminatedPoints(ElectricalComponent component, ConcurrentBag<Point3d> points)
         {
-            foreach(var point in component.GetTerminalPoints())
+            foreach (var point in component.GetTerminalPoints())
                 points.Add(point);
         }
 
@@ -80,7 +80,7 @@ namespace LinkCommands.Services
                 (item, i) => CreateElectricalComponent(item, componentsList));
             */
 
-            foreach(var blockReference in blkRefs)
+            foreach (var blockReference in blkRefs)
             {
                 componentsList.Add(CreateElectricalComponent(blockReference));
             }
@@ -120,7 +120,7 @@ namespace LinkCommands.Services
 
         private string GetNameValue(Dictionary<string, string> attrDict)
         {
-            if(attrDict.TryGetValue(Description1, out var strValue))
+            if (attrDict.TryGetValue(Description1, out var strValue))
                 return strValue;
             return string.Empty;
         }
@@ -137,16 +137,16 @@ namespace LinkCommands.Services
             return string.Empty;
         }
 
-        private IEnumerable<ComponentTerminal> GetTerminals(AttributeCollection attributes, 
-                                                            Dictionary<string,string> attrDict,
+        private IEnumerable<ComponentTerminal> GetTerminals(AttributeCollection attributes,
+                                                            Dictionary<string, string> attrDict,
                                                             bool terminalFlag)
         {
             var terminals = new List<ComponentTerminal>();
 
-            foreach(var attr in attrDict)
+            foreach (var attr in attrDict)
             {
 
-                if(attr.Key.ToUpper().StartsWith(TerminalDescriptionSign) && !terminalFlag)
+                if (attr.Key.ToUpper().StartsWith(TerminalDescriptionSign) && !terminalFlag)
                 {
                     var connectionNames = GetConnectionAttributeName(attr.Key, attrDict);
                     var connectionPoints = GetConnectionPoints(attributes, connectionNames);
@@ -155,8 +155,8 @@ namespace LinkCommands.Services
                 if (attr.Key.ToUpper().StartsWith(ComponentTerminalDescriptionSign) && terminalFlag)
                 {
                     string key = "";
-                    foreach(var item in attrDict)
-                        if(item.Key.ToUpper().StartsWith(TerminalDescriptionSign))
+                    foreach (var item in attrDict)
+                        if (item.Key.ToUpper().StartsWith(TerminalDescriptionSign))
                             key = item.Key;
 
                     var connectionNames = GetConnectionAttributeName(key, attrDict);
@@ -174,21 +174,21 @@ namespace LinkCommands.Services
             {
 
                 AttributeReference att;
-                
+
                 try
                 {
                     att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine("Error!!!" + ex.Message);
                     continue;
                 }
-                
+
                 if (att == null)
                     continue;
 
-                foreach(var name in names)
+                foreach (var name in names)
                 {
                     if (att.Tag.Equals(name))
                         points.Add(att.Position);
@@ -199,14 +199,14 @@ namespace LinkCommands.Services
 
         private IEnumerable<string> GetConnectionAttributeName(string termTag, Dictionary<string, string> attrDict)
         {
-            foreach(var attr in attrDict)
+            foreach (var attr in attrDict)
             {
-                if(attr.Key.ToUpper().StartsWith("X") && attr.Key.ToUpper().EndsWith(termTag))
+                if (attr.Key.ToUpper().StartsWith("X") && attr.Key.ToUpper().EndsWith(termTag))
                 {
                     yield return attr.Key;
                 }
             }
-            
+
         }
     }
 }

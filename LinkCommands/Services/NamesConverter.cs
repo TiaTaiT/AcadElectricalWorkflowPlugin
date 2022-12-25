@@ -6,16 +6,16 @@ namespace LinkCommands.Services
     public class NamesConverter : INamesConverter
     {
         private const string _positiveSign = "+";
-        
+
         public string GetShortName(HalfWireDesignation sourceDesignation, HalfWireDesignation destDesignation)
         {
-            if (sourceDesignation.ElectricalType == NetTypes.Unknown && 
+            if (sourceDesignation.ElectricalType == NetTypes.Unknown &&
                 destDesignation.ElectricalType == NetTypes.PowerPositive)
             {
-                return _positiveSign + 
-                       destDesignation.LowerVoltage + 
-                       destDesignation.Appointment + 
-                       destDesignation.Number + 
+                return _positiveSign +
+                       destDesignation.LowerVoltage +
+                       destDesignation.Appointment +
+                       destDesignation.Number +
                        destDesignation.Suffix;
             }
 
@@ -32,9 +32,9 @@ namespace LinkCommands.Services
                 sourceDesignation.ElectricalType == NetTypes.PowerPositive)
             {
                 return _positiveSign +
-                       sourceDesignation.LowerVoltage + 
-                       sourceDesignation.Appointment + 
-                       sourceDesignation.Number + 
+                       sourceDesignation.LowerVoltage +
+                       sourceDesignation.Appointment +
+                       sourceDesignation.Number +
                        sourceDesignation.Suffix;
             }
 

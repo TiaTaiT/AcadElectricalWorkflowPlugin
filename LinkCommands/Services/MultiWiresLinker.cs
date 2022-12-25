@@ -26,7 +26,7 @@ namespace AutocadCommands.Services
         public override bool Init()
         {
             CreateComponentsFactory();
-            
+
             //Make the selection   
             var selectedItems = _ed.SelectImplied();
 
@@ -57,7 +57,7 @@ namespace AutocadCommands.Services
                 _multiWireEntities = GetMultiWireEntities(LinkerHelper.SelectAllPolylineByLayer(_ed, Layers.MultiWires)).ToList();
             }
 
-            if(selectMethod == "S" || selectMethod == "Ы" || selectMethod == "")
+            if (selectMethod == "S" || selectMethod == "Ы" || selectMethod == "")
             {
                 var filter = new SelectionFilter(
                     new TypedValue[] {
@@ -98,7 +98,7 @@ namespace AutocadCommands.Services
 
         private void DebugTier()
         {
-            foreach(var component in _componentsFactory.Components)
+            foreach (var component in _componentsFactory.Components)
             {
                 Debug.WriteLine(component.Name.ToString() + "; terminals: " + component.Terminals.Count);
                 foreach (var terminal in component.Terminals)
@@ -124,7 +124,7 @@ namespace AutocadCommands.Services
         {
             //if(id.ObjectClass.DxfName == "LWPOLYLINE") it's the fastest!
             var entityType = entity.GetType();
-            
+
             return entityType == typeof(Polyline) && entity.Layer.StartsWith(Layers.MultiWires);
         }
 
@@ -132,7 +132,7 @@ namespace AutocadCommands.Services
         {
             _doc.LockDocument();
             using var tr = _db.TransactionManager.StartTransaction();
-            foreach(Entity entity in _multiWireEntities)
+            foreach (Entity entity in _multiWireEntities)
             {
                 var polyLine = (Polyline)entity;
                 var multiWire = new MultiWire(polyLine, _componentsFactory.Components);

@@ -1,10 +1,10 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
+﻿using AutocadCommands.Helpers;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
+using CommonHelpers;
 using System;
 using System.Collections.Generic;
-using AutocadCommands.Helpers;
-using CommonHelpers;
 
 namespace AutocadCommands.Services
 {
@@ -36,7 +36,7 @@ namespace AutocadCommands.Services
 
             //Make the selection   
             _selectedBlocks = _ed.GetSelection(opts, filter);
-            
+
             return _selectedBlocks.Status == PromptStatus.OK;
 
             #endregion Dialog with user
@@ -76,7 +76,7 @@ namespace AutocadCommands.Services
 
                 // Insert the new terminal in place of the old one.
                 var newTerminalId = BlockHelper.InsertElectricalBlock(position, colorName);
-                if(newTerminalId.IsNull)
+                if (newTerminalId.IsNull)
                     return;
 
                 // Write the attributes of the old terminal to the new one. 
@@ -88,7 +88,7 @@ namespace AutocadCommands.Services
 
         private string GetNameByPurpose(string blockName, string desc1)
         {
-            if (IsIn(_configProvider.YellowTerminals, desc1)) 
+            if (IsIn(_configProvider.YellowTerminals, desc1))
                 return GetColorBlockName(blockName, "YELLOW");
             if (IsIn(_configProvider.BlackTerminals, desc1))
                 return GetColorBlockName(blockName, "BLACK");
@@ -117,11 +117,11 @@ namespace AutocadCommands.Services
 
         private string GetColorBlockName(string oldBlockName, string color)
         {
-            var terminalPrefix = 
+            var terminalPrefix =
                 oldBlockName.Substring(0, oldBlockName.LastIndexOf("_", StringComparison.Ordinal) + 1);
             return terminalPrefix + color;
         }
 
-        
+
     }
 }

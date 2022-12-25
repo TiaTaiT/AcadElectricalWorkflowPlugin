@@ -24,7 +24,7 @@ namespace AutocadCommands.Models
         public HalfWire Destination { get; set; }
 
         private string _descritption;
-        public string Description 
+        public string Description
         {
             get
             {
@@ -39,7 +39,7 @@ namespace AutocadCommands.Models
         /// List of the connected terminals
         /// </summary>
         public List<ComponentTerminal> Terminals = new();
-        
+
         public Wire(HalfWire halfWire1, HalfWire halfWire2)
         {
             _designationParser = new DesignationParser();
@@ -56,7 +56,7 @@ namespace AutocadCommands.Models
 
         public Wire(IEnumerable<Curve> curves)
         {
-            Curves= curves;
+            Curves = curves;
             _designationParser = new DesignationParser();
             _namesConverter = new NamesConverter();
         }
@@ -70,8 +70,8 @@ namespace AutocadCommands.Models
             Source = new HalfWire(sourceLineEntity, components);
 
             var destinationLineEntity = (Entity)destinationHalfWire.GetObject(OpenMode.ForRead, false);
-            Destination = new HalfWire(destinationLineEntity,components);
-            
+            Destination = new HalfWire(destinationLineEntity, components);
+
             SetWireAttributes();
         }
 
@@ -81,7 +81,7 @@ namespace AutocadCommands.Models
 
             Source.SigCode = SigCode;
             Destination.SigCode = SigCode;
-            if(string.IsNullOrEmpty(Source.ShortDescription) || string.IsNullOrEmpty(Destination.ShortDescription))
+            if (string.IsNullOrEmpty(Source.ShortDescription) || string.IsNullOrEmpty(Destination.ShortDescription))
             {
                 var electricalValidator = new ElectricalValidation(_designationParser, _namesConverter);
                 var validationResult = electricalValidator.IsConnectionValid(Source.Description, Destination.Description);
@@ -94,7 +94,7 @@ namespace AutocadCommands.Models
 
                 Source.ShortDescription = electricalValidator.ShortName;
             }
-            
+
             Destination.ShortDescription = Source.ShortDescription;
         }
 
@@ -118,8 +118,8 @@ namespace AutocadCommands.Models
         {
             if (Curves.Any())
                 return GeometryFunc.IsPointOnCurveEnd(point, Curves);
-            if(Source != null && Destination != null)
-                return Source.IsPointOnEnd(point) || 
+            if (Source != null && Destination != null)
+                return Source.IsPointOnEnd(point) ||
                        Destination.IsPointOnEnd(point);
             throw new Exception("Null!");
         }

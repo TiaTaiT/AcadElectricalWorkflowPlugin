@@ -12,7 +12,7 @@ namespace AutocadCommands.Services
 {
     public static class LinkerHelper
     {
-        
+
         public static ObjectId[] SelectAllPolylineByLayer(Editor editor, string layer)
         {
             ObjectId[] retVal = null;

@@ -14,10 +14,10 @@ namespace LinkCommands.Models
         public int Id { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
         public string Designation { get; set; } = string.Empty;
-        public bool IsTerminal 
+        public bool IsTerminal
         {
             get => SignaturesChecker.IsTerminal(BlockRef);
-            private set { } 
+            private set { }
         }
 
         public List<ComponentTerminal> Terminals { get; set; } = new();
@@ -27,7 +27,7 @@ namespace LinkCommands.Models
             var points = new List<Point3d>();
             foreach (var terminal in Terminals)
                 points.AddRange(terminal.Points);
-                    
+
             return points;
         }
 
@@ -38,7 +38,7 @@ namespace LinkCommands.Models
         /// <returns>List of all electrically tied terminals</returns>
         public IEnumerable<ComponentTerminal> GetAllTiedTerminals(string description)
         {
-            if(TryGetTerminalByDescription(description, out var foundTerminal))
+            if (TryGetTerminalByDescription(description, out var foundTerminal))
                 return foundTerminal.TiedTerminals;
             return Enumerable.Empty<ComponentTerminal>();
         }
@@ -48,9 +48,9 @@ namespace LinkCommands.Models
 
         }
 
-        public ElectricalComponent(int id, 
-                                   string name, 
-                                   string designation, 
+        public ElectricalComponent(int id,
+                                   string name,
+                                   string designation,
                                    List<ComponentTerminal> terminals,
                                    BlockReference blockReference)
         {
@@ -72,11 +72,11 @@ namespace LinkCommands.Models
             foreach (var terminal in Terminals)
             {
                 Debug.WriteLine(" + " + terminal.Value + "; Tieds: " + terminal.TiedTerminals.Count());
-                foreach(var tied in terminal.TiedTerminals)
+                foreach (var tied in terminal.TiedTerminals)
                 {
                     Debug.WriteLine("   - " + tied.Value);
                 }
-                
+
             }
             Debug.WriteLine("=====================================================");
         }
@@ -87,11 +87,11 @@ namespace LinkCommands.Models
             {
                 var tiedList = TiedTerminalsDb.GetTiedTerminals(Name, terminal.Value);
 
-                foreach(var tied in tiedList)
+                foreach (var tied in tiedList)
                 {
                     if (TryGetTerminalByDescription(tied, out var foundTerminal))
-                    { 
-                        terminal.TiedTerminals.Add(foundTerminal); 
+                    {
+                        terminal.TiedTerminals.Add(foundTerminal);
                     }
                 }
             }
@@ -102,8 +102,8 @@ namespace LinkCommands.Models
             foreach (var terminal in Terminals)
             {
                 if (terminal.Value.ToUpper().Equals(description.ToUpper()))
-                { 
-                    foundTerminal = terminal; 
+                {
+                    foundTerminal = terminal;
                     return true;
                 }
             }

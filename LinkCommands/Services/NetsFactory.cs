@@ -21,9 +21,9 @@ namespace LinkCommands.Services
 
         private IEnumerable<HalfWire> HalfWires { get; set; }
         public IEnumerable<Wire> Wires { get; private set; }
-        
 
-        public NetsFactory(Database db, IEnumerable<Point3d> terminators) 
+
+        public NetsFactory(Database db, IEnumerable<Point3d> terminators)
         {
             _db = db;
             _terminators = terminators;
@@ -53,7 +53,7 @@ namespace LinkCommands.Services
         private IEnumerable<Wire> GeWires(IEnumerable<IEnumerable<Curve>> validWiresGroups)
         {
             var wires = new List<Wire>();
-            foreach(var wiresGroup in validWiresGroups)
+            foreach (var wiresGroup in validWiresGroups)
             {
                 wires.Add(new Wire(wiresGroup));
             }
@@ -68,10 +68,10 @@ namespace LinkCommands.Services
         private IEnumerable<IEnumerable<Curve>> GetValidWiresGroups(IEnumerable<IEnumerable<Curve>> curveGroups)
         {
             var wires = new List<IEnumerable<Curve>>();
-            foreach(var curveGroup in curveGroups)
+            foreach (var curveGroup in curveGroups)
             {
                 var terminatorsCounter = 0;
-                foreach(var curve in curveGroup)
+                foreach (var curve in curveGroup)
                 {
                     terminatorsCounter += GetNumbTerminatedEnds(curve);
                     if (terminatorsCounter == 0)
@@ -80,7 +80,7 @@ namespace LinkCommands.Services
                     if (terminatorsCounter >= 2)
                     {
                         wires.Add(curveGroup);
-                        break; 
+                        break;
                     }
                 }
             }
@@ -90,7 +90,7 @@ namespace LinkCommands.Services
         private void DebugHalfWires()
         {
             Debug.WriteLine("HallfWires.Count = " + HalfWires.Count());
-            foreach(HalfWire halfWire in HalfWires) 
+            foreach (HalfWire halfWire in HalfWires)
             {
                 Debug.WriteLine("DESC1 = " + halfWire.Description + "  Point: " + halfWire.LinkSymbol.Position.X.ToString() + ";" + halfWire.LinkSymbol.Position.Y.ToString() + "  Count = " + halfWire.Curves.Count());
             }
@@ -101,11 +101,11 @@ namespace LinkCommands.Services
             var wires = new List<Wire>();
 
             var groups = halfWires.GroupBy(h => h.SigCode).ToList();
-                
-            foreach(var group in groups)
+
+            foreach (var group in groups)
             {
                 var halfs = group.ToList();
-                if(halfs.Count == 2)
+                if (halfs.Count == 2)
                 {
                     wires.Add(new Wire(halfs[0], halfs[1]));
                 }
@@ -124,9 +124,9 @@ namespace LinkCommands.Services
                 var attCol = linkRef.AttributeCollection;
 
                 var link = new Link();
-                foreach(var attributeName in possibleWireAttachedNames)
+                foreach (var attributeName in possibleWireAttachedNames)
                 {
-                    if (!AttributeHelper.TryGetAttributePosition(attributeName, attCol, out var wirePoint))  
+                    if (!AttributeHelper.TryGetAttributePosition(attributeName, attCol, out var wirePoint))
                         continue;
 
                     link.WireConnectionPoint = wirePoint;
@@ -136,7 +136,7 @@ namespace LinkCommands.Services
 
                     break;
                 }
-                foreach(var attributeName in possibleMultiwireAttachedNames)
+                foreach (var attributeName in possibleMultiwireAttachedNames)
                 {
                     if (!AttributeHelper.TryGetAttributePosition(attributeName, attCol, out var multiwirePoint))
                         continue;
@@ -144,7 +144,7 @@ namespace LinkCommands.Services
                     break;
                 }
 
-                if(!string.IsNullOrEmpty(link.SigCode))
+                if (!string.IsNullOrEmpty(link.SigCode))
                     result.Add(link);
             }
             return result;
@@ -198,7 +198,7 @@ namespace LinkCommands.Services
         private int GetNumbTerminatedEnds(Curve curve)
         {
             var terminatedWireEnds = 0;
-            foreach(var terminator in _terminators)
+            foreach (var terminator in _terminators)
             {
                 if (curve.StartPoint.Equals(terminator) || curve.EndPoint.Equals(terminator))
                 {
