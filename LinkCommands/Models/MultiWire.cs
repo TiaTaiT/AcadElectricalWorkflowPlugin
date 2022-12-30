@@ -34,8 +34,12 @@ namespace AutocadCommands.Models
             //Debug.WriteLine("Wires count = " + ConnectedWires.Count());
 
             var sortedHalfWires = GetSortHalfWire();
-            SeparateSourceAndDestination(sortedHalfWires);
-            //Streamline();
+            var separator = new Separator();
+
+            separator.Separate(sortedHalfWires);
+
+            _sourceHalfWires = separator.Sources;
+            _destinationHalfWires = separator.Destinations;
         }
 
         private bool CreateWires()
@@ -111,55 +115,6 @@ namespace AutocadCommands.Models
             {
                 Debug.WriteLine(sources.ElementAt(i).ShortDescription + " <=> " + destinations.ElementAt(i).ShortDescription);
             }
-        }
-
-        private bool SeparateSourceAndDestination(IEnumerable<HalfWire> sortedHalfWires)
-        {
-            if (sortedHalfWires.Count() < 2)
-                return false;
-
-            var sourceDestSwitch = false;
-            var lastValue = sortedHalfWires.First().PointConnectedToMultiWire.Y;
-            _sourceHalfWires.Add(sortedHalfWires.First());
-
-            for (var i = 1; i < sortedHalfWires.Count(); i++)
-            {
-                var currentWireY = sortedHalfWires.ElementAt(i).PointConnectedToMultiWire.Y;
-
-                if (currentWireY != lastValue)
-                {
-                    sourceDestSwitch = true;
-                }
-                if (!sourceDestSwitch)
-                {
-                    _sourceHalfWires.Add(sortedHalfWires.ElementAt(i));
-                }
-                else
-                {
-                    if (_sourceHalfWires.Count() > _destinationHalfWires.Count())
-                    {
-                        _destinationHalfWires.Add(sortedHalfWires.ElementAt(i));
-                    }
-                }
-                lastValue = currentWireY;
-            }
-
-            // if multiwire is one line
-            if (_sourceHalfWires.Count() > 0 && _destinationHalfWires.Count() == 0)
-            {
-                if (_sourceHalfWires.Count() % 2 != 0)
-                    return false;
-
-                // split source collection in half
-                var halfNumb = _sourceHalfWires.Count() / 2 - 1;
-                var max = _sourceHalfWires.Count() - 1;
-                for (var j = max; j > halfNumb; j--)
-                {
-                    _destinationHalfWires.Add(_sourceHalfWires[j]);
-                    _sourceHalfWires.RemoveAt(j);
-                }
-            }
-            return true;
         }
 
         private void CreateLinkedMultiwire()

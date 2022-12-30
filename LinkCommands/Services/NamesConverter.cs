@@ -1,11 +1,13 @@
 ﻿using LinkCommands.Interfaces;
 using LinkCommands.Models;
+using System.Collections.Generic;
 
 namespace LinkCommands.Services
 {
     public class NamesConverter : INamesConverter
     {
         private const string _positiveSign = "+";
+        private readonly List<string> _voltageSigns = new() { "В", "V" };
 
         public string GetShortName(HalfWireDesignation sourceDesignation, HalfWireDesignation destDesignation)
         {
@@ -56,7 +58,11 @@ namespace LinkCommands.Services
             if (sourceDesignation.ElectricalType == NetTypes.PowerNegative ||
                 destDesignation.ElectricalType == NetTypes.PowerNegative)
             {
-                return sourceDesignation.LowerVoltage + sourceDesignation.Appointment + sourceDesignation.Number;
+                if( _voltageSigns.Contains(sourceDesignation.Appointment))
+                    return sourceDesignation.LowerVoltage + 
+                           sourceDesignation.Appointment + 
+                           sourceDesignation.Number;
+                return sourceDesignation.Appointment + destDesignation.Number;
             }
 
             if (sourceDesignation.IsShleif)

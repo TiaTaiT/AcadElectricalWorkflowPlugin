@@ -112,9 +112,17 @@ namespace LinkCommands.Services
                 return true;
             if (netType1 == NetTypes.Unknown || netType2 == NetTypes.Unknown)
                 return true;
-            if ((netType1 == NetTypes.ShleifNegative || netType1 == NetTypes.ShleifPositive) && netType2 == NetTypes.Relay)
+            if ((netType1 == NetTypes.ShleifNegative || 
+                 netType1 == NetTypes.ShleifPositive ||
+                 netType1 == NetTypes.PowerPositive ||
+                 netType1 == NetTypes.PowerNegative) && 
+                 netType2 == NetTypes.Relay)
                 return true;
-            if (netType1 == NetTypes.Relay && (netType2 == NetTypes.ShleifNegative || netType2 == NetTypes.ShleifPositive))
+            if (netType1 == NetTypes.Relay && 
+               (netType2 == NetTypes.ShleifNegative ||
+                netType2 == NetTypes.ShleifPositive ||
+                netType2 == NetTypes.PowerPositive ||
+                netType2 == NetTypes.PowerNegative))
                 return true;
 
             return false;

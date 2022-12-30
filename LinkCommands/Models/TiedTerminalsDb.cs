@@ -113,6 +113,16 @@ namespace LinkCommands.Models
                     new() { "+U","Вых.8" },
                 }
             },
+            { 
+                // Component names
+                new List<string>(){ "С2000-БРИЗ", },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "1", "3", "6", "8" },
+                    new() { "2", "4", "5", "7" },
+                }
+            },
         };
 
         public static IEnumerable<string> GetTiedTerminals(string componentName, string terminalDescription)

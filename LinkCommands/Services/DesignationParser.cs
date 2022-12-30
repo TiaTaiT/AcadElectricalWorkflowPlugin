@@ -25,7 +25,7 @@ namespace LinkCommands.Services
 
         private static readonly List<string> _signals = new()
         {
-            "ШС", "КЦ",
+            "ШС", "КЦ", "Z",
         };
 
         private static readonly List<string> _relays = new()
@@ -274,6 +274,17 @@ namespace LinkCommands.Services
 
             if (TryFindShleif(designationParts, out var indexShleif))
             {
+                //Z1, Z2...
+                if (indexShleif == 0 && designationParts.Count() == 2)
+                {
+                    return new HalfWireDesignation()
+                    {
+                        Appointment = designationParts.ElementAt(indexShleif),
+                        Number = designationParts.ElementAt(indexShleif + 1),
+                        ElectricalType = NetTypes.ShleifPositive,
+                    };
+                }
+
                 //ШС4+, ШС5-, КЦ6-...
                 if (indexShleif == 0 && designationParts.Count() == 3)
                 {
@@ -350,6 +361,17 @@ namespace LinkCommands.Services
                     {
                         Appointment = designationParts.ElementAt(indexRelay),
                         Number = designationParts.ElementAt(indexRelay + 1),
+                        ElectricalType = NetTypes.Relay,
+                    };
+                }
+
+                if (indexRelay == 0 && designationParts.Count() == 3)
+                {
+                    return new HalfWireDesignation()
+                    {
+                        Appointment = designationParts.ElementAt(indexRelay),
+                        Number = designationParts.ElementAt(indexRelay + 1),
+                        Suffix = designationParts.ElementAt(indexRelay + 2),
                         ElectricalType = NetTypes.Relay,
                     };
                 }
@@ -529,7 +551,10 @@ namespace LinkCommands.Services
                     };
                 }
             }
-            return new HalfWireDesignation();
+            return new HalfWireDesignation()
+            {
+                Appointment = string.Join("", designationParts.ToArray()),
+            };
         }
 
         private bool TryFindLadogaRs(IEnumerable<string> designationParts, out int indexLadogaRs)

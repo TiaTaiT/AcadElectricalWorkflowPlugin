@@ -65,11 +65,16 @@ namespace LinkCommands.Services
             IEnumerable<Wire> sourceTiedWires = GetTiedWires(sComponnet, source.Terminal);
             IEnumerable<Wire> destTiedWires = GetTiedWires(dComponnet, destination.Terminal);
 
+            
+            string sourceDescription = source.Terminal.Value;
+            string destinationDescription = destination.Terminal.Value;
+            /*
             if (!sourceTiedWires.Any() && !destTiedWires.Any())
+            {
+                
                 return false;
-
-            string sourceDescription;
-            string destinationDescription;
+            }
+            */
             if (!sourceTiedWires.Any() && destTiedWires.Any())
             {
                 sourceDescription = source.Terminal.Value;
@@ -81,12 +86,13 @@ namespace LinkCommands.Services
                 destinationDescription = destination.Terminal.Value;
                 sourceDescription = GetDescritpion(sourceTiedWires);
             }
+            /*
             else
             {
                 sourceDescription = GetDescritpion(sourceTiedWires);
                 destinationDescription = GetDescritpion(destTiedWires);
             }
-
+            */
             var validator = new ElectricalValidation(new DesignationParser(), _namesConverter)
             {
                 ValidationParameterIsTerminal = sComponnet.IsTerminal || dComponnet.IsTerminal,
