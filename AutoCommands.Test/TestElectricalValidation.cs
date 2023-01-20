@@ -50,6 +50,7 @@ namespace AutoCommands.Test
 
         private List<(string, string)> _validSetTerminal = new()
             {
+                new ("GND", "0В"),
                 new ("ШС16+", "ШС16+"),
                 new ("NO1", "NO1"),
                 new ("0В", "0В"),

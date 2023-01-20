@@ -1,5 +1,6 @@
-﻿using LinkCommands.Interfaces;
-using LinkCommands.Models;
+﻿using CommonHelpers.Interfaces;
+using CommonHelpers.Models;
+using LinkCommands.Interfaces;
 
 namespace LinkCommands.Services
 {
@@ -103,6 +104,9 @@ namespace LinkCommands.Services
                     return true;
                 }
             }
+            if (source.LowerVoltage == destination.LowerVoltage)
+                return true;
+
             return false;
         }
 

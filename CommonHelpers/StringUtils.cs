@@ -34,8 +34,7 @@ namespace CommonHelpers
             var result = new List<string>();
             var numbStr = new StringBuilder();
             var lastChar = '\0';
-            var isChangeStateRequired = false;
-
+            
             for (var i = 0; i < str.Length; i++)
             {
                 if ((result.Count() > 0 || numbStr.Length >= 1) &&

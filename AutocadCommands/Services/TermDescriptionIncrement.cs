@@ -4,9 +4,8 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
-using System;
+using LinkCommands.Services;
 using System.Collections.Generic;
-using System.Text;
 using static System.Int32;
 
 namespace AutocadCommands.Services
@@ -96,60 +95,28 @@ namespace AutocadCommands.Services
         {
             var isMinus = false;
             var counter = startNumber;
+            var parser = new DesignationParser();
 
             foreach (var terminal in terminals)
             {
                 var desc1 = terminal.Description1;
-                if (!desc1.Contains(startSequence)) continue;
+                var designation = parser.GetDesignation(desc1);
 
-                if (startSequence.EndsWith("ШС") ||
-                    startSequence.EndsWith("ШСi") ||
-                    startSequence.EndsWith("КЦ") ||
-                    startSequence.EndsWith("КЦi"))
+                if (!designation.IsShleif) continue;
+                
+                if (!isMinus)
                 {
-                    var insertIndex = desc1.LastIndexOf(startSequence, StringComparison.Ordinal) + startSequence.Length;
-                    if (insertIndex < 0)
-                        return;
-                    var cutStr = desc1.Substring(0, insertIndex);
-                    if (!isMinus)
-                    {
-                        terminal.Description1 = cutStr + counter.ToString() + "+";
-                        isMinus = true; // the next step should be in (isMinus) section
-                    }
-                    else
-                    {
-                        terminal.Description1 = cutStr + counter.ToString() + "-";
-                        isMinus = false; // the next step should be in (!isMinus) section
-                        counter++;
-                    }
+                    designation.Number = counter.ToString();
+                    terminal.Description1 = designation.ToString();
+                    isMinus = true; // the next step should be in (isMinus) section
+                    continue;
                 }
-                else
-                {
-                    var insertIndex = desc1.IndexOf(startSequence, StringComparison.Ordinal) + startSequence.Length;
-                    var desc1WithoutPrefix = desc1.Substring(insertIndex);
-                    var countingNumbStr = GetFirstDigitsNumber(desc1WithoutPrefix);
 
-                    var desc1Suffix = desc1WithoutPrefix.Substring(countingNumbStr.Length);
-
-                    terminal.Description1 = startSequence + counter + desc1Suffix;
-                    counter++;
-                }
+                designation.Number = counter.ToString();
+                terminal.Description1 = designation.ToString();
+                isMinus = false; // the next step should be in (!isMinus) section
+                counter++;                
             }
-        }
-
-        private string GetFirstDigitsNumber(string desc1WithoutPrefix)
-        {
-            var numbStr = new StringBuilder();
-            foreach (var ch in desc1WithoutPrefix)
-            {
-                if (char.IsDigit(ch)) numbStr.Append(ch);
-                else
-                {
-                    break;
-                }
-            }
-
-            return numbStr.ToString();
         }
     }
 }

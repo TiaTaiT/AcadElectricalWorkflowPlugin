@@ -86,13 +86,7 @@ namespace LinkCommands.Services
                 destinationDescription = destination.Terminal.Value;
                 sourceDescription = GetDescritpion(sourceTiedWires);
             }
-            /*
-            else
-            {
-                sourceDescription = GetDescritpion(sourceTiedWires);
-                destinationDescription = GetDescritpion(destTiedWires);
-            }
-            */
+
             var validator = new ElectricalValidation(new DesignationParser(), _namesConverter)
             {
                 ValidationParameterIsTerminal = sComponnet.IsTerminal || dComponnet.IsTerminal,

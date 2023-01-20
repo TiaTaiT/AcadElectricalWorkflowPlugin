@@ -5,6 +5,7 @@ using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
+using CommonHelpers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,10 +17,12 @@ namespace AutocadTerminalsManager.Helpers
 {
     public class InsertDrawing
     {
-        const string _cableDesignation = "CABLEDESIGNATION";
-        const string _cableBrand = "CABLEBRAND";
+        private const string _cableDesignation = "CABLEDESIGNATION";
+        private const string _cableBrand = "CABLEBRAND";        
 
         private string _sourceFile;
+        private bool _isSurgeProtection;
+        private bool _isExplosionProof;
         private IEnumerable<Cable> _cables;
         private Document _doc;
         private Database _currentDb;
@@ -27,10 +30,13 @@ namespace AutocadTerminalsManager.Helpers
         private Database _sourceDb;
         private bool _orthoMode;
 
-        public InsertDrawing(string sourceFile, IEnumerable<Cable> cables)
+        public InsertDrawing(string sourceFile, Assembly assembly)
         {
             _sourceFile = sourceFile;
-            _cables = cables;
+            _isSurgeProtection = assembly.IsSourgeProtection;
+            _isExplosionProof = assembly.IsExplosionProof;
+            _cables = assembly.PerimeterCables;
+
 
             // Get the current document and database
             _doc = Application.DocumentManager.MdiActiveDocument;
@@ -202,6 +208,23 @@ namespace AutocadTerminalsManager.Helpers
                 AttributeHelper.SetAttributes(tr, br.AttributeCollection, obj.Attributes);
             }
 
+            //Replace attributes in fake objects
+            if (_isSurgeProtection)
+            {
+                //Objects with right attributes
+                var terminalObjects =
+                    AttributeHelper.GetObjectsWithAttribute(tr, onlyPrimaryEntities, SharedStrings.TerminalSign);
+
+                ReplaceTerminalsAttributes(terminalObjects);
+                
+                foreach (var terminal in terminalObjects)
+                {
+                    var br = (BlockReference)terminal.Entity;
+                    AttributeHelper.SetAttributes(tr, br.AttributeCollection, terminal.Attributes);
+                }
+            }
+            
+
             var jig = new DragEntitiesJig(onlyPrimaryEntities, new Point3d(0, 0, 0));
             var jigRes = _doc.Editor.Drag(jig);
 
@@ -211,6 +234,22 @@ namespace AutocadTerminalsManager.Helpers
 
             tr.Commit();
             return true;
+        }
+
+        private void ReplaceTerminalsAttributes(IEnumerable<AcadObjectWithAttributes> terminalObjects)
+        {
+            foreach(var terminal in terminalObjects)
+            {
+                if(terminal.Attributes.TryGetValue(SharedStrings.DescriptionTag1, out var descValue))
+                {
+                    var strWithProtection =
+                        SharedStrings.SurgeProtectionCharacters[0] + 
+                        descValue + 
+                        SharedStrings.SurgeProtectionCharacters[1];
+
+                    terminal.Attributes[SharedStrings.DescriptionTag1] = strWithProtection;
+                }
+            }
         }
 
         private ObjectIdCollection GetPrimaryIds(IEnumerable idMap)

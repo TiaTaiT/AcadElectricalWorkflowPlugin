@@ -23,7 +23,8 @@ namespace AutocadTerminalsManager.Model
 
         public PerimeterDevice Device { get; set; }
         public IEnumerable<Cable> PerimeterCables { get; set; }
-
+        public bool IsSourgeProtection { get; set; }
+        public bool IsExplosionProof { get; set; }
 
     }
 }

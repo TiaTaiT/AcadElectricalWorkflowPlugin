@@ -1,4 +1,4 @@
-﻿namespace LinkCommands.Models
+﻿namespace CommonHelpers.Models
 {
     public class HalfWireDesignation : Designation
     {
@@ -10,7 +10,7 @@
         public bool IsPower
         {
             get => (ElectricalType == NetTypes.PowerPositive) ||
-                   (ElectricalType == NetTypes.PowerPositive);
+                   (ElectricalType == NetTypes.PowerNegative);
         }
 
         public bool IsShleif

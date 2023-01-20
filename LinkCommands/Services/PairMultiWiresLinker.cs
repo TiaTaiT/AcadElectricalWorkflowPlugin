@@ -7,6 +7,7 @@ using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
+using LinkCommands.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace LinkCommands.Services
         private ObjectId _sourceLinkSymbolId;
         private ObjectId _destinationLinkSymbolId;
         private ComponentsFactory _componentsFactory;
+        private NetsFactory _netsFactory;
 
         private List<FakeAttribute> GetAttributes(string description, string sigCode)
         {
@@ -134,6 +136,9 @@ namespace LinkCommands.Services
         private void CreateComponentsFactory()
         {
             _componentsFactory = new ComponentsFactory(_db);
+            _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
+            var terminals = _componentsFactory.GetAllTerminalsInComponents();
+            ComponentsWiresTier.CreateElectricalNet(terminals, _netsFactory.Wires);
         }
 
         private void GetExistSourceDestinationSymbols()

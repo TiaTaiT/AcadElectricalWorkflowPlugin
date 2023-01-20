@@ -103,14 +103,14 @@ namespace LinkCommands.Models
                 new List<List<string>>()
                 {
                     // Tied terminals
-                    new() { "+U","Вых.1" },
-                    new() { "+U","Вых.2" },
-                    new() { "+U","Вых.3" },
-                    new() { "+U","Вых.4" },
-                    new() { "+U","Вых.5" },
-                    new() { "+U","Вых.6" },
-                    new() { "+U","Вых.7" },
-                    new() { "+U","Вых.8" },
+                    new() { "+U1","Вых.1" },
+                    new() { "+U1","Вых.2" },
+                    new() { "+U1","Вых.3" },
+                    new() { "+U1","Вых.4" },
+                    new() { "+U1","Вых.5" },
+                    new() { "+U1","Вых.6" },
+                    new() { "+U1","Вых.7" },
+                    new() { "+U1","Вых.8" },
                 }
             },
             { 
@@ -121,6 +121,18 @@ namespace LinkCommands.Models
                     // Tied terminals
                     new() { "1", "3", "6", "8" },
                     new() { "2", "4", "5", "7" },
+                }
+            },
+            { 
+                // Component names
+                new List<string>(){ "БРШС-EX ИСП.2", },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "3", "18" },
+                    new() { "4", "18" },
+                    new() { "5", "16" },
+                    new() { "6", "15" },
                 }
             },
         };

@@ -21,6 +21,17 @@ namespace AutoCommands.Test
 
             // Assert
             CollectionAssert.AreEquivalent(expectedResult, result);
+
+            // Arrange
+            var componentName1 = "БРШС-EX ИСП.2";
+            var terminalDescription1 = "3";
+            var expectedResult1 = new List<string>() { "18" };
+
+            // Act
+            var result1 = TiedTerminalsDb.GetTiedTerminals(componentName1, terminalDescription1).ToList();
+
+            // Assert
+            CollectionAssert.AreEquivalent(expectedResult1, result1);
         }
     }
 }

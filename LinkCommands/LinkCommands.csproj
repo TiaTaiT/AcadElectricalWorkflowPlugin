@@ -97,11 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands.cs" />
-    <Compile Include="Interfaces\IDesignationParser.cs" />
     <Compile Include="Interfaces\INamesConverter.cs" />
     <Compile Include="Models\CompareWire.cs" />
-    <Compile Include="Models\Designation.cs" />
-    <Compile Include="Models\HalfWireDesignation.cs" />
     <Compile Include="Services\ComponentsWiresTier.cs" />
     <Compile Include="Models\ComponentTerminal.cs" />
     <Compile Include="Models\HalfWire.cs" />
@@ -109,14 +106,12 @@
     <Compile Include="Models\LinkStruct.cs" />
     <Compile Include="Models\MultiWire.cs" />
     <Compile Include="Models\HalfMultiWire.cs" />
-    <Compile Include="Models\NetTypes.cs" />
     <Compile Include="Models\ElectricalComponent.cs" />
     <Compile Include="Models\TiedTerminalsDb.cs" />
     <Compile Include="Models\Wire.cs" />
     <Compile Include="Models\HalfWireComparer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ComponentsFactory.cs" />
-    <Compile Include="Services\DesignationParser.cs" />
     <Compile Include="Services\ElectricalComponents.cs" />
     <Compile Include="Services\ElectricalValidation.cs" />
     <Compile Include="Services\HalfWirePairSeeker.cs" />

@@ -1,4 +1,4 @@
-﻿namespace LinkCommands.Models
+﻿namespace CommonHelpers.Models
 {
     public enum NetTypes
     {

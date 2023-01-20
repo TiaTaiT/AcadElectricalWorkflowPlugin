@@ -1,4 +1,5 @@
-﻿using LinkCommands.Models;
+﻿using CommonHelpers.Models;
+using LinkCommands.Models;
 using LinkCommands.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;

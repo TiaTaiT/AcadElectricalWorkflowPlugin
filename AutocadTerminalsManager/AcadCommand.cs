@@ -36,7 +36,7 @@ namespace AutocadTerminalsManager
 
         private static void Run(Assembly assembly)
         {
-            var insertDrawing = new InsertDrawing(assembly.Device.BlockRef, assembly.PerimeterCables);
+            var insertDrawing = new InsertDrawing(assembly.Device.BlockRef, assembly);
             var sourceIds = insertDrawing.GetSourceDrawingIds();
             insertDrawing.PutToTargetDb(sourceIds);
         }

@@ -1,5 +1,5 @@
-﻿using LinkCommands.Interfaces;
-using LinkCommands.Models;
+﻿using CommonHelpers.Models;
+using LinkCommands.Interfaces;
 using System.Collections.Generic;
 
 namespace LinkCommands.Services
@@ -52,7 +52,10 @@ namespace LinkCommands.Services
             if (sourceDesignation.ElectricalType == NetTypes.PowerPositive ||
                 destDesignation.ElectricalType == NetTypes.PowerPositive)
             {
-                return _positiveSign + sourceDesignation.LowerVoltage + sourceDesignation.Appointment + sourceDesignation.Number;
+                var voltage = sourceDesignation.LowerVoltage;
+                if(sourceDesignation.LowerVoltage != destDesignation.UpperVoltage)
+                    voltage = destDesignation.UpperVoltage;
+                return _positiveSign + voltage + sourceDesignation.Appointment + sourceDesignation.Number;
             }
 
             if (sourceDesignation.ElectricalType == NetTypes.PowerNegative ||

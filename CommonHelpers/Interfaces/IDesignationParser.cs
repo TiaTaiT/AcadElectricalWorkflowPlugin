@@ -1,6 +1,6 @@
-﻿using LinkCommands.Models;
+﻿using CommonHelpers.Models;
 
-namespace LinkCommands.Interfaces
+namespace CommonHelpers.Interfaces
 {
     public interface IDesignationParser
     {

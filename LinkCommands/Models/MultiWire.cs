@@ -42,6 +42,20 @@ namespace AutocadCommands.Models
             _destinationHalfWires = separator.Destinations;
         }
 
+        private void CreateLinkedMultiwire()
+        {
+            var db = Application.DocumentManager.MdiActiveDocument.Database;
+            var allWireIds = LinkerHelper.GetAllWiresFromDb(db);
+
+            ConnectedWires = new List<Curve>();
+            ConnectedWires.AddRange(GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds));
+            _sourceHalfWires = GetSortHalfWire();
+
+            ConnectedWires = new List<Curve>();
+            ConnectedWires.AddRange(GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds));
+            _destinationHalfWires = GetSortHalfWire();
+        }
+
         private bool CreateWires()
         {
             var result = false;
@@ -115,20 +129,6 @@ namespace AutocadCommands.Models
             {
                 Debug.WriteLine(sources.ElementAt(i).ShortDescription + " <=> " + destinations.ElementAt(i).ShortDescription);
             }
-        }
-
-        private void CreateLinkedMultiwire()
-        {
-            var db = Application.DocumentManager.MdiActiveDocument.Database;
-            var allWireIds = LinkerHelper.GetAllWiresFromDb(db);
-
-            ConnectedWires = new List<Curve>();
-            ConnectedWires.AddRange(GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds));
-            _sourceHalfWires = GetSortHalfWire();
-
-            ConnectedWires = new List<Curve>();
-            ConnectedWires.AddRange(GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds));
-            _destinationHalfWires = GetSortHalfWire();
         }
 
         private List<HalfWire> GetSortHalfWire()

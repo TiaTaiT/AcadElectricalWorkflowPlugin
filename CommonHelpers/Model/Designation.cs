@@ -1,5 +1,5 @@
 ﻿
-namespace LinkCommands.Models
+namespace CommonHelpers.Models
 {
     public class Designation
     {
@@ -35,6 +35,11 @@ namespace LinkCommands.Models
         public string Suffix { get; set; } = "";
 
         /// <summary>
+        /// Surge protection on signal/power circuits (Round brackets). For example, (7.1ШС12+), (1ШС1-)
+        /// </summary>
+        public bool SurgeProtection { get; set; }
+
+        /// <summary>
         /// Lower voltage
         /// </summary>
         public int LowerVoltage { get; set; }
@@ -47,6 +52,15 @@ namespace LinkCommands.Models
         public NetTypes ElectricalType { get; set; } = NetTypes.Unknown;
 
         public bool IsVoltageRange { get => UpperVoltage != LowerVoltage; }
+
+        public override string ToString()
+        {
+            var designation = Location + Appointment + SparkProtection + Number + Suffix;
+
+            if (SurgeProtection)
+                return "(" + designation + ")";
+            return designation;
+        }
 
         public override bool Equals(object obj)
         {
@@ -64,7 +78,8 @@ namespace LinkCommands.Models
                    Suffix.Equals(testObj.Suffix) &&
                    LowerVoltage == testObj.LowerVoltage &&
                    UpperVoltage == testObj.UpperVoltage &&
-                   ElectricalType == testObj.ElectricalType;
+                   ElectricalType == testObj.ElectricalType &&
+                   SurgeProtection == testObj.SurgeProtection;
         }
 
         public override int GetHashCode()
@@ -84,6 +99,7 @@ namespace LinkCommands.Models
                 // int properties
                 hashCode = (hashCode * 397) ^ LowerVoltage;
                 hashCode = (hashCode * 397) ^ UpperVoltage;
+
 
                 return hashCode;
             }
