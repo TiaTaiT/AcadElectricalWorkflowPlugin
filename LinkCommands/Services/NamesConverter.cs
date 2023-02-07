@@ -53,7 +53,7 @@ namespace LinkCommands.Services
                 destDesignation.ElectricalType == NetTypes.PowerPositive)
             {
                 var voltage = sourceDesignation.LowerVoltage;
-                if(sourceDesignation.LowerVoltage != destDesignation.UpperVoltage)
+                if(sourceDesignation.LowerVoltage != sourceDesignation.UpperVoltage)
                     voltage = destDesignation.UpperVoltage;
                 return _positiveSign + voltage + sourceDesignation.Appointment + sourceDesignation.Number;
             }

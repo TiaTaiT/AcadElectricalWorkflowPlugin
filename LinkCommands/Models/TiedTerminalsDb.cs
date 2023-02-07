@@ -9,7 +9,7 @@ namespace LinkCommands.Models
         {
             { 
                 // Component names
-                new List<string>(){ "УЗЛ-СД-12", "УЗЛ-СД-24" },
+                new List<string>(){ "УЗЛ-СД-12", "УЗЛ-СД-24", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -21,7 +21,7 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "УЗП-12DC/5", "УЗП-24DC/5" },
+                new List<string>(){ "УЗП-12DC/5", "УЗП-24DC/5", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -32,7 +32,14 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "ГИС-К1/12", "ГИС-К1/24", "ГИС-К2/12", "ГИС-К2/24", "ГИС-К3/12", "ГИС-К3/24", },
+                new List<string>(){ "ГИС-К1/12", 
+                                    "ГИС-К1/24", 
+                                    "ГИС-К2/12", 
+                                    "ГИС-К2/24", 
+                                    "ГИС-К3/12", 
+                                    "ГИС-К3/24", 
+                                    "DTNVR EXI", 
+                                    "DTNVR 1/24/1.5/1500", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -42,7 +49,7 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "УЗЛ-И" },
+                new List<string>(){ "УЗЛ-И", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -54,7 +61,7 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "БИБ-02-24", "БИБ-02Р-24С" },
+                new List<string>(){ "БИБ-02-24", "БИБ-02Р-24С", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -65,17 +72,55 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "DTNVR EXI", "DTNVR 1/24/1.5/1500" },
+                new List<string>(){ "БИБ-04-24С", },
                 new List<List<string>>()
                 {
                     // Tied terminals
-                    new() { "1","2" },
-                    new() { "3","4" },
+                    new() { "1","9" },
+                    new() { "2","3","10","11"},
+                    new() { "4","12"},
+                    
+                    new() { "5","13" },
+                    new() { "6","7","14","15"},
+                    new() { "8","16"},
                 }
             },
             { 
                 // Component names
-                new List<string>(){ "DTNVR 2/24/1.5/1500" },
+                new List<string>(){ "БИБ-08-24С", },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "1","17" },
+                    new() { "2","3","18","19"},
+                    new() { "4","20"},
+                    
+                    new() { "5","21" },
+                    new() { "6","7","22","23"},
+                    new() { "8","24"},
+
+                    new() { "9","25" },
+                    new() { "10","11","26","27"},
+                    new() { "12","28"},
+
+                    new() { "13","29" },
+                    new() { "14","15","30","31"},
+                    new() { "16","32"},
+                }
+            },
+            { 
+                // Component names
+                new List<string>(){ "РИФ 24 EXI",  },
+                new List<List<string>>()
+                {
+                    // Tied terminals
+                    new() { "1","3" },
+                    new() { "2","4" },
+                }
+            },
+            { 
+                // Component names
+                new List<string>(){ "DTNVR 2/24/1.5/1500", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -87,7 +132,7 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "РСТ 4П 24/90/0.5 Р" },
+                new List<string>(){ "РСТ 4П 24/90/0.5 Р", },
                 new List<List<string>>()
                 {
                     // Tied terminals
@@ -99,18 +144,18 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "БЗК", "БЗК ИСП.01", "БЗК ИСП.02" },
+                new List<string>(){ "БЗК", "БЗК ИСП.01", "БЗК ИСП.02", },
                 new List<List<string>>()
                 {
                     // Tied terminals
-                    new() { "+U1","Вых.1" },
-                    new() { "+U1","Вых.2" },
-                    new() { "+U1","Вых.3" },
-                    new() { "+U1","Вых.4" },
-                    new() { "+U1","Вых.5" },
-                    new() { "+U1","Вых.6" },
-                    new() { "+U1","Вых.7" },
-                    new() { "+U1","Вых.8" },
+                    new() { "(10-30)В1", "Вых.1" },
+                    new() { "(10-30)В1", "Вых.2" },
+                    new() { "(10-30)В1", "Вых.3" },
+                    new() { "(10-30)В1", "Вых.4" },
+                    new() { "(10-30)В1", "Вых.5" },
+                    new() { "(10-30)В1", "Вых.6" },
+                    new() { "(10-30)В1", "Вых.7" },
+                    new() { "(10-30)В1", "Вых.8" },
                 }
             },
             { 

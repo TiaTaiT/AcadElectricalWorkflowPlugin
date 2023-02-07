@@ -30,7 +30,7 @@ namespace AutocadCommands.Models
             {
                 if (Source == null || Destination == null)
                     return _descritption;
-                return Source.Description.Equals(Destination.Description) ? Source.Description : Description;
+                return Source.Description.Equals(Destination.Description) ? Source.Description : _descritption;
             }
             set => _descritption = value;
         }
