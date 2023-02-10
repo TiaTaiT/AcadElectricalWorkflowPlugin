@@ -120,7 +120,7 @@ namespace LinkCommands.Models
             },
             { 
                 // Component names
-                new List<string>(){ "DTNVR 2/24/1.5/1500", },
+                new List<string>(){ "DTNVR 2/24/1.5/1500", "DTNVR 2/24/0.8 F3G EXI" },
                 new List<List<string>>()
                 {
                     // Tied terminals
