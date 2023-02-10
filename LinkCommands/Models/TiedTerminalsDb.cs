@@ -175,7 +175,7 @@ namespace LinkCommands.Models
                 {
                     // Tied terminals
                     new() { "3", "18" },
-                    new() { "4", "18" },
+                    new() { "4", "17" },
                     new() { "5", "16" },
                     new() { "6", "15" },
                 }
