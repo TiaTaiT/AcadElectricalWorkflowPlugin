@@ -79,7 +79,15 @@ namespace AutocadCommands.Models
                 // To avoid double create of wires 
                 DeleteFoundWires(foundSources, foundDestinations);
             }
-            /*
+
+            result = TieTheReminders();
+
+            return result;
+        }
+
+        private bool TieTheReminders()
+        {
+            var result = false;
             var max = _sourceHalfWires.Count();
 
             if (_sourceHalfWires.Count() > _destinationHalfWires.Count())
@@ -91,7 +99,7 @@ namespace AutocadCommands.Models
                 wire.Create();
                 result = true;
             }
-            */
+
             return result;
         }
 
