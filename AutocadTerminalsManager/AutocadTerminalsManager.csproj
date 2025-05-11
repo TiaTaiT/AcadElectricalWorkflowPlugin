@@ -34,63 +34,17 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AcCoreMgd, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.Core.24.2.0\lib\net47\AcCoreMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcCui, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcCui.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcDbMgd, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.Model.24.2.0\lib\net47\AcDbMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="acdbmgdbrep, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.Model.24.2.0\lib\net47\acdbmgdbrep.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcDx, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcDx.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcMgd, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcMr, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcMr.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcSeamless, Version=24.2.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcSeamless.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcTcMgd, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcTcMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AcWindows, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AcWindows.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AdUIMgd, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AdUIMgd.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AdUiPalettes, Version=24.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AdUiPalettes.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="AdWindows, Version=4.0.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoCAD.NET.24.2.0\lib\net47\AdWindows.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="BrxMgd">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Bricsys\BricsCAD V25 en_US\BrxMgd.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="TD_Mgd">
+      <HintPath>..\..\..\..\..\..\..\Program Files\Bricsys\BricsCAD V25 en_US\TD_Mgd.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcadCommand.cs" />
@@ -109,13 +63,13 @@
     <Compile Include="Services\DragEntitiesJig.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj">
       <Project>{F9908F2A-A3F8-49AD-927D-7D85A471FE63}</Project>
       <Name>CommonHelpers</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,12 +1,11 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using CommonHelpers;
+﻿using CommonHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Exception = System.Exception;
-using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
+
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
 
 namespace AutocadCommands.Services
 {

@@ -1,14 +1,16 @@
 ﻿using AutocadCommands.Helpers;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
 using System.Collections.Generic;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
+using Bricscad.Runtime;
 
 namespace AutocadCommands.Services
 {
     public static class BlockHelper
     {
+        /*
         public static ObjectId InsertElectricalBlock(Point3d insPt, string blockName)
         {
             var blockId = ObjectId.Null;
@@ -36,7 +38,7 @@ namespace AutocadCommands.Services
 
             return blockId;
         }
-
+        */
         public static IEnumerable<ObjectId> EraseBlockIfExist(Database db, Transaction tr, Point3d point3D)
         {
             //var result = false;

@@ -1,5 +1,5 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
+﻿using Teigha.DatabaseServices;
+using Teigha.Geometry;
 
 namespace LinkCommands.Models
 {

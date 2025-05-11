@@ -1,8 +1,5 @@
 ﻿using AutocadCommands.Helpers;
 using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
 using System;
@@ -11,6 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 using Exception = System.Exception;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
+
 
 namespace LinkCommands.Models
 {

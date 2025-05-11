@@ -1,6 +1,7 @@
 ﻿using AutocadTerminalsManager.Helpers;
 using AutocadTerminalsManager.Model;
-using Autodesk.AutoCAD.Runtime;
+
+using Teigha.Runtime;
 
 namespace AutocadTerminalsManager
 {

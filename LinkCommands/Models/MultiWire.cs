@@ -1,14 +1,14 @@
 ﻿using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using LinkCommands.Models;
 using LinkCommands.Services;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
 
 namespace AutocadCommands.Models
 {

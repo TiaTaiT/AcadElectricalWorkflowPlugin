@@ -1,7 +1,7 @@
-﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Runtime;
+﻿using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Runtime;
 
 namespace AutocadTerminalsManager.Helpers
 {
@@ -92,7 +92,7 @@ namespace AutocadTerminalsManager.Helpers
                     tr.Commit();
                 }
             }
-            catch (Autodesk.AutoCAD.Runtime.Exception e)
+            catch (Exception e)
             {
                 doc.Editor.WriteMessage(
                 "\nException: {0}", e.Message

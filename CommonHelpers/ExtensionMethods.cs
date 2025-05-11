@@ -1,8 +1,10 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Runtime;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using AcRx = Autodesk.AutoCAD.Runtime;
+
+using Teigha.DatabaseServices;
+using Teigha.Runtime;
+using AcRx = Teigha.Runtime;
+
 
 namespace CommonHelpers
 {

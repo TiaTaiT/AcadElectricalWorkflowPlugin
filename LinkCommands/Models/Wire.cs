@@ -1,12 +1,14 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using CommonHelpers;
+﻿using CommonHelpers;
 using LinkCommands.Models;
 using LinkCommands.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
+using Bricscad.ApplicationServices;
 
 namespace AutocadCommands.Models
 {
@@ -87,7 +89,7 @@ namespace AutocadCommands.Models
                 var validationResult = electricalValidator.IsConnectionValid(Source.Description, Destination.Description);
                 if (!validationResult)
                 {
-                    Editor ed = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument.Editor;
+                    Editor ed = Application.DocumentManager.MdiActiveDocument.Editor;
                     ed.WriteMessage("\nWarning! " + electricalValidator.ErrorMessage);
                     //Autodesk.AutoCAD.ApplicationServices.Application.ShowAlertDialog(electricalValidator.ErrorMessage);
                 }

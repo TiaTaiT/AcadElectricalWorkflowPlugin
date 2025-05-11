@@ -1,9 +1,10 @@
 ﻿using AutocadTerminalsManager.Model;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
 using System.Collections.Generic;
-using Application = Autodesk.AutoCAD.ApplicationServices.Application;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
 
 namespace AutocadTerminalsManager.Services
 {

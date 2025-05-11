@@ -1,10 +1,11 @@
 ﻿using AutocadCommands.Models;
 using AutocadCommands.Utils;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
 using System.Collections.Generic;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
 
 namespace AutocadCommands.Services
 {

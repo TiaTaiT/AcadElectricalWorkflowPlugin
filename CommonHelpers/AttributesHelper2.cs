@@ -1,5 +1,5 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Application = Autodesk.AutoCAD.ApplicationServices.Core.Application;
+﻿using Teigha.DatabaseServices;
+using Bricscad.ApplicationServices;
 
 namespace CommonHelpers
 {

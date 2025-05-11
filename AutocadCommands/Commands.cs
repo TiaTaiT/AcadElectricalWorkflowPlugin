@@ -1,8 +1,36 @@
 ﻿using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices.Core;
-using Autodesk.AutoCAD.Runtime;
 using System;
 using System.IO;
+
+using Bricscad.ApplicationServices;
+using Teigha.Colors;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
+using Teigha.GraphicsInterface;
+using Teigha.GraphicsSystem;
+using Bricscad.GraphicsSystem;
+using Bricscad.PlottingServices;
+using Bricscad.Runtime;
+using Teigha.Runtime;
+using Bricscad.Windows;
+using Bricscad.Ribbon;
+using Teigha.LayerManager;
+using Teigha.Export_Import; //Bricsys specific
+using Bricscad.Global; //Bricsys specific
+using Bricscad.Quad; //Bricsys specific
+using Bricscad.Internal;
+using Bricscad.Publishing;
+using Teigha.ModelerGeometry; //Bricsys specific
+using Bricscad.Licensing; //Bricsys specific
+using Bricscad.MechanicalComponents; //Bricsys specific
+using Bricscad.Bim; //Bricsys specific
+using Bricscad.DirectModeling; //Bricsys specific
+using Bricscad.Ifc; //Bricsys specific
+using Bricscad.Rhino; //Bricsys specific
+using Bricscad.Civil; //Bricsys specific
+using BricscadApp; //COM
+using BricscadDb; //COM
 
 namespace AutocadCommands
 {
@@ -23,7 +51,7 @@ namespace AutocadCommands
                 tRenumber.Run();
             }
         }
-
+        /*
         // Change the color of the terminals according to their purpose. 
         [CommandMethod("TERMCOLOR", CommandFlags.Modal)]
         public void TerminalsColorAutoReplace()
@@ -44,7 +72,7 @@ namespace AutocadCommands
             }
 
         }
-
+        */
         // Advanced DESC1 increment of terminals
         [CommandMethod("TERMINCREMENT")]
         public void TerminalsDescriptionIncrement()

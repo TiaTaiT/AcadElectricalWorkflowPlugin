@@ -1,16 +1,17 @@
 ﻿using AutocadCommands.Helpers;
 using AutocadCommands.Models;
 using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
 using LinkCommands.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
 
 namespace LinkCommands.Services
 {

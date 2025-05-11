@@ -1,8 +1,9 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.GraphicsInterface;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
+using Teigha.Geometry;
+using Teigha.GraphicsInterface;
 
 namespace AutocadTerminalsManager.Services
 {

@@ -1,6 +1,4 @@
 ﻿using AutocadCommands.Helpers;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using LinkCommands.Models;
 using System;
@@ -9,6 +7,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
 
 namespace LinkCommands.Services
 {

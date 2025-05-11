@@ -1,4 +1,4 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
+﻿using Teigha.DatabaseServices;
 
 namespace CommonHelpers
 {

@@ -1,10 +1,11 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
-using Autodesk.AutoCAD.Runtime;
-using CommonHelpers.Model;
+﻿using CommonHelpers.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
+using Teigha.Runtime;
 
 namespace CommonHelpers
 {

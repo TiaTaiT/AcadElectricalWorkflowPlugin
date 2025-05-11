@@ -1,11 +1,12 @@
 ﻿using AutocadTerminalsManager.Model;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
 using CommonHelpers;
 using CommonHelpers.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
+using Teigha.DatabaseServices;
+using Teigha.Geometry;
 
 namespace AutocadCommands.Helpers
 {
@@ -204,8 +205,6 @@ namespace AutocadCommands.Helpers
             var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
             foreach (var blkRef in blockRefs)
             {
-
-
                 if (blkRef.IsErased) continue;
 
                 if (blkRef.AttributeCollection.Count == 0) continue;
@@ -216,6 +215,29 @@ namespace AutocadCommands.Helpers
                 {
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
                     if (attrRef.Tag.StartsWith(attributeTag))
+                    {
+                        yield return blkRef;
+                        break;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<BlockReference> GetObjectsWithAttributeAndLayer(Database db, string attributeTag, string layer)
+        {
+            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
+            foreach (var blkRef in blockRefs)
+            {
+                if (blkRef.IsErased) continue;
+
+                if (blkRef.AttributeCollection.Count == 0) continue;
+
+                var attributes = blkRef.AttributeCollection;
+
+                foreach (ObjectId attrId in attributes)
+                {
+                    var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
+                    if (attrRef.Tag.StartsWith(attributeTag) && attrRef.Layer.Equals(layer))
                     {
                         yield return blkRef;
                         break;

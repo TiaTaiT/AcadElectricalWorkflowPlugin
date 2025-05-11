@@ -1,4 +1,4 @@
-﻿using Autodesk.AutoCAD.Geometry;
+﻿using Teigha.Geometry;
 
 namespace AutocadTerminalsManager.Model
 {

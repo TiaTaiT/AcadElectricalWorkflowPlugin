@@ -1,10 +1,11 @@
 ﻿using AutocadCommands.Helpers;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
 using System;
 using System.Collections.Generic;
+
+using Bricscad.ApplicationServices;
+using Teigha.DatabaseServices;
+using Bricscad.EditorInput;
 
 namespace AutocadCommands.Services
 {
@@ -75,12 +76,13 @@ namespace AutocadCommands.Services
                 blockRef.Erase();
 
                 // Insert the new terminal in place of the old one.
-                var newTerminalId = BlockHelper.InsertElectricalBlock(position, colorName);
+                /*var newTerminalId = BlockHelper.InsertElectricalBlock(position, colorName);
                 if (newTerminalId.IsNull)
                     return;
 
                 // Write the attributes of the old terminal to the new one. 
                 TerminalsHelper.SetTerminal(acTrans, newTerminalId, terminal);
+                */
             }
 
             acTrans.Commit();

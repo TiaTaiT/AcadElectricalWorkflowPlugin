@@ -1,5 +1,5 @@
-﻿using Autodesk.AutoCAD.DatabaseServices;
-using Autodesk.AutoCAD.Geometry;
+﻿using Teigha.DatabaseServices;
+using Teigha.Geometry;
 using CommonHelpers;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,7 +1,8 @@
 ﻿using AutocadCommands.Services;
-using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.EditorInput;
 using CommonHelpers;
+
+using Bricscad.ApplicationServices;
+using Bricscad.EditorInput;
 
 namespace LinkCommands.Services
 {
