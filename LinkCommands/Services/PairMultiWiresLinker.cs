@@ -15,19 +15,19 @@ using Teigha.Geometry;
 
 namespace LinkCommands.Services
 {
-    internal class PairMultiWiresLinker : CommandPrototype
+    internal class PairMultiWiresLinker(Document doc) : CommandPrototype(doc)
     {
-        private List<Curve> _sourceMultiwireEntities = new();
-        private List<Curve> _destinationMultiwireEntities = new();
+        private List<Curve> _sourceMultiwireEntities = [];
+        private List<Curve> _destinationMultiwireEntities = [];
 
         private Curve _selectedSourceLine;
         private Curve _selectedDestinationLine;
 
-        private List<string> _existedSigCodes = new();
+        private readonly List<string> _existedSigCodes = [];
 
-        private List<ObjectId> _sourceLinkSymbols = new();
-        private List<ObjectId> _destinationLinkSymbols = new();
-        private List<(ObjectId, ObjectId)> _sourceDestinationLinkSymbols = new();
+        private readonly List<ObjectId> _sourceLinkSymbols = [];
+        private readonly List<ObjectId> _destinationLinkSymbols = [];
+        private readonly List<(ObjectId, ObjectId)> _sourceDestinationLinkSymbols = [];
 
 
         private ObjectId _sourceLinkSymbolId;
@@ -37,21 +37,17 @@ namespace LinkCommands.Services
 
         private List<FakeAttribute> GetAttributes(string description, string sigCode)
         {
-            return new List<FakeAttribute>
-            {
-                new FakeAttribute{Tag = "X8_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2TERM02", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2TERM01", Layer = "MISC"},
-                new FakeAttribute{Tag = "SIGCODE", Value = sigCode, Layer = "MISC"},
-                new FakeAttribute{Tag = "XREF", Value = "", Layer = "XREF"},
-                new FakeAttribute{Tag = "DESC1", Value = description, Layer = "DESC"},
-                new FakeAttribute{Tag = "WIRENO", Value = "", Layer = "WIREREF"}
-            };
-        }
-
-        public PairMultiWiresLinker(Document doc) : base(doc)
-        {
+            return
+            [
+                new() {Tag = "X8_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
+                new() {Tag = "X2_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
+                new() {Tag = "X2TERM02", Layer = "MISC"},
+                new() {Tag = "X2TERM01", Layer = "MISC"},
+                new() {Tag = "SIGCODE", Value = sigCode, Layer = "MISC"},
+                new() {Tag = "XREF", Value = "", Layer = "XREF"},
+                new() {Tag = "DESC1", Value = description, Layer = "DESC"},
+                new() {Tag = "WIRENO", Value = "", Layer = "WIREREF"}
+            ];
         }
 
         public override bool Init()
@@ -70,12 +66,11 @@ namespace LinkCommands.Services
             if (selectionBlock1.ObjectId == null)
                 return false;
 
-            using (var tr = _db.TransactionManager.StartTransaction())
-            {
-                _selectedSourceLine = (Curve)selectionBlock1.ObjectId.GetObject(OpenMode.ForRead);
-                _sourceMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _selectedSourceLine, Layers.MultiWires).ToList();
-                HighlightObjects(_sourceMultiwireEntities);
-            }
+
+            _selectedSourceLine = (Curve)selectionBlock1.ObjectId.GetObject(OpenMode.ForRead);
+            _sourceMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _tr, _selectedSourceLine, Layers.MultiWires).ToList();
+            HighlightObjects(_sourceMultiwireEntities);
+
 
             var options2 = new PromptEntityOptions("\nSelect destination line: ");
             options2.SetRejectMessage("\nSelected object is no a line.");
@@ -88,56 +83,49 @@ namespace LinkCommands.Services
             if (selectionBlock2.ObjectId == null)
                 return false;
 
-            using (var tr = _db.TransactionManager.StartTransaction())
-            {
-                _selectedDestinationLine = (Curve)selectionBlock2.ObjectId.GetObject(OpenMode.ForRead);
-                _destinationMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _selectedDestinationLine, Layers.MultiWires).ToList();
-                HighlightObjects(_destinationMultiwireEntities);
-            }
+            _selectedDestinationLine = (Curve)selectionBlock2.ObjectId.GetObject(OpenMode.ForRead);
+            _destinationMultiwireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _tr, _selectedDestinationLine, Layers.MultiWires).ToList();
+            HighlightObjects(_destinationMultiwireEntities);
 
             return _sourceMultiwireEntities.Any() && _destinationMultiwireEntities.Any();
         }
 
         public override void Run()
         {
-            using var tr = _db.TransactionManager.StartTransaction();
-
             _db.TransactionManager.QueueForGraphicsFlush();
 
             GetExistSourceDestinationSymbols();
 
-            var linkEndSourcePoints = GetZeroEndPoints(tr, _selectedSourceLine);
+            var linkEndSourcePoints = GetZeroEndPoints(_selectedSourceLine);
             var sourceSymbolPoint = linkEndSourcePoints.Item1;
             var sourceEndPoint = linkEndSourcePoints.Item2;
 
-            var linkEndDestinationPoints = GetZeroEndPoints(tr, _selectedDestinationLine);
+            var linkEndDestinationPoints = GetZeroEndPoints(_selectedDestinationLine);
             var destinationSymbolPoint = linkEndDestinationPoints.Item1;
             var destinationEndPoint = linkEndDestinationPoints.Item2;
 
             _ed.WriteMessage("Remove links count: " + _existedSigCodes.Count());
 
-            var erasedSymbols = EraseUnpairSymbols(tr).ToList();
+            var erasedSymbols = EraseUnpairSymbols().ToList();
 
-            erasedSymbols.AddRange(BlockHelper.EraseBlockIfExist(_db, tr, sourceSymbolPoint));
+            erasedSymbols.AddRange(BlockHelper.EraseBlockIfExist(_db, _tr, sourceSymbolPoint));
 
-            erasedSymbols.AddRange(BlockHelper.EraseBlockIfExist(_db, tr, destinationSymbolPoint));
+            erasedSymbols.AddRange(BlockHelper.EraseBlockIfExist(_db, _tr, destinationSymbolPoint));
 
             RemoveSourceDestination(erasedSymbols);
 
-            InsertSourceDestinationLinkSymbols(tr, sourceSymbolPoint, sourceEndPoint, destinationSymbolPoint, destinationEndPoint);
+            InsertSourceDestinationLinkSymbols(sourceSymbolPoint, sourceEndPoint, destinationSymbolPoint, destinationEndPoint);
 
             GenerateMultiwire();
 
             UnhighlightObjects(_sourceMultiwireEntities);
             UnhighlightObjects(_destinationMultiwireEntities);
-
-            tr.Commit();
         }
 
         private void CreateComponentsFactory()
         {
-            _componentsFactory = new ComponentsFactory(_db);
-            _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
+            _componentsFactory = new ComponentsFactory(_db, _tr);
+            _netsFactory = new NetsFactory(_db, _tr, _componentsFactory.GetTerminalPoints());
             var terminals = _componentsFactory.GetAllTerminalsInComponents();
             ComponentsWiresTier.CreateElectricalNet(terminals, _netsFactory.Wires);
         }
@@ -145,10 +133,10 @@ namespace LinkCommands.Services
         private void GetExistSourceDestinationSymbols()
         {
             var sourceNames = LinkSymbolNameResolver.GetSourceSymbolNames();
-            _sourceLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, sourceNames));
+            _sourceLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, _tr, sourceNames));
 
             var destinationNames = LinkSymbolNameResolver.GetSourceSymbolNames();
-            _destinationLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, destinationNames));
+            _destinationLinkSymbols.AddRange(GetObjectsUtils.GetBlockIdsByNames(_db, _tr, destinationNames));
         }
 
         private void GenerateMultiwire()
@@ -157,7 +145,9 @@ namespace LinkCommands.Services
             var destinationSymbolEntity = (Entity)_destinationLinkSymbolId.GetObject(OpenMode.ForRead);
 
             var multiwire =
-                new MultiWire(_sourceMultiwireEntities,
+                new MultiWire(_db,
+                              _tr,
+                              _sourceMultiwireEntities,
                               sourceSymbolEntity,
                               _destinationMultiwireEntities,
                               destinationSymbolEntity,
@@ -165,7 +155,7 @@ namespace LinkCommands.Services
             multiwire.Create();
         }
 
-        private void InsertSourceDestinationLinkSymbols(Transaction tr, Point3d sourceSymbolPoint, Point3d sourceEndPoint, Point3d destinationSymbolPoint, Point3d destinationEndPoint)
+        private void InsertSourceDestinationLinkSymbols(Point3d sourceSymbolPoint, Point3d sourceEndPoint, Point3d destinationSymbolPoint, Point3d destinationEndPoint)
         {
             var sourceDirection = GeometryFunc.GetDirection(sourceSymbolPoint, sourceEndPoint);
             var destinationDirection = GeometryFunc.GetDirection(destinationSymbolPoint, destinationEndPoint);
@@ -175,7 +165,7 @@ namespace LinkCommands.Services
             var destinationSymbolName = LinkSymbolNameResolver.GetDestinationName(destinationDirection,
                 LinkSymbolNameResolver._symbolTypeWave);
 
-            var description = GetFirstFreeNumber(tr).ToString();
+            var description = GetFirstFreeNumber().ToString();
             var newSigCode = Guid.NewGuid().ToString();
 
             var attributes = GetAttributes(description, newSigCode);
@@ -186,13 +176,13 @@ namespace LinkCommands.Services
 
 
 
-        private IEnumerable<ObjectId> EraseUnpairSymbols(Transaction tr)
+        private IEnumerable<ObjectId> EraseUnpairSymbols()
         {
             // We must not leave unpaired link symbols
             var erasedList = new List<ObjectId>();
             foreach (var sigCode in _existedSigCodes)
             {
-                erasedList.AddRange(BlockHelper.EraseBlocksWithAttribute(_db, tr, "SIGCODE", sigCode));
+                erasedList.AddRange(BlockHelper.EraseBlocksWithAttribute(_db, _tr, "SIGCODE", sigCode));
             }
             return erasedList;
         }
@@ -206,7 +196,7 @@ namespace LinkCommands.Services
             }
         }
 
-        private (Point3d, Point3d) GetZeroEndPoints(Transaction acTrans, Curve selectedMultiwirePart)
+        private (Point3d, Point3d) GetZeroEndPoints(Curve selectedMultiwirePart)
         {
             var startPoint = selectedMultiwirePart.StartPoint;
             var endPoint = selectedMultiwirePart.EndPoint;
@@ -222,12 +212,12 @@ namespace LinkCommands.Services
                     var symbolBlkRef = (BlockReference)symbolId.GetObject(OpenMode.ForRead);
                     if (symbolBlkRef.Position.Equals(startPoint))
                     {
-                        _existedSigCodes.Add(AttributeHelper.GetAttributeValueFromBlock(acTrans, symbolId, "SIGCODE"));
+                        _existedSigCodes.Add(AttributeHelper.GetAttributeValueFromBlock(_tr, symbolId, "SIGCODE"));
                         return (startPoint, endPoint);
                     }
                     if (symbolBlkRef.Position.Equals(endPoint))
                     {
-                        _existedSigCodes.Add(AttributeHelper.GetAttributeValueFromBlock(acTrans, symbolId, "SIGCODE"));
+                        _existedSigCodes.Add(AttributeHelper.GetAttributeValueFromBlock(_tr, symbolId, "SIGCODE"));
                         return (endPoint, startPoint);
                     }
                 }
@@ -240,7 +230,7 @@ namespace LinkCommands.Services
             if ((_sourceMultiwireEntities.Count() == 1 && _sourceMultiwireEntities.Contains(selectedMultiwirePart))
                 || (_destinationMultiwireEntities.Count() == 1 && _destinationMultiwireEntities.Contains(selectedMultiwirePart)))
             {
-                var wires = LinkerHelper.GetAllWiresFromDb(_db);
+                var wires = LinkerHelper.GetAllWiresFromDb(_db, _tr);
                 foreach (var wire in wires)
                 {
                     if (wire.StartPoint.Equals(selectedMultiwirePart.StartPoint) ||
@@ -300,12 +290,12 @@ namespace LinkCommands.Services
             }
         }
 
-        private int GetFirstFreeNumber(Transaction tr)
+        private int GetFirstFreeNumber()
         {
             var existedDescriptions = new SortedSet<int>();
             foreach (var symbolId in _sourceLinkSymbols)
             {
-                var description = AttributeHelper.GetAttributeValueFromBlock(tr, symbolId, "DESC1");
+                var description = AttributeHelper.GetAttributeValueFromBlock(_tr, symbolId, "DESC1");
 
                 if (int.TryParse(description, out var number))
                 {

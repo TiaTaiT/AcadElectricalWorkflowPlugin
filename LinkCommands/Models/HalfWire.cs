@@ -18,8 +18,9 @@ namespace LinkCommands.Models
 {
     public class HalfWire
     {
-        private Database _db;
-        private Direction _direction;
+        private readonly Database _db;
+        private readonly Transaction _tr;
+        private readonly Direction _direction;
 
         private string GetShortAttributeMultiwireConnected(string blockName)
         {
@@ -51,12 +52,11 @@ namespace LinkCommands.Models
 
         private Point3d GetMultiWirePoint(ObjectId LinkSimbolId)
         {
-            using var tr = _db.TransactionManager.StartTransaction();
-            var blockRef = (BlockReference)tr.GetObject(LinkSimbolId, OpenMode.ForRead);
+            var blockRef = (BlockReference)_tr.GetObject(LinkSimbolId, OpenMode.ForRead);
             var attributes = blockRef.AttributeCollection;
             foreach (ObjectId attributeId in attributes)
             {
-                AttributeReference attRef = (AttributeReference)tr.GetObject(attributeId, OpenMode.ForWrite);
+                AttributeReference attRef = (AttributeReference)_tr.GetObject(attributeId, OpenMode.ForWrite);
                 var tagStartSymbols = GetShortAttributeMultiwireConnected(blockRef.Name);
                 if (attRef.Tag.ToUpper().StartsWith(tagStartSymbols))
                 {
@@ -102,17 +102,17 @@ namespace LinkCommands.Models
 
         private List<FakeAttribute> GetAttributes()
         {
-            return new List<FakeAttribute>
-            {
-                new FakeAttribute{Tag = "X8_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2TERM02", Layer = "MISC"},
-                new FakeAttribute{Tag = "X2TERM01", Layer = "MISC"},
-                new FakeAttribute{Tag = "SIGCODE", Value = SigCode, Layer = "MISC"},
-                new FakeAttribute{Tag = "XREF", Value = "", Layer = "XREF"},
-                new FakeAttribute{Tag = "DESC1", Value = ShortDescription, Layer = "DESC"},
-                new FakeAttribute{Tag = "WIRENO", Value = "", Layer = "WIREREF"}
-            };
+            return
+            [
+                new() {Tag = "X8_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
+                new() {Tag = "X2_TINY_DOT_DONT_REMOVE", Layer = "MISC"},
+                new() {Tag = "X2TERM02", Layer = "MISC"},
+                new() {Tag = "X2TERM01", Layer = "MISC"},
+                new() {Tag = "SIGCODE", Value = SigCode, Layer = "MISC"},
+                new() {Tag = "XREF", Value = "", Layer = "XREF"},
+                new() {Tag = "DESC1", Value = ShortDescription, Layer = "DESC"},
+                new() {Tag = "WIRENO", Value = "", Layer = "WIREREF"}
+            ];
         }
 
         private string GetSourceSymbolBlockName()
@@ -152,8 +152,7 @@ namespace LinkCommands.Models
                 LinkStruct.Up.SourceBlockName,
                 LinkStruct.Up.DestinationBlockName
             };
-            var blockRefIds = GetObjectsUtils.GetBlockIdsByNames(_db, strings);
-            using var tr = _db.TransactionManager.StartTransaction();
+            var blockRefIds = GetObjectsUtils.GetBlockIdsByNames(_db, _tr, strings);
 
             foreach (var blkRefId in blockRefIds)
             {
@@ -180,8 +179,7 @@ namespace LinkCommands.Models
             var success = TryGetExistingLinkSymbol(WireEntity, out var existingLinkSymbolId);
             if (success)
             {
-                using var acadTr = _db.TransactionManager.TopTransaction;
-                var result = AttributeHelper.SetBlockFakeAttributes(acadTr, existingLinkSymbolId, attributes);
+                var result = AttributeHelper.SetBlockFakeAttributes(_tr, existingLinkSymbolId, attributes);
                 //Debug.WriteLine("Ids = " + existingLinkSymbolId.ToString());
             }
             else
@@ -203,8 +201,9 @@ namespace LinkCommands.Models
 
         public Point3d PointConnectedToMultiWire { get; set; }
 
-        public HalfWire(IEnumerable<Curve> curves, Link link)
+        public HalfWire(Transaction tr, IEnumerable<Curve> curves, Link link)
         {
+            _tr = tr;
             Curves = curves;
             PointLinkAttachedToWire = link.WireConnectionPoint;
             Description = link.Description;
@@ -212,8 +211,9 @@ namespace LinkCommands.Models
             LinkSymbol = link.Reference;
         }
 
-        public HalfWire(Entity wireEntity, IEnumerable<ElectricalComponent> components)
+        public HalfWire(Transaction tr, Entity wireEntity, IEnumerable<ElectricalComponent> components)
         {
+            _tr = tr;
             if (wireEntity == null)
                 return;
 
@@ -224,7 +224,7 @@ namespace LinkCommands.Models
             _db = Application.DocumentManager.MdiActiveDocument.Database;
             Tolerance.Global = new Tolerance(1e-8, 1e-1);
 
-            var wireEntities = GeometryFunc.GetAllConjugatedCurves(_db, (Curve)wireEntity, Layers.Wires);
+            var wireEntities = GeometryFunc.GetAllConjugatedCurves(_db, _tr, (Curve)wireEntity, Layers.Wires);
 
             SetWireMultiwireCross((Curve)WireEntity);
 
@@ -283,9 +283,9 @@ namespace LinkCommands.Models
         public void SetWireMultiwireCross(Curve wireEntity)
         {
             var multiWires = new List<Curve>();
-            multiWires.AddRange(GetObjectsUtils.GetObjects<Polyline>(_db, Layers.MultiWires));
+            multiWires.AddRange(GetObjectsUtils.GetObjects<Polyline>(_db, _tr, Layers.MultiWires));
 
-            multiWires.AddRange(GetObjectsUtils.GetObjects<Line>(_db, Layers.MultiWires));
+            multiWires.AddRange(GetObjectsUtils.GetObjects<Line>(_db, _tr, Layers.MultiWires));
 
             if (multiWires == null || multiWires.Count() == 0)
             {

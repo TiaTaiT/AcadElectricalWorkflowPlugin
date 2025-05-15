@@ -5,24 +5,21 @@ namespace CommonHelpers
 {
     public static class AttributesHelper2
     {
-        public static void UpdateAttributesByBlockName(Database db, string blockName, string attbName, string attbValue)
+        public static void UpdateAttributesByBlockName(Database db, Transaction tr, string blockName, string attbName, string attbValue)
         {
             var doc = Application.DocumentManager.MdiActiveDocument;
             var ed = doc.Editor;
             // Get the IDs of the spaces we want to process
             // and simply call a function to process each
             ObjectId msId, psId;
-            var tr = db.TransactionManager.StartTransaction();
-            using (tr)
-            {
-                var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
-                msId = bt[BlockTableRecord.ModelSpace];
-                psId = bt[BlockTableRecord.PaperSpace];
-                // Not needed, but quicker than aborting
-                tr.Commit();
-            }
-            UpdateAttributesInBlock(msId, blockName, attbName, attbValue);
-            UpdateAttributesInBlock(psId, blockName, attbName, attbValue);
+
+            var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+            msId = bt[BlockTableRecord.ModelSpace];
+            psId = bt[BlockTableRecord.PaperSpace];
+            // Not needed, but quicker than aborting
+
+            UpdateAttributesInBlock(tr, msId, blockName, attbName, attbValue);
+            UpdateAttributesInBlock(tr, psId, blockName, attbName, attbValue);
             //ed.Regen();
             // Display the results
             /*
@@ -32,13 +29,10 @@ namespace CommonHelpers
 			*/
         }
 
-        private static void UpdateAttributesInBlock(ObjectId btrId, string blockName, string attbName, string attbValue)
+        private static void UpdateAttributesInBlock(Transaction tr, ObjectId btrId, string blockName, string attbName, string attbValue)
         {
             // Will return the number of attributes modified
             var changedCount = 0;
-            var doc = Application.DocumentManager.MdiActiveDocument;
-
-            using var tr = doc.TransactionManager.StartTransaction();
 
             var btr = (BlockTableRecord)tr.GetObject(btrId, OpenMode.ForRead);
             // Test each entity in the container...
@@ -71,7 +65,6 @@ namespace CommonHelpers
                 // Recurse for nested blocks
                 //changedCount += UpdateAttributesInBlock(br.BlockTableRecord, blockName, attbName, attbValue);
             }
-            tr.Commit();
             //return changedCount;
         }
     }

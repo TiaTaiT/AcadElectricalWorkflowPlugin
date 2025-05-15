@@ -92,43 +92,35 @@ namespace AutocadCommands.Services
 
         private void SaveChanges(List<AcadObjectWithAttributes> loppedObjects)
         {
-            using var acTrans = _db.TransactionManager.StartTransaction();
             foreach (var loppedObject in loppedObjects)
             {
                 var blockId = loppedObject.GetId;
-                AttributeHelper.SetBlockAttributes(acTrans, blockId, loppedObject.Attributes);
+                AttributeHelper.SetBlockAttributes(_tr, blockId, loppedObject.Attributes);
             }
-
-            acTrans.Commit();
         }
 
         private List<AcadObjectWithAttributes> GetFakeAcadObjectsCollection(ObjectIdCollection objIds)
         {
             var fakeAcadObjects = new List<AcadObjectWithAttributes>();
-            using (var acTrans = _db.TransactionManager.StartTransaction())
+
+
+            foreach (ObjectId blkId in objIds)
             {
+                //var attrValue = AttributeHelper.GetAttributeValueFromBlock(acTrans, blkId, _attributeName);
+                var entity = (Entity)_tr.GetObject(blkId, OpenMode.ForRead);
+                var blockRef = (BlockReference)entity;
+                var attrCol = blockRef.AttributeCollection;
 
-
-                foreach (ObjectId blkId in objIds)
+                fakeAcadObjects.Add(new AcadObjectWithAttributes
                 {
-                    //var attrValue = AttributeHelper.GetAttributeValueFromBlock(acTrans, blkId, _attributeName);
-                    var entity = (Entity)acTrans.GetObject(blkId, OpenMode.ForRead);
-                    var blockRef = (BlockReference)entity;
-                    var attrCol = blockRef.AttributeCollection;
-
-                    fakeAcadObjects.Add(new AcadObjectWithAttributes
-                    {
-                        Entity = entity,
-                        Attributes = AttributeHelper.GetAttributes(acTrans, attrCol),
-                        PositionX = blockRef.Position.X,
-                        PositionY = blockRef.Position.Y,
-                        PositionZ = blockRef.Position.Z
-                    });
-                }
-
-                acTrans.Commit();
-
+                    Entity = entity,
+                    Attributes = AttributeHelper.GetAttributes(_tr, attrCol),
+                    PositionX = blockRef.Position.X,
+                    PositionY = blockRef.Position.Y,
+                    PositionZ = blockRef.Position.Z
+                });
             }
+
             return fakeAcadObjects;
         }
 

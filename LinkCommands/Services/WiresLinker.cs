@@ -76,7 +76,7 @@ namespace AutocadCommands.Services
         private void CreateComponentsFactory()
         {
             using var tr = _db.TransactionManager.StartTransaction();
-            _componentsFactory = new ComponentsFactory(_db);
+            _componentsFactory = new ComponentsFactory(_db, _tr);
             tr.Dispose();
         }
 
@@ -100,7 +100,8 @@ namespace AutocadCommands.Services
             using var tr = _db.TransactionManager.StartTransaction();
             for (var i = 0; i < _sourceDestPairIds.Count(); i++)
             {
-                var wire = new Wire(_sourceDestPairIds[i].Item1,
+                var wire = new Wire(_tr, 
+                                    _sourceDestPairIds[i].Item1,
                                     _sourceDestPairIds[i].Item2,
                                     _componentsFactory.Components);
                 wire.Create();

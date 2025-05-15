@@ -32,7 +32,7 @@ namespace RenumberCommands.Services
             
 
                 var blkRefsWithNoFixedTag = 
-                    AttributeHelper.GetObjectsWithAttributeAndLayer(_db, _tagNamePreffix, Layers.Tags);
+                    AttributeHelper.GetObjectsWithAttributeAndLayer(_db, _tr, _tagNamePreffix, Layers.Tags);
                 // blkRefsWithNoFixedTag contains terminals, because of they contain "TAGSTRIP" attribute
                 // we need to remove terminals
                 var blkRefsWithTagsOnly = getBlocksWithNoFixedTag(blkRefsWithNoFixedTag);

@@ -105,13 +105,14 @@ namespace AutocadCommands.Services
         /// Get all existed wires from database (lines on wires-layer)
         /// </summary>
         /// <param name="db">Autocad draft database</param>
+        /// <param name="tr">Autocad opened trasaction</param>
         /// <returns>collection with curves</returns>
-        public static IEnumerable<Curve> GetAllWiresFromDb(Database db)
+        public static IEnumerable<Curve> GetAllWiresFromDb(Database db, Transaction tr)
         {
             var allWireCurves = new List<Curve>();
             // Get all lines and lwpolylines
-            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Line>(db, Layers.Wires));
-            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Polyline>(db, Layers.Wires).ToList());
+            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Line>(db, tr, Layers.Wires));
+            allWireCurves.AddRange(GetObjectsUtils.GetObjects<Polyline>(db, tr, Layers.Wires).ToList());
             return allWireCurves;
         }
     }

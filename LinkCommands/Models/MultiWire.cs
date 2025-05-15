@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using Bricscad.ApplicationServices;
 using Teigha.DatabaseServices;
 using Teigha.Geometry;
 
@@ -17,9 +16,10 @@ namespace AutocadCommands.Models
         private List<Curve> ConnectedWires;
         private List<HalfWire> _sourceHalfWires = new();
         private List<HalfWire> _destinationHalfWires = new();
-        private List<Wire> _wires = new();
         private IEnumerable<Curve> _allWires;
         private IEnumerable<ElectricalComponent> _components;
+        private readonly Database _db;
+        private readonly Transaction _tr;
 
         private void CreateMultiwire()
         {
@@ -44,15 +44,12 @@ namespace AutocadCommands.Models
 
         private void CreateLinkedMultiwire()
         {
-            var db = Application.DocumentManager.MdiActiveDocument.Database;
-            var allWireIds = LinkerHelper.GetAllWiresFromDb(db);
+            var allWireIds = LinkerHelper.GetAllWiresFromDb(_db, _tr);
 
-            ConnectedWires = new List<Curve>();
-            ConnectedWires.AddRange(GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds));
+            ConnectedWires = [.. GetConnectedWires(Source.WireSegments.Cast<Line>(), allWireIds)];
             _sourceHalfWires = GetSortHalfWire();
 
-            ConnectedWires = new List<Curve>();
-            ConnectedWires.AddRange(GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds));
+            ConnectedWires = [.. GetConnectedWires(Destination.WireSegments.Cast<Line>(), allWireIds)];
             _destinationHalfWires = GetSortHalfWire();
         }
 
@@ -95,7 +92,7 @@ namespace AutocadCommands.Models
 
             for (var i = 0; i < max; i++)
             {
-                var wire = new Wire(_sourceHalfWires[i], _destinationHalfWires[i], _components);
+                var wire = new Wire(_tr, _sourceHalfWires[i], _destinationHalfWires[i], _components);
                 wire.Create();
                 result = true;
             }
@@ -122,7 +119,7 @@ namespace AutocadCommands.Models
 
             for (var i = 0; i < sources.Count(); i++)
             {
-                var wire = new Wire(sources.ElementAt(i), destination.ElementAt(i), _components);
+                var wire = new Wire(_tr, sources.ElementAt(i), destination.ElementAt(i), _components);
                 wire.Create();
             }
 
@@ -145,7 +142,7 @@ namespace AutocadCommands.Models
 
             foreach (var wire in ConnectedWires)
             {
-                connectedToMultiwireWires.Add(new HalfWire(wire, _components));
+                connectedToMultiwireWires.Add(new HalfWire(_tr, wire, _components));
             }
             connectedToMultiwireWires.Sort(new HalfWireComparer());
             return connectedToMultiwireWires;
@@ -169,22 +166,27 @@ namespace AutocadCommands.Models
         }
 
         #region Constructors
-        public MultiWire(Polyline polyLine, IEnumerable<ElectricalComponent> components)
+        public MultiWire(Database db, Transaction tr, Polyline polyLine, IEnumerable<ElectricalComponent> components)
         {
             _components = components;
             Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Multiwire = polyLine;
-            var db = Application.DocumentManager.MdiActiveDocument.Database;
-            _allWires = LinkerHelper.GetAllWiresFromDb(db);
+            _db = db;
+            _tr = tr;
+            _allWires = LinkerHelper.GetAllWiresFromDb(_db, _tr);
             CreateMultiwire();
         }
 
-        public MultiWire(IEnumerable<Entity> sourceEntities,
+        public MultiWire(Database db,
+                         Transaction tr,
+                         IEnumerable<Entity> sourceEntities,
                          Entity sourceLinkSymbol,
                          IEnumerable<Entity> destinationEntities,
                          Entity destinationLinkSymbol,
                          IEnumerable<ElectricalComponent> components)
         {
+            _db = db;
+            _tr = tr;
             _components = components;
             Tolerance.Global = new Tolerance(1e-8, 1e-1);
             Source = new HalfMultiWire
@@ -198,9 +200,7 @@ namespace AutocadCommands.Models
                 LinkSymbol = destinationLinkSymbol,
                 WireSegments = destinationEntities,
             };
-
-            var db = Application.DocumentManager.MdiActiveDocument.Database;
-            _allWires = LinkerHelper.GetAllWiresFromDb(db);
+            _allWires = LinkerHelper.GetAllWiresFromDb(_db, _tr);
             CreateLinkedMultiwire();
         }
         #endregion Constructors

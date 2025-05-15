@@ -7,10 +7,11 @@ namespace CommonHelpers
 {
     public static class GetObjectsUtils
     {
-        public static IEnumerable<T> GetObjects<T>(Database db, string layer) where T : Entity
+        public static List<T> GetObjects<T>(Database db, Transaction tr, string layer) where T : Entity
         {
-            using var tr = db.TransactionManager.StartTransaction();
-            var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
+            var result = new List<T>();
+            var btl = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+
             foreach (var item in btl)
             {
                 var bk = (BlockTableRecord)tr.GetObject(item, OpenMode.ForRead);
@@ -20,26 +21,23 @@ namespace CommonHelpers
 
                 foreach (var obj in bk)
                 {
-                    var entity = (Entity)tr.GetObject(obj, OpenMode.ForRead);
+                    var entity = tr.GetObject(obj, OpenMode.ForRead) as Entity;
 
-                    if (entity == null || entity.GetType() != typeof(T))
-                        continue;
-
-                    //var br = (T)tr.GetObject(obj, OpenMode.ForRead);
-                    if (!entity.Layer.Equals(layer))
-                        continue;
-
-                    yield return (T)entity;
+                    if (entity is T typedEntity && entity.Layer == layer)
+                    {
+                        result.Add(typedEntity);
+                    }
                 }
             }
-            tr.Commit();
+
+            return result;
         }
 
-        public static IEnumerable<ObjectId> GetBlockIdsByNames(Database db, IEnumerable<string> names)
+
+        public static IEnumerable<ObjectId> GetBlockIdsByNames(Database db, Transaction tr, IEnumerable<string> names)
         {
             var result = new List<ObjectId>();
-            using var tr = db.TransactionManager.StartTransaction();
-            var btl = (BlockTable)db.BlockTableId.GetObject(OpenMode.ForRead);
+            var btl = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
             foreach (var item in btl)
             {
                 var bk = (BlockTableRecord)tr.GetObject(item, OpenMode.ForRead);
@@ -65,7 +63,6 @@ namespace CommonHelpers
 
                 }
             }
-            tr.Commit();
             return result;
         }
     }

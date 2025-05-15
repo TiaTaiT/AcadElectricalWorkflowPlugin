@@ -121,23 +121,25 @@ namespace AutocadCommands.Helpers
         /// </summary>
         /// <param name="attCol">Attributes collection</param>
         /// <returns>Dictionary(AttributeTag, AttributeValue)</returns>
-        public static Dictionary<string, string> GetAttributesFromCollection(AttributeCollection attCol)
+        public static Dictionary<string, string> GetAttributesFromCollection(Transaction tr, AttributeCollection attCol)
         {
             var attributes = new Dictionary<string, string>();
 
             foreach (ObjectId attId in attCol)
             {
+                DBObject dbObj = tr.GetObject(attId, OpenMode.ForRead);
 
-                var att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
-                if (!string.IsNullOrEmpty(att.Tag))
+                AttributeReference acAttRef = dbObj as AttributeReference;
+
+                if (!string.IsNullOrEmpty(acAttRef.Tag))
                 {
                     try
                     {
-                        attributes.Add(att.Tag, att.TextString);
+                        attributes.Add(acAttRef.Tag, acAttRef.TextString);
                     }
                     catch
                     {
-                        Debug.WriteLine("Failed to add a '" + att.Tag + "' to the dictionary");
+                        Debug.WriteLine("Failed to add a '" + acAttRef.Tag + "' to the dictionary");
                     }
                 }
             }
@@ -180,6 +182,7 @@ namespace AutocadCommands.Helpers
         public static IEnumerable<ObjectId> GetObjectsWithAttribute(Database db, Transaction tr, string attributeTag, string attributeValue)
         {
             //using var tr = db.TransactionManager.StartOpenCloseTransaction();
+            var resultBlocks = new List<ObjectId>();
             BlockTableRecord btRecord = (BlockTableRecord)tr.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForRead);
             foreach (ObjectId id in btRecord)
             {
@@ -196,13 +199,15 @@ namespace AutocadCommands.Helpers
                 attrDict.TryGetValue(attributeTag, out var tagValue);
                 if (tagValue == null || !tagValue.Equals(attributeValue)) continue;
 
-                yield return entity.Id;
+                resultBlocks.Add(entity.Id);
             }
+            return resultBlocks;
         }
 
-        public static IEnumerable<BlockReference> GetObjectsStartWith(Database db, string attributeTag)
+        public static IEnumerable<BlockReference> GetObjectsStartWith(Database db, Transaction tr, string attributeTag)
         {
-            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
+            var resultBlocks = new List<BlockReference>();
+            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, tr, Layers.Symbols);
             foreach (var blkRef in blockRefs)
             {
                 if (blkRef.IsErased) continue;
@@ -216,16 +221,18 @@ namespace AutocadCommands.Helpers
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
                     if (attrRef.Tag.StartsWith(attributeTag))
                     {
-                        yield return blkRef;
+                        resultBlocks.Add(blkRef);
                         break;
                     }
                 }
             }
+            return resultBlocks;
         }
 
-        public static IEnumerable<BlockReference> GetObjectsWithAttributeAndLayer(Database db, string attributeTag, string layer)
+        public static IEnumerable<BlockReference> GetObjectsWithAttributeAndLayer(Database db, Transaction tr, string attributeTag, string layer)
         {
-            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, Layers.Symbols);
+            var resultBlocks = new List<BlockReference>();
+            var blockRefs = GetObjectsUtils.GetObjects<BlockReference>(db, tr, Layers.Symbols);
             foreach (var blkRef in blockRefs)
             {
                 if (blkRef.IsErased) continue;
@@ -239,11 +246,12 @@ namespace AutocadCommands.Helpers
                     var attrRef = (AttributeReference)attrId.GetObject(OpenMode.ForRead, false);
                     if (attrRef.Tag.StartsWith(attributeTag) && attrRef.Layer.Equals(layer))
                     {
-                        yield return blkRef;
+                        resultBlocks.Add(blkRef);
                         break;
                     }
                 }
             }
+            return resultBlocks;
         }
 
         public static bool SetBlockFakeAttributes(Transaction tr, ObjectId objectId, IEnumerable<FakeAttribute> attributes)

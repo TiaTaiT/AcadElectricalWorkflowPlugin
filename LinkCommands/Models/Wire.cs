@@ -17,6 +17,7 @@ namespace AutocadCommands.Models
         private IEnumerable<ElectricalComponent> _components;
         private readonly DesignationParser _designationParser;
         private readonly NamesConverter _namesConverter;
+        private readonly Transaction _tr;
 
         /// <summary>
         /// If wire not devided by HalfWire, all parts of wire are here
@@ -56,23 +57,25 @@ namespace AutocadCommands.Models
             Destination = halfWire1;
         }
 
-        public Wire(IEnumerable<Curve> curves)
+        public Wire(Transaction tr, IEnumerable<Curve> curves)
         {
+            _tr = tr;
             Curves = curves;
             _designationParser = new DesignationParser();
             _namesConverter = new NamesConverter();
         }
 
-        public Wire(ObjectId sourceHalfWire, ObjectId destinationHalfWire, IEnumerable<ElectricalComponent> components)
+        public Wire(Transaction tr, ObjectId sourceHalfWire, ObjectId destinationHalfWire, IEnumerable<ElectricalComponent> components)
         {
+            _tr = tr;
             _designationParser = new DesignationParser();
             _namesConverter = new NamesConverter();
             _components = components;
             var sourceLineEntity = (Entity)sourceHalfWire.GetObject(OpenMode.ForRead, false);
-            Source = new HalfWire(sourceLineEntity, components);
+            Source = new HalfWire(_tr, sourceLineEntity, components);
 
             var destinationLineEntity = (Entity)destinationHalfWire.GetObject(OpenMode.ForRead, false);
-            Destination = new HalfWire(destinationLineEntity, components);
+            Destination = new HalfWire(_tr, destinationLineEntity, components);
 
             SetWireAttributes();
         }
@@ -100,8 +103,9 @@ namespace AutocadCommands.Models
             Destination.ShortDescription = Source.ShortDescription;
         }
 
-        public Wire(HalfWire source, HalfWire destination, IEnumerable<ElectricalComponent> components)
+        public Wire(Transaction tr, HalfWire source, HalfWire destination, IEnumerable<ElectricalComponent> components)
         {
+            _tr = tr;
             Source = source;
             Destination = destination;
             _components = components;

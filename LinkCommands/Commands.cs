@@ -19,6 +19,8 @@ namespace LinkCommands
             {
                 wiresLinker.Run();
             }
+            wiresLinker.Commit();
+            wiresLinker.Dispose();
         }
 
         // Link all wires
@@ -32,6 +34,8 @@ namespace LinkCommands
             {
                 wiresLinker.Run();
             }
+            wiresLinker.Commit();
+            wiresLinker.Dispose();
         }
 
         // Link all wires
@@ -45,6 +49,8 @@ namespace LinkCommands
             {
                 wiresLinker.Run();
             }
+            wiresLinker.Commit();
+            wiresLinker.Dispose();
         }
 
         // Remove all multiwires link simbols
@@ -58,6 +64,8 @@ namespace LinkCommands
             {
                 wiresLinker.Run();
             }
+            wiresLinker.Commit();
+            wiresLinker.Dispose();
         }
 
         // Remove all wire-links simbols
@@ -71,6 +79,8 @@ namespace LinkCommands
             {
                 wiresLinker.Run();
             }
+            wiresLinker.Commit();
+            wiresLinker.Dispose();
         }
     }
 }

@@ -15,8 +15,7 @@ namespace AutocadCommands.Services
 {
     public class MultiWiresLinker : CommandPrototype
     {
-        private List<Entity> _multiWireEntities = new();
-        private List<MultiWire> _multiWires = new();
+        private List<Entity> _multiWireEntities = [];
         private ComponentsFactory _componentsFactory;
         private NetsFactory _netsFactory;
 
@@ -61,14 +60,14 @@ namespace AutocadCommands.Services
             if (selectMethod == "S" || selectMethod == "Ы" || selectMethod == "")
             {
                 var filter = new SelectionFilter(
-                    new TypedValue[] {
+                    [
                     new TypedValue(Convert.ToInt32(DxfCode.Operator), "<and"),
                     new TypedValue(Convert.ToInt32(DxfCode.LayerName), Layers.MultiWires),
                     new TypedValue(Convert.ToInt32(DxfCode.Operator), "<or"),
                     new TypedValue(Convert.ToInt32(DxfCode.Start), "LWPOLYLINE"),
                     new TypedValue(Convert.ToInt32(DxfCode.Operator), "or>"),
                     new TypedValue(Convert.ToInt32(DxfCode.Operator), "and>")
-                });
+                ]);
 
                 var opts = new PromptSelectionOptions
                 {
@@ -89,8 +88,8 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            _componentsFactory = new ComponentsFactory(_db);
-            _netsFactory = new NetsFactory(_db, _componentsFactory.GetTerminalPoints());
+            _componentsFactory = new ComponentsFactory(_db, _tr);
+            _netsFactory = new NetsFactory(_db, _tr, _componentsFactory.GetTerminalPoints());
             var terminals = _componentsFactory.GetAllTerminalsInComponents();
             ComponentsWiresTier.CreateElectricalNet(terminals, _netsFactory.Wires);
             DebugTier();
@@ -111,10 +110,9 @@ namespace AutocadCommands.Services
 
         private IEnumerable<Entity> GetMultiWireEntities(ObjectId[] objectIds)
         {
-            using var acTrans = _db.TransactionManager.StartTransaction();
             foreach (ObjectId id in objectIds)
             {
-                var entity = (Entity)acTrans.GetObject(id, OpenMode.ForRead);
+                var entity = (Entity)_tr.GetObject(id, OpenMode.ForRead);
                 if (IsMultiWire(entity))
                     yield return entity;
             }
@@ -132,15 +130,13 @@ namespace AutocadCommands.Services
         public override void Run()
         {
             _doc.LockDocument();
-            using var tr = _db.TransactionManager.StartTransaction();
             foreach (Entity entity in _multiWireEntities)
             {
                 var polyLine = (Polyline)entity;
-                var multiWire = new MultiWire(polyLine, _componentsFactory.Components);
+                var multiWire = new MultiWire(_db, _tr, polyLine, _componentsFactory.Components);
                 multiWire.Clean();
                 multiWire.Create();
             }
-            tr.Commit();
         }
     }
 }

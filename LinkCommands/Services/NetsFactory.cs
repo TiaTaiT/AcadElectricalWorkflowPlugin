@@ -15,6 +15,7 @@ namespace LinkCommands.Services
     public class NetsFactory
     {
         private readonly Database _db;
+        private readonly Transaction _tr;
         private readonly IEnumerable<ElectricalComponent> _components;
         private const string _linkSign = "SIGCODE";
         private const string _descriptionSign = "DESC1";
@@ -24,9 +25,10 @@ namespace LinkCommands.Services
         public IEnumerable<Wire> Wires { get; private set; }
 
 
-        public NetsFactory(Database db, IEnumerable<Point3d> terminators)
+        public NetsFactory(Database db, Transaction tr, IEnumerable<Point3d> terminators)
         {
             _db = db;
+            _tr = tr;
             _terminators = terminators;
 
             FindElectricalNets();
@@ -34,9 +36,9 @@ namespace LinkCommands.Services
 
         private void FindElectricalNets()
         {
-            var curves = LinkerHelper.GetAllWiresFromDb(_db);
+            var curves = LinkerHelper.GetAllWiresFromDb(_db, _tr);
             var curveGroups = CreateConjugatedCurves(curves);
-            var linkReferences = AttributeHelper.GetObjectsStartWith(_db, _linkSign);
+            var linkReferences = AttributeHelper.GetObjectsStartWith(_db, _tr, _linkSign);
             var links = GetLinkConnectionPointPairs(linkReferences);
             HalfWires = CreateHalfWires(curveGroups, links, out var restGroups);
             DebugHalfWires();
@@ -56,7 +58,7 @@ namespace LinkCommands.Services
             var wires = new List<Wire>();
             foreach (var wiresGroup in validWiresGroups)
             {
-                wires.Add(new Wire(wiresGroup));
+                wires.Add(new Wire(_tr, wiresGroup));
             }
             return wires;
         }
@@ -173,7 +175,7 @@ namespace LinkCommands.Services
                     {
                         if (!GeometryFunc.IsPointOnLine(curve, link.WireConnectionPoint))
                             continue;
-                        halfWires.Add(new HalfWire(curveGroup, link));
+                        halfWires.Add(new HalfWire(_tr, curveGroup, link));
                         restWiresGroups.Remove(curveGroup);
                         break;
                     }

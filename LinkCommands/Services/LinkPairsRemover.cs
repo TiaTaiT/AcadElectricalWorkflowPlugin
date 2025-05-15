@@ -37,9 +37,9 @@ namespace LinkCommands.Services
 
             var symbolNames = LinkSymbolNameResolver.GetAllNames();
 
-            var linkIds = GetObjectsUtils.GetBlockIdsByNames(_db, symbolNames);
+            var linkIds = GetObjectsUtils.GetBlockIdsByNames(_db, _tr, symbolNames);
             _doc.LockDocument();
-            BlockHelper.EraseEntitiesByIds(_db, linkIds);
+            BlockHelper.EraseEntitiesByIds(_db, _tr, linkIds);
 
 
         }

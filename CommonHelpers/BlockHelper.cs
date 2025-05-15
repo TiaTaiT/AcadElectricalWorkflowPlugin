@@ -68,8 +68,6 @@ namespace AutocadCommands.Services
                     }
                 }
             }
-            //tr.Commit();
-            //}
             return erasedIds;
         }
 
@@ -93,17 +91,15 @@ namespace AutocadCommands.Services
             return erasedIds;
         }
 
-        public static void EraseEntitiesByIds(Database db, IEnumerable<ObjectId> blockIds)
+        public static void EraseEntitiesByIds(Database db, Transaction tr, IEnumerable<ObjectId> blockIds)
         {
-
-            using Transaction tr = db.TransactionManager.StartTransaction();
             foreach (var id in blockIds)
             {
                 var entity = (Entity)tr.GetObject(id, OpenMode.ForWrite, false, true);
                 entity?.Erase();
                 entity?.Dispose();
             }
-            tr.Commit();
+
         }
 
         private static void ReplaceBlock(Database db, Transaction tr, string oldName, string newName)

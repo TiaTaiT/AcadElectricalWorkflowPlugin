@@ -143,9 +143,9 @@ namespace CommonHelpers
         /// <param name="selectedLineId">selected lines</param>
         /// <param name="layer">layer for search</param>
         /// <returns>All connected lines</returns>
-        public static IEnumerable<Curve> GetAllConjugatedCurves(Database db, Curve selectedLine, string layer)
+        public static IEnumerable<Curve> GetAllConjugatedCurves(Database db, Transaction tr, Curve selectedLine, string layer)
         {
-            var AllLinesFromSheet = GetObjectsUtils.GetObjects<Line>(db, layer);
+            var AllLinesFromSheet = GetObjectsUtils.GetObjects<Line>(db, tr, layer);
 
             return GetConjugatedCurves(selectedLine, AllLinesFromSheet);
         }

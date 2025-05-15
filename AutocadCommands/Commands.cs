@@ -50,6 +50,8 @@ namespace AutocadCommands
             {
                 tRenumber.Run();
             }
+            tRenumber.Commit();
+            tRenumber.Dispose();
         }
         /*
         // Change the color of the terminals according to their purpose. 
@@ -84,7 +86,8 @@ namespace AutocadCommands
             {
                 tDescInc.Run();
             }
-
+            tDescInc.Commit();
+            tDescInc.Dispose();
         }
 
         // Advanced blocks increment
@@ -98,7 +101,8 @@ namespace AutocadCommands
             {
                 tBlocksInc.Run();
             }
-
+            tBlocksInc.Commit();
+            tBlocksInc.Dispose();
         }
 
         // Add prefix to DESC1 of terminals
@@ -112,7 +116,8 @@ namespace AutocadCommands
             {
                 tDescInc.Run();
             }
-
+            tDescInc.Commit();
+            tDescInc.Dispose();
         }
 
         // Find and replace part of DESC1 of terminals
@@ -126,6 +131,8 @@ namespace AutocadCommands
             {
                 tDescInc.Run();
             }
+            tDescInc.Commit();
+            tDescInc.Dispose();
         }
 
         // Set attribute value in selected blocks (default: "CABLEDESIGNATION")
@@ -139,6 +146,8 @@ namespace AutocadCommands
             {
                 blockAttributeReplacer.Run();
             }
+            blockAttributeReplacer.Commit();
+            blockAttributeReplacer.Dispose();
         }
 
 

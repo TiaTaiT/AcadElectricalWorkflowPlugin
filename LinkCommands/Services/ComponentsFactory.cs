@@ -16,7 +16,8 @@ namespace LinkCommands.Services
     public class ComponentsFactory
     {
         private int _index = 0;
-        private Database _db;
+        private readonly Database _db;
+        private readonly Transaction _tr;
         private const string ComponentSign = "CAT";
         private const string Description1 = "DESC1";
         private const string TerminalDescriptionSign = "TERM";
@@ -25,13 +26,11 @@ namespace LinkCommands.Services
 
         public IEnumerable<ElectricalComponent> Components { get; set; } = Enumerable.Empty<ElectricalComponent>();
 
-        public ComponentsFactory(Database db)
+        public ComponentsFactory(Database db, Transaction tr)
         {
             _db = db;
-
-            using var tr = _db.TransactionManager.StartTransaction();
+            _tr = tr;
             FindElectricalComponents();
-            tr.Dispose();
         }
 
         public IEnumerable<Point3d> GetTerminalPoints()
@@ -74,7 +73,7 @@ namespace LinkCommands.Services
 
             var componentsList = new List<ElectricalComponent>();
 
-            var blkRefs = AttributeHelper.GetObjectsStartWith(_db, ComponentSign);
+            var blkRefs = AttributeHelper.GetObjectsStartWith(_db, _tr, ComponentSign);
 
             /* Autocad is fully synchronize
             Parallel.ForEach(blkRefs, new ParallelOptions() { MaxDegreeOfParallelism = MaxDegreesNumber },
@@ -104,7 +103,7 @@ namespace LinkCommands.Services
         private ElectricalComponent GetComponent(BlockReference blkRef)
         {
             var attributes = blkRef.AttributeCollection;
-            var attrDict = AttributeHelper.GetAttributesFromCollection(attributes);
+            var attrDict = AttributeHelper.GetAttributesFromCollection(_tr, attributes);
 
             var designation = GetTagValue(attrDict);
             var name = GetNameValue(attrDict);
