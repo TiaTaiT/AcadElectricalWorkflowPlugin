@@ -1,93 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C2D76341-937F-468E-813E-96B7DA95A060}</ProjectGuid>
+    <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LinkCommands</RootNamespace>
-    <AssemblyName>LinkCommands</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
     <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyTitle>LinkCommands</AssemblyTitle>
+    <Product>LinkCommands</Product>
+    <Copyright>Copyright ©  2022</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BrxMgd">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Bricsys\BricsCAD V25 en_US\BrxMgd.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TD_Mgd">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Bricsys\BricsCAD V25 en_US\TD_Mgd.dll</HintPath>
-    </Reference>
+    <PackageReference Include="AutoCAD.NET" Version="25.1.0" />
+    <PackageReference Include="AutoCAD.NET.Core" Version="25.1.0" />
+    <PackageReference Include="AutoCAD.NET.Model" Version="25.1.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands.cs" />
-    <Compile Include="Interfaces\INamesConverter.cs" />
-    <Compile Include="Models\CompareWire.cs" />
-    <Compile Include="Services\ComponentsWiresTier.cs" />
-    <Compile Include="Models\ComponentTerminal.cs" />
-    <Compile Include="Models\HalfWire.cs" />
-    <Compile Include="Models\Link.cs" />
-    <Compile Include="Models\LinkStruct.cs" />
-    <Compile Include="Models\MultiWire.cs" />
-    <Compile Include="Models\HalfMultiWire.cs" />
-    <Compile Include="Models\ElectricalComponent.cs" />
-    <Compile Include="Models\TiedTerminalsDb.cs" />
-    <Compile Include="Models\Wire.cs" />
-    <Compile Include="Models\HalfWireComparer.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ComponentsFactory.cs" />
-    <Compile Include="Services\ElectricalComponents.cs" />
-    <Compile Include="Services\ElectricalValidation.cs" />
-    <Compile Include="Services\HalfWirePairSeeker.cs" />
-    <Compile Include="Services\LinkerHelper.cs" />
-    <Compile Include="Services\LinkPairsRemover.cs" />
-    <Compile Include="Services\LinkSymbolNameResolver.cs" />
-    <Compile Include="Services\MultiWiresLinker.cs" />
-    <Compile Include="Services\NamesConverter.cs" />
-    <Compile Include="Services\NetsFactory.cs" />
-    <Compile Include="Services\NetTypeClassificator.cs" />
-    <Compile Include="Services\PairMultiWiresLinker.cs" />
-    <Compile Include="Services\Separator.cs" />
-    <Compile Include="Services\WireLinksRemover.cs" />
-    <Compile Include="Services\WireNameGenerator.cs" />
-    <Compile Include="Services\WiresLinker.cs" />
-    <Compile Include="Services\WiresLinkNameResolver.cs" />
+    <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CommonHelpers\CommonHelpers.csproj">
-      <Project>{F9908F2A-A3F8-49AD-927D-7D85A471FE63}</Project>
-      <Name>CommonHelpers</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

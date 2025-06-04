@@ -7,9 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 namespace LinkCommands.Services
 {
     public class NetsFactory

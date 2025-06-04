@@ -1,8 +1,11 @@
-﻿using AutocadCommands.Services;
-using LinkCommands.Services;
+﻿global using Autodesk.AutoCAD.ApplicationServices;
+global using Autodesk.AutoCAD.Runtime;
+global using Autodesk.AutoCAD.DatabaseServices;
+global using Autodesk.AutoCAD.EditorInput;
+global using Autodesk.AutoCAD.Geometry;
 
-using Bricscad.ApplicationServices;
-using Teigha.Runtime;
+using AutocadCommands.Services;
+using LinkCommands.Services;
 
 namespace LinkCommands
 {

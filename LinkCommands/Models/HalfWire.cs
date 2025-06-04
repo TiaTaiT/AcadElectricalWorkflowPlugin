@@ -9,10 +9,6 @@ using System.Threading.Tasks;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 using Exception = System.Exception;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 
 namespace LinkCommands.Models
 {

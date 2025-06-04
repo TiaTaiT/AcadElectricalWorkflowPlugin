@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 namespace AutocadCommands.Models
 {
     public class MultiWire

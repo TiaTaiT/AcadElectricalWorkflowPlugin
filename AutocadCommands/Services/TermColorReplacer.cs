@@ -3,10 +3,6 @@ using CommonHelpers;
 using System;
 using System.Collections.Generic;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-
 namespace AutocadCommands.Services
 {
     public class TermColorReplacer : CommandPrototype

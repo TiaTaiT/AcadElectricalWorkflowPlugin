@@ -1,10 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-using Teigha.GraphicsInterface;
-
 namespace AutocadTerminalsManager.Services
 {
     public class DragEntitiesJig : DrawJig

@@ -8,11 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-
 namespace LinkCommands.Services
 {
     internal class PairMultiWiresLinker(Document doc) : CommandPrototype(doc)

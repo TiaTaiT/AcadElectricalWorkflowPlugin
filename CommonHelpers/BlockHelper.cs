@@ -1,11 +1,6 @@
 ﻿using AutocadCommands.Helpers;
 using System.Collections.Generic;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-using Bricscad.Runtime;
-
 namespace AutocadCommands.Services
 {
     public static class BlockHelper

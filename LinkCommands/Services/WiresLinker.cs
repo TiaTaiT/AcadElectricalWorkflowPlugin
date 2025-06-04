@@ -4,10 +4,6 @@ using LinkCommands.Services;
 using System.Collections.Generic;
 using System.Linq;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-
 namespace AutocadCommands.Services
 {
     public class WiresLinker : CommandPrototype
@@ -75,29 +71,29 @@ namespace AutocadCommands.Services
 
         private void CreateComponentsFactory()
         {
-            using var tr = _db.TransactionManager.StartTransaction();
+            //using var tr = _db.TransactionManager.StartTransaction();
             _componentsFactory = new ComponentsFactory(_db, _tr);
-            tr.Dispose();
+            //tr.Dispose();
         }
 
         private void HighlightObject(ObjectId sourceWireId)
         {
-            using var tr = _db.TransactionManager.StartTransaction();
-            Entity ent = (Entity)tr.GetObject(sourceWireId, OpenMode.ForWrite);
+            //using var tr = _db.TransactionManager.StartTransaction();
+            Entity ent = (Entity)_tr.GetObject(sourceWireId, OpenMode.ForWrite);
             ent.Highlight();
         }
 
         private void UnhighlightObject(ObjectId sourceWireId)
         {
-            using var tr = _db.TransactionManager.StartTransaction();
-            Entity ent = (Entity)tr.GetObject(sourceWireId, OpenMode.ForWrite);
+            //using var tr = _db.TransactionManager.StartTransaction();
+            Entity ent = (Entity)_tr.GetObject(sourceWireId, OpenMode.ForWrite);
             ent.Unhighlight();
         }
 
         public override void Run()
         {
             _doc.LockDocument();
-            using var tr = _db.TransactionManager.StartTransaction();
+            //using var tr = _db.TransactionManager.StartTransaction();
             for (var i = 0; i < _sourceDestPairIds.Count(); i++)
             {
                 var wire = new Wire(_tr, 
@@ -108,7 +104,7 @@ namespace AutocadCommands.Services
             }
 
             UnhighlightAllPassedObjects();
-            tr.Commit();
+            //_tr.Commit();
         }
 
         private void UnhighlightAllPassedObjects()

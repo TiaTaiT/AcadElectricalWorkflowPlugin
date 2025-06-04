@@ -3,10 +3,6 @@ using AutocadCommands.Utils;
 using CommonHelpers;
 using System.Collections.Generic;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-
 namespace AutocadCommands.Services
 {
     public class TermAddDescriptionPrefix : CommandPrototype

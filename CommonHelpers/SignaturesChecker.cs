@@ -1,6 +1,4 @@
-﻿using Teigha.DatabaseServices;
-
-namespace CommonHelpers
+﻿namespace CommonHelpers
 {
     public static class SignaturesChecker
     {

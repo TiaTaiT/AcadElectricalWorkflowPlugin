@@ -1,0 +1,150 @@
+﻿<windows:RibbonTab
+    x:Class="AutocadRibbonUI.WorkFlowRibbonTab"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:windows="clr-namespace:Autodesk.Windows;assembly=AdWindows"
+    Title="Workflow">
+
+    <windows:RibbonPanel >
+        <windows:RibbonPanelSource  Title="Terminals" >
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_1" >
+                <windows:RibbonButton
+                    Id="FirstButton"
+                    Text="Count"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMCOUNT">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="SecondButton"
+                    Text="BInc"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\71.png"
+                    Orientation="Vertical"
+                    CommandParameter="BINCREMENT">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="ThirdButton"
+                    Text="Inc"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMINCREMENT">
+                </windows:RibbonButton>
+
+            </windows:RibbonRowPanel>
+
+            <windows:RibbonRowBreak/>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_2">
+
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="Add"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMADDPREFIX">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="Find"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMFINDREPLACE">
+                </windows:RibbonButton>
+
+                <windows:RibbonButton
+                    Id="FourthButton"
+                    Text="SetAtt"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="TERMSETATTRIBUTE">
+                </windows:RibbonButton>
+
+            </windows:RibbonRowPanel>
+
+        </windows:RibbonPanelSource>
+    </windows:RibbonPanel>
+
+    <windows:RibbonPanel >
+        <windows:RibbonPanelSource  Title="Linker" >
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="FifthButton"
+                    Text="Wire"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKWIRES">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_3" >
+                <windows:RibbonButton
+                    Id="SixthButton"
+                    Text="DelPairs"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\33.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKPAIRREMOVE">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_4" >
+                <windows:RibbonButton
+                    Id="SeventhButton"
+                    Text="DelLinks"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\14.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKSREMOVE">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
+            <windows:RibbonRowBreak/>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_5" >
+                <windows:RibbonButton
+                    Id="EighthButton"
+                    Text="Poly"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKMULTIWIRES">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
+            <windows:RibbonRowPanel x:Uid="adw:RibbonRow_6" >
+                <windows:RibbonButton
+                    Id="NinethButton"
+                    Text="Pair"
+                    ShowText="True"
+                    Size="Standard"
+                    Image="Assets\10.png"
+                    Orientation="Vertical"
+                    CommandParameter="LINKPAIRMULTIWIRES">
+                </windows:RibbonButton>
+            </windows:RibbonRowPanel>
+
+        </windows:RibbonPanelSource>
+    </windows:RibbonPanel>
+</windows:RibbonTab>

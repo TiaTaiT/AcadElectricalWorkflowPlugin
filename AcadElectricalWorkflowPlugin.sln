@@ -1,19 +1,19 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32519.111
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutocadCommands", "AutocadCommands\AutocadCommands.csproj", "{665DEEAB-03A0-4138-AEDE-B2D8463AEA38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutocadCommands", "AutocadCommands\AutocadCommands.csproj", "{665DEEAB-03A0-4138-AEDE-B2D8463AEA38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCommands.Test", "AutoCommands.Test\AutoCommands.Test.csproj", "{E01D1A6F-CA88-425C-88A3-2A37174D8829}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoCommands.Test", "AutoCommands.Test\AutoCommands.Test.csproj", "{E01D1A6F-CA88-425C-88A3-2A37174D8829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutocadRibbonUI", "AutocadRibbonUI\AutocadRibbonUI.csproj", "{0F082D9F-C2DB-4AC3-8E16-E79EFD3BD2A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutocadRibbonUI", "AutocadRibbonUI\AutocadRibbonUI.csproj", "{0F082D9F-C2DB-4AC3-8E16-E79EFD3BD2A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonHelpers", "CommonHelpers\CommonHelpers.csproj", "{F9908F2A-A3F8-49AD-927D-7D85A471FE63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonHelpers", "CommonHelpers\CommonHelpers.csproj", "{F9908F2A-A3F8-49AD-927D-7D85A471FE63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutocadTerminalsManager", "AutocadTerminalsManager\AutocadTerminalsManager.csproj", "{CC14970F-73C3-4560-AF28-B713B561D6E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutocadTerminalsManager", "AutocadTerminalsManager\AutocadTerminalsManager.csproj", "{CC14970F-73C3-4560-AF28-B713B561D6E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkCommands", "LinkCommands\LinkCommands.csproj", "{C2D76341-937F-468E-813E-96B7DA95A060}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkCommands", "LinkCommands\LinkCommands.csproj", "{C2D76341-937F-468E-813E-96B7DA95A060}"
 EndProject
 Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "acad", "..\..\..\..\..\..\Program Files\Autodesk\AutoCAD 2023\acad.exe", "{8B4E882A-4D5B-47A8-8B9C-AF9538C0E807}"
 	ProjectSection(DebuggerProjectSystem) = preProject
@@ -29,7 +29,7 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "acad", "..\..\..\..\..\..\P
 		IORedirection = Auto
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenumberCommands", "RenumberCommands\RenumberCommands.csproj", "{8EA359C3-3F03-4652-B84C-F45DAF19F43D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RenumberCommands", "RenumberCommands\RenumberCommands.csproj", "{8EA359C3-3F03-4652-B84C-F45DAF19F43D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

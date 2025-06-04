@@ -1,13 +1,11 @@
-﻿using System;
+﻿global using Autodesk.AutoCAD.ApplicationServices;
+global using Autodesk.AutoCAD.Runtime;
+global using Autodesk.AutoCAD.DatabaseServices;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RenumberCommands.Services;
-
-using Bricscad.ApplicationServices;
-using Teigha.Runtime;
-using Teigha.DatabaseServices;
 
 namespace RenumberCommands
 {

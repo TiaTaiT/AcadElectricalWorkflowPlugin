@@ -5,11 +5,6 @@ using LinkCommands.Services;
 using System.Collections.Generic;
 using static System.Int32;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-
-
 namespace AutocadCommands.Services
 {
     public class TermDescriptionIncrement : CommandPrototype

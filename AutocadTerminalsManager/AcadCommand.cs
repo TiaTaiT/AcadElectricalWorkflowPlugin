@@ -1,8 +1,6 @@
 ﻿using AutocadTerminalsManager.Helpers;
 using AutocadTerminalsManager.Model;
 
-using Teigha.Runtime;
-
 namespace AutocadTerminalsManager
 {
     public class AcadCommand : IExtensionApplication

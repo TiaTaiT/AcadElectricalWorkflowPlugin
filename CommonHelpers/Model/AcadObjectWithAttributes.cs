@@ -1,5 +1,4 @@
-﻿using Teigha.DatabaseServices;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AutocadTerminalsManager.Model
 {

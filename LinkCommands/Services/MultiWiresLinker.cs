@@ -7,10 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-
 namespace AutocadCommands.Services
 {
     public class MultiWiresLinker : CommandPrototype

@@ -1,5 +1,4 @@
-﻿using Teigha.Geometry;
-using LinkCommands.Models;
+﻿using LinkCommands.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,21 +14,21 @@ namespace AutoCommands.Test
             //Arrange
             var terminals = new List<ComponentTerminal>()
             {
-                new ComponentTerminal(new List<Point3d>(), "TERM01", "1"),
-                new ComponentTerminal(new List<Point3d>(), "TERM02", "2"),
-                new ComponentTerminal(new List<Point3d>(), "TERM03", "3"),
-                new ComponentTerminal(new List<Point3d>(), "TERM05", "4"),
-                new ComponentTerminal(new List<Point3d>(), "TERM06", "PE"),
-                new ComponentTerminal(new List<Point3d>(), "TERM07", "PE"),
-                new ComponentTerminal(new List<Point3d>(), "TERM08", "PE"),
+                new([], "TERM01", "1"),
+                new([], "TERM02", "2"),
+                new([], "TERM03", "3"),
+                new([], "TERM05", "4"),
+                new([], "TERM06", "PE"),
+                new([], "TERM07", "PE"),
+                new([], "TERM08", "PE"),
 
             };
 
             var tiedTerminals = new List<List<ComponentTerminal>>()
             {
-                new List<ComponentTerminal>(){ terminals[0], terminals[1] },
-                new List<ComponentTerminal>(){ terminals[3], terminals[4] },
-                new List<ComponentTerminal>(){ terminals[5], terminals[6], terminals[7] },
+                new(){ terminals[0], terminals[1] },
+                new(){ terminals[3], terminals[4] },
+                new(){ terminals[5], terminals[6], terminals[7] },
             };
 
             var component = new ElectricalComponent(1, "УЗЛ-СД-24", "U10", terminals, null);

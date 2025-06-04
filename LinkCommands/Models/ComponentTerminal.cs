@@ -1,5 +1,4 @@
 ﻿using AutocadCommands.Models;
-using Teigha.Geometry;
 using System.Collections.Generic;
 
 namespace LinkCommands.Models

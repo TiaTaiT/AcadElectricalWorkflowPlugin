@@ -1,6 +1,4 @@
-﻿using Teigha.DatabaseServices;
-using Teigha.Geometry;
-using CommonHelpers;
+﻿using CommonHelpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;

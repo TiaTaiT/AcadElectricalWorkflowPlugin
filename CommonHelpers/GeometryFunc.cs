@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using static CommonHelpers.Models.IAutocadDirectionEnum;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 namespace CommonHelpers
 {
     public static class GeometryFunc

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Teigha.DatabaseServices;
-using Teigha.Runtime;
-using AcRx = Teigha.Runtime;
-
-
 namespace CommonHelpers
 {
     public static class ExtensionMethods

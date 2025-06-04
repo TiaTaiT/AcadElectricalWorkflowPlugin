@@ -5,9 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 namespace AutocadCommands.Helpers
 {
     public static class AttributeHelper
@@ -88,9 +85,9 @@ namespace AutocadCommands.Helpers
 
                 return attrColl;
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
-                throw new Exception(ex.Message);
+                throw new System.Exception(ex.Message);
             }
         }
 

@@ -1,7 +1,4 @@
-﻿using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using System;
+﻿using System;
 
 namespace CommonHelpers
 {

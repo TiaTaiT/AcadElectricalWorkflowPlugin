@@ -1,6 +1,4 @@
-﻿using Teigha.Geometry;
-
-namespace AutocadTerminalsManager.Model
+﻿namespace AutocadTerminalsManager.Model
 {
     public class AttrInfo
     {

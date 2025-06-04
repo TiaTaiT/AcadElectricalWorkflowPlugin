@@ -1,7 +1,4 @@
-﻿using Teigha.DatabaseServices;
-using Bricscad.ApplicationServices;
-
-namespace CommonHelpers
+﻿namespace CommonHelpers
 {
     public static class AttributesHelper2
     {

@@ -1,11 +1,6 @@
 ﻿using AutocadTerminalsManager.Model;
 using System.Collections.Generic;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-
 namespace AutocadTerminalsManager.Services
 {
     internal class BlockJig : EntityJig

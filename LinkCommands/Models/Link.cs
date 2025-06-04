@@ -1,7 +1,4 @@
-﻿using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
-namespace LinkCommands.Models
+﻿namespace LinkCommands.Models
 {
     public class Link
     {

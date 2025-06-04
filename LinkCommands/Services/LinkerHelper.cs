@@ -3,10 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-
 namespace AutocadCommands.Services
 {
     public static class LinkerHelper
@@ -46,7 +42,7 @@ namespace AutocadCommands.Services
                     retVal = new ObjectId[0];
                 }
             }
-            catch (Exception ex)
+            catch (System.Exception ex)
             {
                 //ReportError(ex);
             }
@@ -63,10 +59,10 @@ namespace AutocadCommands.Services
         public static (Point3d, Point3d) GetStartEndPoints(Entity WireEntity)
         {
             if (WireEntity == null)
-                throw new Exception("Wire entity is null!");
+                throw new System.Exception("Wire entity is null!");
 
             if (WireEntity is not Curve)
-                throw new Exception("Wire entity is not curve!");
+                throw new System.Exception("Wire entity is not curve!");
 
             var polyline = (Curve)WireEntity;
 

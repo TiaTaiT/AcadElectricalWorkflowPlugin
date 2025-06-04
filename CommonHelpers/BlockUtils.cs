@@ -3,10 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-using Teigha.Runtime;
-
 namespace CommonHelpers
 {
     public static class BlockUtils

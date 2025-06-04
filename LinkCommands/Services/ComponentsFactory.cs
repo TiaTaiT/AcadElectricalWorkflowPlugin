@@ -8,9 +8,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Teigha.DatabaseServices;
-using Teigha.Geometry;
-
 namespace LinkCommands.Services
 {
     public class ComponentsFactory
@@ -109,7 +106,7 @@ namespace LinkCommands.Services
             var name = GetNameValue(attrDict);
 
             if (designation == null || name == null)
-                throw new Exception("designation or/and name of component is null");
+                throw new System.Exception("designation or/and name of component is null");
 
             var terminalFlag = SignaturesChecker.IsTerminal(blkRef);
 
@@ -179,7 +176,7 @@ namespace LinkCommands.Services
                 {
                     att = (AttributeReference)attId.GetObject(OpenMode.ForRead, false);
                 }
-                catch (Exception ex)
+                catch (System.Exception ex)
                 {
                     Debug.WriteLine("Error!!!" + ex.Message);
                     continue;

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using AutocadCommands.Helpers;
-using Bricscad.ApplicationServices;
-using CommonHelpers;
 
-using Teigha.DatabaseServices;
+using CommonHelpers;
 
 namespace RenumberCommands.Services
 {

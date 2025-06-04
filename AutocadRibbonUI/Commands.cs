@@ -1,215 +1,122 @@
-﻿using System;
-using Teigha.Runtime;            // IExtensionApplication
-using Bricscad.Windows;          // ComponentManager, RibbonControl, RibbonTab, etc.
+﻿using Autodesk.AutoCAD.Ribbon;
+using Autodesk.Windows;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-[assembly: ExtensionApplication(typeof(BricscadRibbonUI.Commands))]
-namespace BricscadRibbonUI
+namespace AutocadRibbonUI
 {
     public class Commands : IExtensionApplication
     {
         private RibbonControl _ribbon;
-        private RibbonTab _tab;
+        private WorkFlowRibbonTab _tab;
+
+        public RibbonCommandHandler ribbonCmdHandler { get; set; }
+        public string SAMPLERIBBONSTABID { get => "Workflow"; }
 
         public void Initialize()
         {
-            // Get the BricsCAD ribbon control
+            //TODO: add code to run when the ExtApp initializes. Here are a few examples:
+            //          Checking some host information like build #, a patch or a particular Arx/Dbx/Dll;
+            //          Creating/Opening some files to use in the whole life of the assembly, e.g. logs;
+            //          Adding some ribbon tabs, panels, and/or buttons, when necessary;
+            //          Loading some dependents explicitly which are not taken care of automatically;
+            //          Subscribing to some events which are important for the whole session;
+            //          Etc.
+            if (ComponentManager.Ribbon == null)
+            {
+                ComponentManager.ItemInitialized += this.RibbonCompInitialized;
+            }
+            else
+            {
+                this.ApplicationSetup();
+            }
+        }
+
+        private void ApplicationSetup()
+        {
+            SetupRibbon();
+            RibbonServices.RibbonPaletteSet.WorkspaceLoaded += (this.RibbonPaletteLoaded);
+            RibbonServices.RibbonPaletteSet.WorkspaceUnloading += (this.RibbonPaletteUnloaded);
+        }
+
+        private void SetupRibbon()
+        {
+            // Create a RibbonTab using the resourceDictionary
             _ribbon = ComponentManager.Ribbon;
-            // Create and set up our custom ribbon
-            CreateWorkflowTab();
+            _tab = new WorkFlowRibbonTab
+            {
+                Id = "MyTab_001"
+            };
+            _ribbon.Tabs.Add(_tab);
+
+            ribbonCmdHandler = new RibbonCommandHandler();
+            for (var i = 0; i < _tab.Panels.Count(); i++)
+            {
+                IterateItems(i);
+            }
+        }
+
+        private void IterateItems(int i)
+        {
+            foreach (var item in _tab.Panels[i].Source.Items)
+            {
+                var subItems = GetPropValue(item, "Items");
+                if (subItems != null)
+                {
+                    foreach (var subItem in (IEnumerable<object>)subItems)
+                    {
+                        if (subItem is RibbonButton button)
+                        {
+                            button.CommandHandler = ribbonCmdHandler;
+                        }
+                    }
+
+                }
+                if (item is RibbonButton button1)
+                {
+                    button1.CommandHandler = ribbonCmdHandler;
+                }
+            }
+        }
+
+        public static object GetPropValue(object src, string propName)
+        {
+            try
+            {
+                return src.GetType().GetProperty(propName).GetValue(src, null);
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+        private void RibbonPaletteLoaded(object sender, EventArgs e)
+        {
+            SetupRibbon();
+        }
+
+        private void RibbonPaletteUnloaded(object sender, EventArgs e)
+        {
+            RibbonServices.RibbonPaletteSet.RibbonControl.Tabs.Remove(
+                RibbonServices.RibbonPaletteSet.RibbonControl.FindTab(SAMPLERIBBONSTABID));
+        }
+
+        private void RibbonCompInitialized(object sender, RibbonItemEventArgs e)
+        {
+            if (ComponentManager.Ribbon != null)
+            {
+                ComponentManager.ItemInitialized -= this.RibbonCompInitialized;
+                this.ApplicationSetup();
+            }
         }
 
         public void Terminate()
         {
-            // Optional: clean up by removing the tab
-            if (_ribbon != null && _tab != null)
-                _ribbon.Tabs.Remove(_tab);
-        }
+            // _ribbon.Tabs.Remove(_tab);
 
-        private void CreateWorkflowTab()
-        {
-            // Instantiate a new tab
-            _tab = new RibbonTab()
-            {
-                Title = "Workflow",
-                Id = "rtWorkflow"
-            };
-            // Add the tab to BricsCAD’s ribbon
-            _ribbon.Tabs.Add(_tab);
-
-            // Create a panel for “Terminals”
-            var terminalsSource = new RibbonPanelSource()
-            {
-                Title = "Terminals",
-                Id = "rpTerminals"
-            };
-            var terminalsPanel = new RibbonPanel
-            {
-                Source = terminalsSource
-            };
-            _tab.Panels.Add(terminalsPanel);
-
-            // Add a row of buttons
-            var row1 = new RibbonRowPanel();
-            terminalsSource.Items.Add(row1);
-
-            // First button: Count
-            var btnCount = new RibbonButton()
-            {
-                Id = "btnCount",
-                Text = "Count",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "TERMCOUNT"
-            };
-            row1.Items.Add(btnCount);
-
-            // Second button: BInc
-            var btnBInc = new RibbonButton()
-            {
-                Id = "btnBInc",
-                Text = "BInc",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "BINCREMENT"
-            };
-            row1.Items.Add(btnBInc);
-
-            // Third button: Inc
-            var btnInc = new RibbonButton()
-            {
-                Id = "btnInc",
-                Text = "Inc",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "TERMINCREMENT"
-            };
-            row1.Items.Add(btnInc);
-
-            // 2. Insert a separator (vertical line)
-            var separator = new RibbonSeparator() { 
-                SeparatorStyle = RibbonSeparatorStyle.Line,
-            };      // :contentReference[oaicite:6]{index=6}
-                                                        // optional: separator.AutoDelete = true; 
-            row1.Items.Add(separator);                  // :contentReference[oaicite:7]{index=7}
-
-            // Repeat for other panels (Linker, etc.)...
-            var btnGetTerminals = new RibbonButton()
-            {
-                Id = "btnGetTerminals",
-                Text = "Insert Terminals",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "GETTERMINALS"
-            };
-            row1.Items.Add(btnGetTerminals);
-
-            var btnGetUiTerminals = new RibbonButton()
-            {
-                Id = "btnGetUiTerminals",
-                Text = "UI Terminals",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "GETUITERMINALS"
-            };
-            row1.Items.Add(btnGetUiTerminals);
-
-            var btnDrawOrderDown = new RibbonButton()
-            {
-                Id = "btnDrawOrderDown",
-                Text = "Order Down",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "DRAWORDERDOWN"
-            };
-            row1.Items.Add(btnDrawOrderDown);
-
-            row1.Items.Add(separator);
-
-            var btnLinkMultiWires = new RibbonButton()
-            {
-                Id = "btnLinkMultiWires",
-                Text = "Link Multiwires",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "LINKMULTIWIRES"
-            };
-            row1.Items.Add(btnLinkMultiWires);
-
-            var btnLinkWires = new RibbonButton()
-            {
-                Id = "btnLinkWires",
-                Text = "Link Wires",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "LINKWIRES"
-            };
-            row1.Items.Add(btnLinkWires);
-
-            var btnLinkPairMultiwires = new RibbonButton()
-            {
-                Id = "btnLinkPairMultiwires",
-                Text = "Pair Multiwires",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "LINKPAIRMULTIWIRES"
-            };
-            row1.Items.Add(btnLinkPairMultiwires);
-
-            var btnLinkPairRemove = new RibbonButton()
-            {
-                Id = "btnLinkPairRemove",
-                Text = "Pair Remove",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "LINKPAIRREMOVE"
-            };
-            row1.Items.Add(btnLinkPairRemove);
-
-            var btnLinksRemove = new RibbonButton()
-            {
-                Id = "btnLinksRemove",
-                Text = "Links Remove",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "LINKSREMOVE"
-            };
-            row1.Items.Add(btnLinksRemove);
-
-            row1.Items.Add(separator);
-
-            var btnTagsRenumber = new RibbonButton()
-            {
-                Id = "btnTagsRenumber",
-                Text = "Tags Renumber",
-                ShowText = true,
-                Size = RibbonItemSize.Large,
-                ButtonStyle = RibbonButtonStyle.LargeWithText,
-                ImagePath = @"C:\Users\texvi\source\repos\TiaTaiT\AcadElectricalWorkflowPlugin\AutocadRibbonUI\Assets\10.png",
-                CommandParameter = "TAGSRENUMBER"
-            };
-            row1.Items.Add(btnLinksRemove);
         }
     }
 }

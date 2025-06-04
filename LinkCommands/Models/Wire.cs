@@ -5,11 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-using Bricscad.ApplicationServices;
-
 namespace AutocadCommands.Models
 {
     public class Wire
@@ -127,7 +122,7 @@ namespace AutocadCommands.Models
             if (Source != null && Destination != null)
                 return Source.IsPointOnEnd(point) ||
                        Destination.IsPointOnEnd(point);
-            throw new Exception("Null!");
+            throw new System.Exception("Null!");
         }
     }
 }

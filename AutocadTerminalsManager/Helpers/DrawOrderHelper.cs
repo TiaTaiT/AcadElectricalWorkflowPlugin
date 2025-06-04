@@ -1,9 +1,4 @@
-﻿using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Runtime;
-
-namespace AutocadTerminalsManager.Helpers
+﻿namespace AutocadTerminalsManager.Helpers
 {
     public static class DrawOrderHelper
     {

@@ -8,12 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-using Bricscad.ApplicationServices;
-using Teigha.DatabaseServices;
-using Bricscad.EditorInput;
-using Teigha.Geometry;
-
-
 namespace AutocadTerminalsManager.Helpers
 {
     public class InsertDrawing
