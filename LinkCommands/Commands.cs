@@ -11,7 +11,7 @@ namespace LinkCommands
 {
     public class Commands
     {
-        // Link all wires
+        // Link buses
         [CommandMethod("LINKMULTIWIRES", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
         public void LinkMultiWires()
         {
@@ -26,7 +26,7 @@ namespace LinkCommands
             wiresLinker.Dispose();
         }
 
-        // Link all wires
+        // Link wires
         [CommandMethod("LINKWIRES", CommandFlags.UsePickSet | CommandFlags.Redraw | CommandFlags.Modal)]
         public void LinkWires()
         {

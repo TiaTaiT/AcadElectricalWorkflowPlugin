@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationPackage SchemaVersion="1.0" Name="HelloWorld"
+AppVersion="2025.0.0" Description="A basic HelloWorld application"
+ Author="TiaTaiT" ProductCode="90bcc406-78d2-4667-bef8-12c02e1ab25b">
+	<CompanyDetails Name="Investstroy" Url="" Email="" />
+	<Components>
+		<ComponentEntry AppName="AutocadCommands"
+		ModuleName="./Contents/AutocadCommands.dll"
+		AppDescription="A simple hello"
+		AppType=".Net"
+		LoadOnAutoCADStartup="True">
+			<RuntimeRequirements OS="Win64" SeriesMin="R25.0" SeriesMax="R26.0" />
+			<Commands GroupName="Terminals">
+				<Command Local="TERMCOUNT" Global="TERMCOUNT" Description="Renumber terminals TERMXX properties" />
+				<Command Local="TERMINCREMENT" Global="TERMINCREMENT" Description="Advanced DESC1 increment of terminals" />
+				<Command Local="BINCREMENT" Global="BINCREMENT" Description="Advanced blocks increment" />
+				<Command Local="TERMADDPREFIX" Global="TERMADDPREFIX" Description="Add prefix to DESC1 of terminals" />
+				<Command Local="TERMFINDREPLACE" Global="TERMFINDREPLACE" Description="Find and replace part of DESC1 of terminals" />
+				<Command Local="TERMSETATTRIBUTE" Global="TERMSETATTRIBUTE" Description="Set attribute value in selected blocks (default: 'CABLEDESIGNATION')" />
+			</Commands>
+		</ComponentEntry>
+
+		<ComponentEntry AppName="AutocadRibbonUI"
+		ModuleName="./Contents/AutocadRibbonUI.dll"
+		AppDescription="A simple hello"
+		AppType=".Net"
+		LoadOnAutoCADStartup="True">
+			<RuntimeRequirements OS="Win64" SeriesMin="R25.0" SeriesMax="R26.0" />
+			<Commands GroupName="Ribbon">
+				<Command Local="HELLO" Global="HELLO" />
+			</Commands>
+		</ComponentEntry>
+
+		<ComponentEntry AppName="AutocadTerminalsManager"
+		ModuleName="./Contents/AutocadTerminalsManager.dll"
+		AppDescription="A simple hello"
+		AppType=".Net"
+		LoadOnAutoCADStartup="True">
+			<RuntimeRequirements OS="Win64" SeriesMin="R25.0" SeriesMax="R26.0" />
+			<Commands GroupName="TerminalsManager">
+				<Command Local="GETTERMINALS" Global="GETTERMINALS" Description="Insert blocks with terminals from json" />
+				<Command Local="GETUITERMINALS" Global="GETUITERMINALS" Description="???" />
+				<Command Local="DRAWORDERDOWN" Global="DRAWORDERDOWN" Description="???" />
+			</Commands>
+		</ComponentEntry>
+
+		<ComponentEntry AppName="LinkCommands"
+		ModuleName="./Contents/LinkCommands.dll"
+		AppDescription="A simple hello"
+		AppType=".Net"
+		LoadOnAutoCADStartup="True">
+			<RuntimeRequirements OS="Win64" SeriesMin="R25.0" SeriesMax="R26.0" />
+			<Commands GroupName="Links">
+				<Command Local="LINKMULTIWIRES" Global="LINKMULTIWIRES" Description="Link buses" />
+				<Command Local="LINKWIRES" Global="LINKWIRES" Description="Link wires" />
+				<Command Local="LINKPAIRMULTIWIRES" Global="LINKPAIRMULTIWIRES" Description="Link all wires" />
+				<Command Local="LINKPAIRREMOVE" Global="LINKPAIRREMOVE" Description="Remove all multiwires link simbols" />
+				<Command Local="LINKSREMOVE" Global="LINKSREMOVE" Description="Remove all wire-links simbols" />
+			</Commands>
+		</ComponentEntry>
+
+		<ComponentEntry AppName="RenumberCommands"
+		ModuleName="./Contents/RenumberCommands.dll"
+		AppDescription="A simple hello"
+		AppType=".Net"
+		LoadOnAutoCADStartup="True">
+			<RuntimeRequirements OS="Win64" SeriesMin="R25.0" SeriesMax="R26.0" />
+			<Commands GroupName="Renumberer">
+				<Command Local="TAGSRENUMBER" Global="TAGSRENUMBER" Description="Advanced blocks increment" />
+			</Commands>
+		</ComponentEntry>
+	</Components>
+</ApplicationPackage>
